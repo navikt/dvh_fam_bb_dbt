@@ -64,5 +64,4 @@ select dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_FORSKUDDS_PERIODE
     ,BARN_BOR_MED_BM
     ,kafka_offset
     ,localtimestamp as lastet_dato
-    ,localtimestamp as OPPDATERT_DATO
 from final

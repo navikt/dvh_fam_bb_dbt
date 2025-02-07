@@ -13,15 +13,15 @@ select * from bb_meta_data,
   json_table(melding, '$'
     COLUMNS (
           VEDTAKS_ID    VARCHAR2 PATH '$.vedtaksid'
-          ,VEDTAKSTIDSPUNKT VARCHAR2 PATH '$.vedtakstidspunkt'
+          ,VEDTAKSTIDSPUNKT timestamp PATH '$.vedtakstidspunkt'
           ,BEHANDLINGS_TYPE VARCHAR2 PATH '$.type'
-          ,saksr            VARCHAR2 PATH '$.saksr'
+          ,saksnr            VARCHAR2 PATH '$.saksnr'
           ,FNR_KRAVHAVER VARCHAR2 PATH '$.kravhaver'
           ,FNR_MOTTAKER VARCHAR2 PATH '$.mottaker'
+          ,historisk_vedtak VARCHAR2 PATH '$.historiskVedtak'
           )
         ) j
-)
-,
+),
 
 final as (
   select
@@ -29,33 +29,42 @@ final as (
     ,p.BEHANDLINGS_TYPE
     ,p.FNR_KRAVHAVER
     ,p.FNR_MOTTAKER
-    ,p.saksr 
-    ,CASE
-      WHEN LENGTH(p.VEDTAKSTIDSPUNKT) = 25 THEN CAST(to_timestamp_tz(p.VEDTAKSTIDSPUNKT, 'yyyy-mm-dd"T"hh24:mi:ss TZH:TZM') AT TIME ZONE 'Europe/Belgrade' AS TIMESTAMP)
-      ELSE CAST(to_timestamp_tz(p.VEDTAKSTIDSPUNKT, 'YYYY-MM-DD"T"HH24:MI:SS.ff') AT TIME ZONE 'Europe/Belgrade' AS TIMESTAMP)
-      END VEDTAKSTIDSPUNKT
+    ,p.saksnr 
     ,p.pk_bb_meta_data as fk_bb_meta_data
+    ,p.VEDTAKSTIDSPUNKT
+    ,p.historisk_vedtak
+    ,nvl(ident_krav.fk_person1, -1) as fk_person1_kravhaver
+    ,nvl(ident_mottaker.fk_person1, -1) as fk_person1_mottaker
     ,p.kafka_offset
-    ,nvl(ident.fk_person1, -1) as fk_person1
   from pre_final p
-  left outer join dt_person.ident_off_id_til_fk_person1 ident
-  on p.person = ident.off_id
-  and endret_tid between ident.gyldig_fra_dato and ident.gyldig_til_dato
-  and ident.skjermet_kode = 0
+  left outer join dt_person.ident_off_id_til_fk_person1 ident_krav
+  on p.FNR_KRAVHAVER = ident_krav.off_id
+  and VEDTAKSTIDSPUNKT between ident_krav.gyldig_fra_dato and ident_krav.gyldig_til_dato
+  and ident_krav.skjermet_kode = 0
+  left outer join dt_person.ident_off_id_til_fk_person1 ident_mottaker
+  on p.FNR_MOTTAKER = ident_mottaker.off_id
+  and VEDTAKSTIDSPUNKT between ident_krav.gyldig_fra_dato and ident_krav.gyldig_til_dato
+  and ident_krav.skjermet_kode = 0  
 )
 
 select 
   dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as pk_bb_fagsak
   ,VEDTAKS_ID
+  ,kafka_offset
   ,VEDTAKSTIDSPUNKT
   ,BEHANDLINGS_TYPE
-  ,saksr 
-  ,FNR_KRAVHAVER
-  ,FNR_MOTTAKER
-  ,-1 AS FK_PERSON1_KRAVHAVER
-  ,-1 AS FK_PERSON1_MOTTAKER
-  ,kafka_offset
-  ,localtimestamp as lastet_dato
-  ,localtimestamp as OPPDATERT_DATO
+  ,saksnr 
+  ,fk_person1_kravhaver
+  ,fk_person1_mottaker
+  ,CASE WHEN fk_person1_kravhaver = -1  THEN FNR_KRAVHAVER
+      ELSE NULL
+    END FNR_KRAVHAVER
+  ,CASE WHEN fk_person1_mottaker = -1  THEN FNR_MOTTAKER
+      ELSE NULL
+    END FNR_MOTTAKER
+  ,CASE WHEN historisk_vedtak = 'true' THEN 1
+    ELSE 0
+    END historisk_vedtak
   ,fk_bb_meta_data
+  ,localtimestamp as lastet_dato
 from final

@@ -21,20 +21,21 @@ pre_final as (
 select * from bb_meta_data,
   json_table(melding, '$'
     COLUMNS (
-        VEDTAKS_ID    VARCHAR2 PATH '$.vedtaksid',
-        NESTED PATH '$.forskuddPeriodeListe[*]'
+      VEDTAKS_ID    VARCHAR2 PATH '$.vedtaksid',
+      NESTED PATH '$.forskuddPeriodeListe[*]'
         COLUMNS (
-           PERIODE_FRA VARCHAR2 PATH '$.periodeFra'
+          PERIODE_FRA VARCHAR2 PATH '$.periodeFra'
           ,PERIODE_TIL VARCHAR2 PATH '$.periodeTil',
-        NESTED PATH '$.inntektListe[*]'
-        COLUMNS (
+          NESTED PATH '$.inntektListe[*]'
+          COLUMNS (
             TYPE_INNTEKT VARCHAR2 PATH '$.type'
             ,BELOP VARCHAR2 PATH '$.beløp'
-         )))
-        ) j
-)
---select * from pre_final; --kode herfra er riktig! :)
-,
+            )
+          )
+       )
+    ) j
+    where json_value (melding, '$.forskuddPeriodeListe.inntektListe.size()' ) > 0
+),
 
 final as (
   select
@@ -44,22 +45,21 @@ final as (
     ,bb_forskudds_periode.PERIODE_FRA
     ,bb_forskudds_periode.PERIODE_TIL
     ,pre_final.kafka_offset
-    from pre_final
-    inner join bb_fagsak
-    on pre_final.kafka_offset = bb_fagsak.kafka_offset
-    and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
-    inner join bb_forskudds_periode
-    on nvl(to_date(pre_final.PERIODE_FRA,'yyyy-mm-dd'),to_date('2099-12-31', 'yyyy-mm-dd')) = nvl(bb_forskudds_periode.PERIODE_FRA,to_date('2099-12-31', 'yyyy-mm-dd'))
-    and nvl(to_date(pre_final.PERIODE_TIL,'yyyy-mm-dd'),to_date('2099-12-31', 'yyyy-mm-dd')) = nvl(bb_forskudds_periode.PERIODE_TIL,to_date('2099-12-31', 'yyyy-mm-dd'))
-    and bb_forskudds_periode.fk_bb_fagsak = bb_fagsak.pk_bb_fagsak
+  from pre_final
+  inner join bb_fagsak
+  on pre_final.kafka_offset = bb_fagsak.kafka_offset
+  and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
+  inner join bb_forskudds_periode
+  on nvl(to_date(pre_final.PERIODE_FRA,'yyyy-mm-dd'),to_date('2099-12-31', 'yyyy-mm-dd')) = nvl(bb_forskudds_periode.PERIODE_FRA,to_date('2099-12-31', 'yyyy-mm-dd'))
+  and nvl(to_date(pre_final.PERIODE_TIL,'yyyy-mm-dd'),to_date('2099-12-31', 'yyyy-mm-dd')) = nvl(bb_forskudds_periode.PERIODE_TIL,to_date('2099-12-31', 'yyyy-mm-dd'))
+  and bb_forskudds_periode.fk_bb_fagsak = bb_fagsak.pk_bb_fagsak
 )
---select * from final;
 
-select dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_INNTEKT
-    ,FK_BB_FORSKUDDS_PERIODE
-    ,TYPE_INNTEKT
-    ,BELOP
-    ,kafka_offset
-    ,localtimestamp as lastet_dato
-    ,localtimestamp as OPPDATERT_DATO
+select 
+  dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_INNTEKT
+  ,FK_BB_FORSKUDDS_PERIODE
+  ,TYPE_INNTEKT
+  ,BELOP
+  ,kafka_offset
+  ,localtimestamp as lastet_dato
 from final
