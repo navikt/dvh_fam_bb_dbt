@@ -29,9 +29,7 @@ select * from bb_meta_data,
           ,BARN_BOR_MED_BM VARCHAR2 PATH '$.barnBorMedBM'
          ))
         ) j
-)
---select * from pre_final;
-,
+),
 
 final as (
   select
@@ -50,7 +48,6 @@ final as (
   on pre_final.kafka_offset = bb_fagsak.kafka_offset
   and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
 )
---select * from final;
 
 select dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_FORSKUDDS_PERIODE
     ,fk_bb_fagsak
