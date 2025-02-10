@@ -29,6 +29,7 @@ select * from bb_meta_data,
           ,BARN_BOR_MED_BM VARCHAR2 PATH '$.barnBorMedBM'
          ))
         ) j
+    where json_value (melding, '$.forskuddPeriodeListe.size()' ) > 0
 ),
 
 final as (
