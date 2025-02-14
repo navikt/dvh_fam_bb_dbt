@@ -58,7 +58,10 @@ final as (
 select 
   dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_INNTEKT
   ,FK_BB_FORSKUDDS_PERIODE
-  ,TYPE_INNTEKT
+  ,CASE WHEN TYPE_INNTEKT = 'true' THEN '1'
+        WHEN TYPE_INNTEKT = 'false' THEN '0'
+        ELSE TYPE_INNTEKT
+  END TYPE_INNTEKT
   ,BELOP
   ,kafka_offset
   ,localtimestamp as lastet_dato
