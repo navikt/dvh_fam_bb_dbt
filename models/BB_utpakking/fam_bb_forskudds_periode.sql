@@ -41,7 +41,11 @@ final as (
     ,BARNETS_ALDERS_GRUPPE
     ,ANTALL_BARN_I_EGEN_HUSSTAND
     ,SIVILSTAND
-    ,BARN_BOR_MED_BM
+    ,CASE
+        WHEN BARN_BOR_MED_BM = 'true' THEN '1'
+        WHEN BARN_BOR_MED_BM = 'false' THEN '0'
+        ELSE BARN_BOR_MED_BM  
+    END BARN_BOR_MED_BM
     ,pre_final.kafka_offset
     ,bb_fagsak.pk_bb_fagsak as fk_bb_fagsak
   from pre_final
