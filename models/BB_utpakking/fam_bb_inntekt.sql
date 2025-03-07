@@ -34,7 +34,8 @@ select * from bb_meta_data,
           )
        )
     ) j
-    where json_value (melding, '$.forskuddPeriodeListe.inntektListe.size()' ) > 0
+    --where json_value (melding, '$.forskuddPeriodeListe.inntektListe.size()' ) > 0
+    where type_inntekt is not null
 ),
 
 final as (
