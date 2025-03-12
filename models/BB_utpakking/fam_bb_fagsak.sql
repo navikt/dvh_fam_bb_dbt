@@ -1,6 +1,8 @@
 {{
     config(
-        materialized='incremental'
+        materialized = 'incremental',
+        unique_key = 'periode',
+        incremental_strategy='delete+insert',
     )
 }}
 
@@ -62,3 +64,9 @@ SELECT
     fk_bb_meta_data,
     localtimestamp AS lastet_dato
 FROM final
+
+{% if is_incremental() %}
+
+where lastet_dato > (select max(lastet_dato) from {{ this }})
+
+{% endif %}
