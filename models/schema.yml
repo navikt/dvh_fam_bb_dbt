@@ -52,6 +52,7 @@ sources:
         description: 'inneholder meta_data for tilleggsstønader'
       - name: fam_bb_fagsak
         description: 'inneholder vedtaksinformasjon'
+      - name: fam_bb_forskudds_periode
 
 
 
