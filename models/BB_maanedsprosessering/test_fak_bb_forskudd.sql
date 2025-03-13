@@ -128,7 +128,8 @@ periode_uten_opphort as (
         ,dim_mottaker.fk_dim_geografi_bosted as fk_dim_geografi_bosted_mottaker
         ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
         ,inntekt.inntekt_total, inntekt.antall_inntekts_typer
-        ,5 as gyldig_flagg --Input gyldig_flagg
+        ,'{{ var ("gyldig_flagg") }}' as gyldig_flagg --Input gyldig_flagg
+        ,localtimestamp AS lastet_dato
   from opphor_hvis_finnes vedtak
  
   left join dt_person.dim_person dim_kravhaver
@@ -151,4 +152,6 @@ periode_uten_opphort as (
 select 
     * 
 from periode_uten_opphort
+
+
 
