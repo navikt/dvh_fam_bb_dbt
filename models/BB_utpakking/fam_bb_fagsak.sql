@@ -1,8 +1,6 @@
 {{
     config(
-        materialized = 'incremental',
-        unique_key = 'periode',
-        incremental_strategy='delete+insert',
+        materialized = 'incremental'
     )
 }}
 
@@ -65,8 +63,3 @@ SELECT
     localtimestamp AS lastet_dato
 FROM final
 
-{% if is_incremental() %}
-
-where lastet_dato > (select max(lastet_dato) from {{ this }})
-
-{% endif %}
