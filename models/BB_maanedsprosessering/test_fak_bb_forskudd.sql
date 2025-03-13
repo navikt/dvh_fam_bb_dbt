@@ -154,8 +154,3 @@ select
     * 
 from periode_uten_opphort
 
-{% if is_incremental() %}
-
-where lastet_dato > (select max(lastet_dato) from {{ this }}) 
-
-{% endif %}
