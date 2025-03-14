@@ -82,7 +82,7 @@ siste_opphør as (
     from siste 
     left join opphor_fra   
     on opphor_fra.fk_person1_kravhaver = siste.fk_person1_kravhaver
-										
+    and opphor_fra.saksnr = siste.saksnr										
     and opphor_fra.vedtakstidspunkt > siste.vedtakstidspunkt
 ),
 
