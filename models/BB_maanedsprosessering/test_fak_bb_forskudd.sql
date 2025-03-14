@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        unique_key = 'aar_maaned',
+        unique_key = ['aar_maaned','gyldig_flagg'],
         incremental_strategy='delete+insert'
     )
 }}
@@ -154,9 +154,5 @@ select
     * 
 from periode_uten_opphort
 
-{% if is_incremental() %}
 
-where '{{ var ("gyldig_flagg") }}' in  (select distinct gyldig_flagg from {{ this }}) 
-
-{% endif %}
 
