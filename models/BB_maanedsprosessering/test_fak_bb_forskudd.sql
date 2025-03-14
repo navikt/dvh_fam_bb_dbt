@@ -60,20 +60,19 @@ siste as (
 ),			  
 
 opphor_fra as (
-	 
-      select fagsak.fk_person1_kravhaver, fagsak.vedtakstidspunkt
-            ,min(periode.periode_fra) periode_fra_opphor
-      from {{ source ('fam_bb', 'fam_bb_fagsak') }} fagsak   
+
+      select fagsak.fk_person1_kravhaver, fagsak.saksnr, fagsak.vedtakstidspunkt
+      ,min(periode.periode_fra) periode_fra_opphor
+      from {{ source ('fam_bb', 'fam_bb_fagsak') }} fagsak 
 
       join {{ source ('fam_bb', 'fam_bb_forskudds_periode') }} periode
       on fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
       and periode.belop is null --Opphørt versjon
-      
+
       where fagsak.behandlings_type not in ('ENDRING_MOTTAKER')
-      and fagsak.vedtakstidspunkt <= TO_DATE('{{ var ("max_vedtaksdato") }}', 'yyyymmdd')--'31.01.2025 00.00.00'--TO_DATE(TO_CHAR(LAST_DAY(SYSDATE), 'YYYYMMDD'), 'YYYYMMDD')--Begrense max_vedtaksdato
-																	  
-   
-      group by fagsak.fk_person1_kravhaver, fagsak.vedtakstidspunkt
+      and trunc(fagsak.vedtakstidspunkt, 'dd') <= TO_DATE('{{ var ("max_vedtaksdato") }}', 'yyyymmdd')--Begrense max_vedtaksdato på dag nivå
+
+      group by fagsak.fk_person1_kravhaver, fagsak.saksnr, fagsak.vedtakstidspunkt
 ),
 
 siste_opphør as (
