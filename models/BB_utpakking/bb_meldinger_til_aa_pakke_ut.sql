@@ -11,3 +11,4 @@ with bb_meta_data as (
 )
 
 select * from bb_meta_data
+
