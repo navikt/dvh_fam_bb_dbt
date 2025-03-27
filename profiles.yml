@@ -26,7 +26,7 @@ dvh_fam_bb_dbt:
       user: "{{env_var('DBT_ENV_SECRET_USER')}}"
       pass: "{{env_var('DBT_ENV_SECRET_PASS')}}"
       protocol: tcp
-      host: dm08-scan.adeo.no
+      host: dmv09-scan.adeo.no
       port: 1521
       service: dwh_ha
       schema: "{{env_var('DBT_DB_SCHEMA')}}"
