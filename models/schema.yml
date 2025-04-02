@@ -38,6 +38,7 @@ sources:
       - name: dvh_person_ident_off_id_ikke_skjermet
         description: 'inneholder informasjon om personer som er ikke skjemet, bl.a fk_person1, off_id'
       - name: DIM_PERSON
+      - name: ident_off_id_til_fk_person1
 
   - name: kode_verk
     schema: dt_kodeverk
@@ -53,7 +54,12 @@ sources:
       - name: fam_bb_fagsak
         description: 'inneholder vedtaksinformasjon'
       - name: fam_bb_forskudds_periode
-
+      - name: STG_FAM_BB_BARN_BIS
+      - name: STG_FAM_BB_MOTTAKER_BIS      
+      - name: STG_FAM_BB_PLIKTIGE_BIS
+      - name: STG_FAM_BB_BARN_BERM
+      - name: STG_FAM_BB_MOTTAKER_BERM      
+      - name: STG_FAM_BB_PLIKTIGE_BERM
 
 
 
