@@ -4,7 +4,7 @@
     )
 }}
 
-with pre_final as (
+with final as (
 select 
 PERIODE
 ,SAKSNR
