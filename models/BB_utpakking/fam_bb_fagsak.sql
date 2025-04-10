@@ -37,11 +37,11 @@ final AS (
         NVL(ident_mottaker.fk_person1, -1) AS fk_person1_mottaker,
         p.kafka_offset
     FROM pre_final p
-    LEFT JOIN dt_person.IDENT_OFF_ID_TIL_FK_PERSON1_IKKE_SKJERMET ident_krav
+    LEFT JOIN dt_person.ident_off_id_til_fk_person1 ident_krav
       ON p.FNR_KRAVHAVER = ident_krav.off_id
      AND p.VEDTAKSTIDSPUNKT BETWEEN ident_krav.gyldig_fra_dato AND ident_krav.gyldig_til_dato
      --AND ident_krav.skjermet_kode = 0
-    LEFT JOIN dt_person.IDENT_OFF_ID_TIL_FK_PERSON1_IKKE_SKJERMET ident_mottaker
+    LEFT JOIN dt_person.ident_off_id_til_fk_person1 ident_mottaker
       ON p.FNR_MOTTAKER = ident_mottaker.off_id
      AND p.VEDTAKSTIDSPUNKT BETWEEN ident_mottaker.gyldig_fra_dato AND ident_mottaker.gyldig_til_dato
      --AND ident_mottaker.skjermet_kode = 0
