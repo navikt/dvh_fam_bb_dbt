@@ -1,9 +1,8 @@
-{{
-    config(
-        materialized='incremental',
-        unique_key = ['aar_maaned','gyldig_flagg'],
-        incremental_strategy='delete+insert'
-    )
+{{ config(
+    materialized='incremental',
+    unique_key = ['aar_maaned', 'gyldig_flagg'],
+    incremental_strategy='delete+insert'
+    ) 
 }}
 
 with tid as (
@@ -14,7 +13,6 @@ with tid as (
   and dim_nivaa = 3
 
   and aar_maaned between '{{ var ("periode_fom") }}' and '{{ var ("periode_tom") }}' 
-  --= TO_CHAR(ADD_MONTHS(SYSDATE, -1), 'YYYYMM') 
 ),
 
 fagsak as (
@@ -36,8 +34,9 @@ fagsak as (
     tid.siste_dato_i_perioden, 
     tid.aar, 
     tid.pk_dim_tid as fk_dim_tid_mnd,
-    --,to_date(tid.aar_maaned||'01','yyyymmdd') dato_utbet_fom, dato_utbet.siste_dato_i_perioden dato_utbet_tom
-    row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver order by fagsak.vedtakstidspunkt desc) nr
+    row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr 
+	    order by fagsak.vedtakstidspunkt desc
+	) nr
   from {{ source ('fam_bb', 'fam_bb_fagsak') }} fagsak
  
   join {{ source ('fam_bb', 'fam_bb_forskudds_periode') }} periode
@@ -67,7 +66,7 @@ opphor_fra as (
 
       join {{ source ('fam_bb', 'fam_bb_forskudds_periode') }} periode
       on fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
-      and periode.belop is null --Opphørt versjon
+      and periode.belop is null
 
       where fagsak.behandlings_type not in ('ENDRING_MOTTAKER')
       and trunc(fagsak.vedtakstidspunkt, 'dd') <= TO_DATE('{{ var ("max_vedtaksdato") }}', 'yyyymmdd')--Begrense max_vedtaksdato på dag nivå
@@ -77,7 +76,7 @@ opphor_fra as (
 
 siste_opphør as (
     select siste.*
-          ,opphor_fra.periode_fra_opphor
+        ,opphor_fra.periode_fra_opphor
     from siste 
     left join opphor_fra   
     on opphor_fra.fk_person1_kravhaver = siste.fk_person1_kravhaver

@@ -1,5 +1,5 @@
-{% set start_date = 202201 %}
-{% set end_date = 202201 %}
+{% set start_date = 202001 %}
+{% set end_date = 202503 %}
 {% set periods = [] %}
 
 {{ config(
@@ -104,7 +104,9 @@
                 tid.siste_dato_i_perioden, 
                 tid.aar, 
                 tid.pk_dim_tid AS fk_dim_tid_mnd,
-                ROW_NUMBER() OVER (PARTITION BY tid.aar_maaned, fagsak.fk_person1_kravhaver ORDER BY fagsak.vedtakstidspunkt DESC) nr
+                row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr 
+	                order by fagsak.vedtakstidspunkt desc
+                    ) nr
             FROM {{ source('fam_bb', 'fam_bb_fagsak') }} fagsak
             JOIN {{ source('fam_bb', 'fam_bb_forskudds_periode') }} periode
                 ON fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
