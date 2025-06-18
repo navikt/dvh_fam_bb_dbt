@@ -50,9 +50,11 @@ sources:
     schema: dvh_fam_bb
     tables:
       - name: fam_bb_meta_data
-        description: 'inneholder meta_data for tilleggsstønader'
+        description: 'inneholder meta_data for barnebidrag forskudd og bidrag'
       - name: fam_bb_fagsak
-        description: 'inneholder vedtaksinformasjon'
+        description: 'inneholder vedtaksinformasjon for forskudd biten'
+      - name: fam_bb_fagsak_ord
+        description: 'inneholder vedtaksinformasjon for bidrga biten'
       - name: fam_bb_forskudds_periode
       - name: STG_FAM_BB_BARN_BIS
       - name: STG_FAM_BB_MOTTAKER_BIS      
