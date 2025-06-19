@@ -28,7 +28,7 @@ select * from bb_meta_data,
           ,SAMVAERSFRADRAG NUMBER PATH '$.samværsfradrag'
           ,NETTO_BARNETILLEGG_BP NUMBER PATH '$.nettoBarnetilleggBP'
           ,NETTO_BARNETILLEGG_BM NUMBER PATH '$.nettoBarnetilleggBM'
-          ,samvaersklasse VARCHAR2 PATH '$.samværsklasse'
+          ,SAMVAESKLASSE VARCHAR2 PATH '$.samværsklasse'
           ,BPS_ANDEL_UNDERHOLDSKOSTNAD NUMBER PATH '$.bpsAndelUnderholdskostnad'
           ,BPBOR_MED_ANDRE_VOKSNE VARCHAR2 PATH '$.bpborMedAndreVoksne'
          ))
