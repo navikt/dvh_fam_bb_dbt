@@ -16,7 +16,7 @@ select * from bb_meta_data,
           ,VEDTAKSTIDSPUNKT timestamp PATH '$.vedtakstidspunkt'
           ,type     VARCHAR2 PATH '$.type'
           ,saksnr            VARCHAR2 PATH '$.saksnr'
-          ,skyldner     VARCHAR2 PATH '$.skyldner'
+          ,FNR_skyldner     VARCHAR2 PATH '$.skyldner'
           ,FNR_KRAVHAVER VARCHAR2 PATH '$.kravhaver'
           ,FNR_MOTTAKER VARCHAR2 PATH '$.mottaker'
           ,historisk_vedtak VARCHAR2 PATH '$.historiskVedtak'
@@ -28,7 +28,7 @@ final AS (
     SELECT DISTINCT 
         p.VEDTAKS_ID,
         p.type,
-        p.skyldner,
+        p.FNR_skyldner,
         p.saksnr,
         p.FNR_KRAVHAVER,
         p.FNR_MOTTAKER,
@@ -47,7 +47,7 @@ final AS (
       ON p.FNR_MOTTAKER = ident_mottaker.off_id
      AND p.VEDTAKSTIDSPUNKT BETWEEN ident_mottaker.gyldig_fra_dato AND ident_mottaker.gyldig_til_dato
     LEFT JOIN dt_person.ident_off_id_til_fk_person1 ident_skyldner
-      ON p.skyldner = ident_skyldner.off_id
+      ON p.FNR_skyldner = ident_skyldner.off_id
      AND p.VEDTAKSTIDSPUNKT BETWEEN ident_skyldner.gyldig_fra_dato AND ident_skyldner.gyldig_til_dato
 )
 
@@ -63,7 +63,7 @@ SELECT
     fk_person1_skyldner,
     CASE WHEN fk_person1_kravhaver = -1 THEN FNR_KRAVHAVER ELSE NULL END AS FNR_KRAVHAVER,
     CASE WHEN fk_person1_mottaker = -1 THEN FNR_MOTTAKER ELSE NULL END AS FNR_MOTTAKER,
-    CASE WHEN fk_person1_skyldner = -1 THEN skyldner ELSE NULL END AS skyldner,
+    CASE WHEN fk_person1_skyldner = -1 THEN FNR_skyldner ELSE NULL END AS FNR_skyldner,
     CASE WHEN historisk_vedtak = 'true' THEN 1 ELSE 0 END AS historisk_vedtak,
     fk_bb_meta_data,
     localtimestamp AS lastet_dato
