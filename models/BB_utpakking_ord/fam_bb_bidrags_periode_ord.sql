@@ -28,7 +28,7 @@ select * from bb_meta_data,
           ,SAMVAERSFRADRAG NUMBER PATH '$.samværsfradrag'
           ,NETTO_BARNETILLEGG_BP NUMBER PATH '$.nettoBarnetilleggBP'
           ,NETTO_BARNETILLEGG_BM NUMBER PATH '$.nettoBarnetilleggBM'
-          ,SAMVAESKLASSE VARCHAR2 PATH '$.samværsklasse'
+          ,SAMVAERSKLASSE VARCHAR2 PATH '$.samværsklasse'
           ,BPS_ANDEL_UNDERHOLDSKOSTNAD NUMBER PATH '$.bpsAndelUnderholdskostnad'
           ,BPBOR_MED_ANDRE_VOKSNE VARCHAR2 PATH '$.bpborMedAndreVoksne'
          ))
@@ -48,7 +48,7 @@ final as (
     ,SAMVAERSFRADRAG
     ,NETTO_BARNETILLEGG_BP
     ,NETTO_BARNETILLEGG_BM
-    ,SAMVAESKLASSE
+    ,SAMVAERSKLASSE
     ,BPS_ANDEL_UNDERHOLDSKOSTNAD
     ,CASE
         WHEN BPBOR_MED_ANDRE_VOKSNE = 'true' THEN '1'
@@ -74,7 +74,7 @@ select dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_BIDRAGS_PERIODE
     ,SAMVAERSFRADRAG
     ,NETTO_BARNETILLEGG_BP
     ,NETTO_BARNETILLEGG_BM
-    ,SAMVAESKLASSE
+    ,SAMVAERSKLASSE
     ,BPS_ANDEL_UNDERHOLDSKOSTNAD
     ,BPBOR_MED_ANDRE_VOKSNE
     ,kafka_offset
