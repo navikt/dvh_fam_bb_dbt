@@ -5,105 +5,110 @@
 }}
 
 with bb_meta_data as (
-  select * from {{ref ('bb_meldinger_til_aa_pakke_ut_ord')}}
+    select *
+    from {{ref ('bb_meldinger_til_aa_pakke_ut_ord')}}
 ),
 
 bb_fagsak as (
-  select VEDTAKS_ID, pk_bb_fagsak, kafka_offset from {{ref ('fam_bb_fagsak_ord')}}
+    select vedtaks_id, pk_bb_fagsak, kafka_offset
+    from {{ref ('fam_bb_fagsak_ord')}}
 ),
 
 
-bb_bidrags_periode AS (
-  SELECT PERIODE_FRA, PERIODE_TIL, pk_bb_bidrags_periode, fk_bb_fagsak from {{ref ('fam_bb_bidrags_periode_ord')}}
+bb_bidrags_periode as (
+    select periode_fra, periode_til, pk_bb_bidrags_periode, fk_bb_fagsak
+    from {{ref ('fam_bb_bidrags_periode_ord')}}
 ),
 
-bp AS (
-  SELECT
-    kafka_offset,
-    vedtaks_id,
-    periode_fra,
-    periode_til,
-    type_inntekt,
-    belop,
-    'P' AS flagg
-  FROM bb_meta_data,
-  JSON_TABLE(melding, '$'
-    COLUMNS (
-      vedtaks_id VARCHAR2 PATH '$.vedtaksid',
-      NESTED PATH '$.bidragPeriodeListe[*]'
-      COLUMNS (
-        periode_fra VARCHAR2 PATH '$.periodeFra',
-        periode_til VARCHAR2 PATH '$.periodeTil',
-        NESTED PATH '$.bpinntektListe[*]'
-        COLUMNS (
-          type_inntekt VARCHAR2 PATH '$.type',
-          belop NUMBER PATH '$.beløp'
-        )
-      )
-    )
-  )j
-  where type_inntekt is not null
+bp as (
+    select
+        kafka_offset,
+        vedtaks_id,
+        periode_fra,
+        periode_til,
+        type_inntekt,
+        belop,
+        'P' as flagg
+    from bb_meta_data
+        ,json_table(melding, '$'
+            columns (
+                vedtaks_id varchar2(255) path '$.vedtaksid',
+                nested path '$.bidragPeriodeListe[*]'
+                columns (
+                    periode_fra varchar2(255) path '$.periodeFra',
+                    periode_til varchar2(255) path '$.periodeTil',
+                    nested path '$.bpinntektListe[*]'
+                    columns (
+                        type_inntekt varchar2(255) path '$.type',
+                        belop        number(18,2)  path '$.beløp'
+                            )
+                        )
+                    )
+         )j
+    where type_inntekt is not null
 ),
 
-bm AS (
-  SELECT
-    kafka_offset,
-    vedtaks_id,
-    periode_fra,
-    periode_til,
-    type_inntekt,
-    belop,
-    'M' AS flagg
-  FROM bb_meta_data,
-  JSON_TABLE(melding, '$'
-    COLUMNS (
-      vedtaks_id VARCHAR2 PATH '$.vedtaksid',
-      NESTED PATH '$.bidragPeriodeListe[*]'
-      COLUMNS (
-        periode_fra VARCHAR2 PATH '$.periodeFra',
-        periode_til VARCHAR2 PATH '$.periodeTil',
-        NESTED PATH '$.bminntektListe[*]'
-        COLUMNS (
-          type_inntekt VARCHAR2 PATH '$.type',
-          belop NUMBER PATH '$.beløp'
-        )
-      )
-    )
-  )j
-  where type_inntekt is not null
+bm as (
+    select
+        kafka_offset,
+        vedtaks_id,
+        periode_fra,
+        periode_til,
+        type_inntekt,
+        belop,
+        'M' as flagg
+    from bb_meta_data
+        ,json_table(melding, '$'
+            columns (
+                vedtaks_id varchar2(255) path '$.vedtaksid',
+                nested path '$.bidragPeriodeListe[*]'
+                columns (
+                    periode_fra varchar2(255) path '$.periodeFra',
+                    periode_til varchar2(255) path '$.periodeTil',
+                    nested path '$.bminntektListe[*]'
+                    columns (
+                        type_inntekt varchar2(255) path '$.type',
+                        belop number(18,2) path '$.beløp'
+                            )
+                        )
+                    )
+        )j
+    where type_inntekt is not null
 ),
 
-pre_final AS (
-  SELECT * FROM bp
-  UNION ALL
-  SELECT * FROM bm
+pre_final as (
+    select * from bp
+    union all
+    select * from bm
 ),
 
-final AS (
-  SELECT
-    pf.type_inntekt,
-    pf.belop,
-    pf.flagg,
-    bb.pk_bb_bidrags_periode AS fk_bb_bidrags_periode,
-    bb.periode_fra,
-    bb.periode_til,
-    pf.kafka_offset
-  FROM pre_final pf
-  JOIN bb_fagsak bf ON pf.kafka_offset = bf.kafka_offset AND pf.vedtaks_id = bf.vedtaks_id
-  JOIN bb_bidrags_periode bb ON
-    NVL(TO_DATE(pf.periode_fra, 'yyyy-mm-dd'), TO_DATE('2099-12-31', 'yyyy-mm-dd')) = NVL(bb.periode_fra, TO_DATE('2099-12-31', 'yyyy-mm-dd')) AND
-    NVL(TO_DATE(pf.periode_til, 'yyyy-mm-dd'), TO_DATE('2099-12-31', 'yyyy-mm-dd')) = NVL(bb.periode_til, TO_DATE('2099-12-31', 'yyyy-mm-dd')) AND
-    bb.fk_bb_fagsak = bf.pk_bb_fagsak
+final as (
+    select
+        pf.type_inntekt,
+        pf.belop,
+        pf.flagg,
+        bb.pk_bb_bidrags_periode as fk_bb_bidrags_periode,
+        bb.periode_fra,
+        bb.periode_til,
+        pf.kafka_offset
+    from pre_final pf
+    
+    join bb_fagsak bf
+    on pf.kafka_offset = bf.kafka_offset
+    and pf.vedtaks_id = bf.vedtaks_id
+    
+    join bb_bidrags_periode bb
+    on nvl(to_date(pf.periode_fra, 'yyyy-mm-dd'), to_date('2099-12-31', 'yyyy-mm-dd')) = nvl(bb.periode_fra, to_date('2099-12-31', 'yyyy-mm-dd'))
+    and nvl(to_date(pf.periode_til, 'yyyy-mm-dd'), to_date('2099-12-31', 'yyyy-mm-dd')) = nvl(bb.periode_til, to_date('2099-12-31', 'yyyy-mm-dd'))
+    and bb.fk_bb_fagsak = bf.pk_bb_fagsak
 )
 
-SELECT 
-  dvh_fam_bb.DVH_FAMBB_KAFKA.nextval AS pk_bb_inntekt,
-  fk_bb_bidrags_periode,
-  type_inntekt,
-  belop,
-  flagg,
-  kafka_offset,
-  LOCALTIMESTAMP AS lastet_dato
-FROM final
-
-
+select 
+    dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_inntekt,
+    fk_bb_bidrags_periode,
+    type_inntekt,
+    belop,
+    flagg,
+    kafka_offset,
+    localtimestamp as lastet_dato
+from final
