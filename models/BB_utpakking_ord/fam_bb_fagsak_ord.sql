@@ -15,7 +15,7 @@ pre_final as (
             columns (
                 vedtaks_id       varchar2(255) path '$.vedtaksid'
                ,vedtakstidspunkt timestamp(9)  path '$.vedtakstidspunkt'
-               ,type             varchar2(255) path '$.type'
+               ,behandlings_type             varchar2(255) path '$.type'
                ,saksnr           varchar2(255) path '$.saksnr'
                ,fnr_skyldner     varchar2(255) path '$.skyldner'
                ,fnr_kravhaver    varchar2(255) path '$.kravhaver'
@@ -28,7 +28,7 @@ pre_final as (
 final as (
     select distinct 
         p.vedtaks_id,
-        p.type,
+        p.behandlings_type,
         p.fnr_skyldner,
         p.saksnr,
         p.fnr_kravhaver,
@@ -55,7 +55,7 @@ final as (
 select 
     dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_fagsak,
     vedtaks_id,
-    type,
+    behandlings_type,
     kafka_offset,
     vedtakstidspunkt,
     saksnr,
