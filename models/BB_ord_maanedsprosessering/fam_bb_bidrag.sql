@@ -44,7 +44,7 @@ fagsak as (
     tid.siste_dato_i_perioden,
     tid.aar,
     tid.pk_dim_tid as fk_dim_tid_mnd,
-    row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr
+    row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr, fagsak.fk_person1_mottaker
             order by fagsak.vedtakstidspunkt desc, periode.belop desc
         ) nr
   from {{ source ('fam_bb', 'fam_bb_fagsak_ord') }} fagsak
