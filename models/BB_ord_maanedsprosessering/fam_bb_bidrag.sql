@@ -144,6 +144,8 @@ select
         max(case when nr = 4 and flagg = 'M' then belop end) as m_inntekt_4,
         max(case when nr = 5 and flagg = 'M' then type_inntekt end) as m_type_inntekt_5,
         max(case when nr = 5 and flagg = 'M' then belop end) as m_inntekt_5,
+        max(case when nr = 5 and flagg = 'M' then type_inntekt end) as m_type_inntekt_6,
+        max(case when nr = 5 and flagg = 'M' then belop end) as m_inntekt_6,
 
         sum(case when flagg = 'P' then belop else 0 end) as p_inntekt_total,
         max(case when flagg = 'P' then nr else 0 end) as p_antall_typer,
@@ -192,6 +194,7 @@ periode_uten_opphort as (
         ,inntekts_typer.m_inntekt_1, inntekts_typer.m_type_inntekt_2, inntekts_typer.m_inntekt_2
         ,inntekts_typer.m_type_inntekt_3, inntekts_typer.m_inntekt_3, inntekts_typer.m_type_inntekt_4
         ,inntekts_typer.m_inntekt_4,inntekts_typer.m_type_inntekt_5, inntekts_typer.m_inntekt_5
+        ,inntekts_typer.m_type_inntekt_6,inntekts_typer.m_inntekt_6
         ,inntekts_typer.m_inntekt_total, inntekts_typer.m_antall_typer
         ,'{{ var ("gyldig_flagg") }}' as gyldig_flagg --Input gyldig_flagg
         ,localtimestamp as lastet_dato
