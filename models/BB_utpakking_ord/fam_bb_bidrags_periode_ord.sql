@@ -17,20 +17,22 @@ select * from bb_meta_data,
   json_table(melding, '$'
     COLUMNS (
             VEDTAKS_ID    VARCHAR2 PATH '$.vedtaksid',
-        NESTED PATH '$.bidragPeriodeListe[*]'
-        COLUMNS (
-           PERIODE_FRA VARCHAR2 PATH '$.periodeFra'
-          ,PERIODE_TIL VARCHAR2 PATH '$.periodeTil'
-          ,BELOP NUMBER PATH '$.beløp'
-          ,RESULTAT VARCHAR2 PATH '$.resultat'
-          ,BIDRAGSEVNE NUMBER PATH '$.bidragsevne'
-          ,UNDERHOLDSKOSTNAD NUMBER PATH '$.underholdskostnad'
-          ,SAMVAERSFRADRAG NUMBER PATH '$.samværsfradrag'
-          ,NETTO_BARNETILLEGG_BP NUMBER PATH '$.nettoBarnetilleggBP'
-          ,NETTO_BARNETILLEGG_BM NUMBER PATH '$.nettoBarnetilleggBM'
-          ,SAMVAESKLASSE VARCHAR2 PATH '$.samværsklasse'
-          ,BPS_ANDEL_UNDERHOLDSKOSTNAD NUMBER PATH '$.bpsAndelUnderholdskostnad'
-          ,BPBOR_MED_ANDRE_VOKSNE VARCHAR2 PATH '$.bpborMedAndreVoksne'
+            NESTED PATH '$.bidragPeriodeListe[*]'
+              COLUMNS (
+                PERIODE_FRA                     VARCHAR2 PATH '$.periodeFra'
+                ,PERIODE_TIL                    VARCHAR2 PATH '$.periodeTil'
+                ,BELOP                          NUMBER PATH '$.beløp'
+                ,RESULTAT                       VARCHAR2 PATH '$.resultat'
+                ,BIDRAGSEVNE                    NUMBER PATH '$.bidragsevne'
+                ,UNDERHOLDSKOSTNAD              NUMBER PATH '$.underholdskostnad'
+                ,SAMVAERSFRADRAG                NUMBER PATH '$.samværsfradrag'
+                ,NETTO_BARNETILLEGG_BP          NUMBER PATH '$.nettoBarnetilleggBP'
+                ,NETTO_BARNETILLEGG_BM          NUMBER PATH '$.nettoBarnetilleggBM'
+                ,SAMVAESKLASSE                  VARCHAR2 PATH '$.samværsklasse'
+                ,BPS_ANDEL_UNDERHOLDSKOSTNAD    NUMBER PATH '$.bpsAndelUnderholdskostnad'
+                ,BPBOR_MED_ANDRE_VOKSNE         VARCHAR2 PATH '$.bpborMedAndreVoksne'
+                ,netto_tilsynsutgift            NUMBER PATH '$.nettoTilsynsutgift'
+                ,faktisk_tilsynutgift           NUMBER PATH '$.faktiskUtgift'
          ))
         ) j
         where PERIODE_FRA is not null
@@ -48,6 +50,8 @@ final as (
     ,SAMVAERSFRADRAG
     ,NETTO_BARNETILLEGG_BP
     ,NETTO_BARNETILLEGG_BM
+    ,netto_tilsynsutgift
+    ,faktisk_tilsynutgift 
     ,SAMVAESKLASSE
     ,BPS_ANDEL_UNDERHOLDSKOSTNAD
     ,CASE
@@ -75,6 +79,8 @@ select dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_BIDRAGS_PERIODE
     ,NETTO_BARNETILLEGG_BP
     ,NETTO_BARNETILLEGG_BM
     ,SAMVAESKLASSE
+    ,netto_tilsynsutgift
+    ,faktisk_tilsynutgift 
     ,BPS_ANDEL_UNDERHOLDSKOSTNAD
     ,BPBOR_MED_ANDRE_VOKSNE
     ,kafka_offset

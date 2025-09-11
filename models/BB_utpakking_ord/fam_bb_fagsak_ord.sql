@@ -12,14 +12,15 @@ pre_final as (
 select * from bb_meta_data,
   json_table(melding, '$'
     COLUMNS (
-          VEDTAKS_ID    VARCHAR2 PATH '$.vedtaksid'
-          ,VEDTAKSTIDSPUNKT timestamp PATH '$.vedtakstidspunkt'
-          ,type     VARCHAR2 PATH '$.type'
-          ,saksnr            VARCHAR2 PATH '$.saksnr'
-          ,pliktig     VARCHAR2 PATH '$.skyldner'
-          ,FNR_KRAVHAVER VARCHAR2 PATH '$.kravhaver'
-          ,FNR_MOTTAKER VARCHAR2 PATH '$.mottaker'
-          ,historisk_vedtak VARCHAR2 PATH '$.historiskVedtak'
+          VEDTAKS_ID          VARCHAR2 PATH '$.vedtaksid'
+          ,VEDTAKSTIDSPUNKT   timestamp PATH '$.vedtakstidspunkt'
+          ,type               VARCHAR2 PATH '$.type'
+          ,saksnr             VARCHAR2 PATH '$.saksnr'
+          ,pliktig            VARCHAR2 PATH '$.skyldner'
+          ,FNR_KRAVHAVER      VARCHAR2 PATH '$.kravhaver'
+          ,FNR_MOTTAKER       VARCHAR2 PATH '$.mottaker'
+          ,historisk_vedtak   VARCHAR2 PATH '$.historiskVedtak'
+          ,innkreving_flagg   VARCHAR2 PATH '$.innkreving'
           )
         ) j
 ),
@@ -35,6 +36,7 @@ final AS (
         p.pk_bb_meta_data AS fk_bb_meta_data,
         p.VEDTAKSTIDSPUNKT,
         p.historisk_vedtak,
+        p.innkreving_flagg ,
         NVL(ident_pliktig.fk_person1, -1) AS fk_person1_pliktig,
         NVL(ident_krav.fk_person1, -1) AS fk_person1_kravhaver,
         NVL(ident_mottaker.fk_person1, -1) AS fk_person1_mottaker,
@@ -65,6 +67,7 @@ SELECT
     CASE WHEN fk_person1_mottaker = -1 THEN FNR_MOTTAKER ELSE NULL END AS FNR_MOTTAKER,
     CASE WHEN fk_person1_pliktig = -1 THEN pliktig ELSE NULL END AS pliktig,
     CASE WHEN historisk_vedtak = 'true' THEN 1 ELSE 0 END AS historisk_vedtak,
+    CASE WHEN innkreving_flagg = 'true' THEN 1 ELSE 0 END AS innkreving_flagg,
     fk_bb_meta_data,
     localtimestamp AS lastet_dato
 FROM final
