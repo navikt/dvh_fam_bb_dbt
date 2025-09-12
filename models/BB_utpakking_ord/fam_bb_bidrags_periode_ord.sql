@@ -33,6 +33,8 @@ pre_final as (
                    ,samvaersklasse              varchar2(255) path '$.samværsklasse'
                    ,bps_andel_underholdskostnad number(18,2)  path '$.bpsAndelUnderholdskostnad'
                    ,bpbor_med_andre_voksne      varchar2(255) path '$.bpborMedAndreVoksne'
+                   ,netto_tilsynsutgift         number(18,2)  path '$.nettoTilsynsutgift'
+                   ,faktisk_tilsynutgift       number(18,2)  path '$.faktiskUtgift'
                    ))
         ) j
     where periode_fra is not null
@@ -40,30 +42,32 @@ pre_final as (
 ),
 
 final as (
-    select
-        to_date(periode_fra,'yyyy-mm-dd') as periode_fra
-       ,to_date(periode_til,'yyyy-mm-dd') as periode_til
-       ,belop
-       ,resultat
-       ,bidragsevne
-       ,underholdskostnad
-       ,samvaersfradrag
-       ,netto_barnetillegg_bp
-       ,netto_barnetillegg_bm
-       ,samvaersklasse
-       ,bps_andel_underholdskostnad
-       ,case
-           when bpbor_med_andre_voksne = 'true' then '1'
-           when bpbor_med_andre_voksne = 'false' then '0'
-           else bpbor_med_andre_voksne  
-        end bpbor_med_andre_voksne
-       ,pre_final.kafka_offset
-       ,bb_fagsak.pk_bb_fagsak as fk_bb_fagsak
-    from pre_final
-    join bb_fagsak
-    on pre_final.kafka_offset = bb_fagsak.kafka_offset
-    and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
-)
+  select
+     to_date(PERIODE_FRA,'yyyy-mm-dd') as PERIODE_FRA
+    ,to_date(PERIODE_TIL,'yyyy-mm-dd') as PERIODE_TIL
+    ,BELOP
+    ,RESULTAT
+    ,BIDRAGSEVNE
+    ,UNDERHOLDSKOSTNAD
+    ,SAMVAERSFRADRAG
+    ,NETTO_BARNETILLEGG_BP
+    ,NETTO_BARNETILLEGG_BM
+    ,netto_tilsynsutgift
+    ,faktisk_tilsynutgift 
+    ,SAMVAESKLASSE
+    ,BPS_ANDEL_UNDERHOLDSKOSTNAD
+    ,CASE
+        WHEN BPBOR_MED_ANDRE_VOKSNE = 'true' THEN '1'
+        WHEN BPBOR_MED_ANDRE_VOKSNE = 'false' THEN '0'
+        ELSE BPBOR_MED_ANDRE_VOKSNE  
+    END BPBOR_MED_ANDRE_VOKSNE
+    ,pre_final.kafka_offset
+    ,bb_fagsak.pk_bb_fagsak as fk_bb_fagsak
+  from pre_final
+  join bb_fagsak
+  on pre_final.kafka_offset = bb_fagsak.kafka_offset
+  and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
+) 
 
 select dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_bidrags_periode
     ,fk_bb_fagsak
@@ -74,6 +78,8 @@ select dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_bidrags_periode
     ,bidragsevne
     ,underholdskostnad
     ,samvaersfradrag
+    ,netto_tilsynsutgift
+    ,faktisk_tilsynutgift
     ,netto_barnetillegg_bp
     ,netto_barnetillegg_bm
     ,samvaersklasse
