@@ -5,65 +5,67 @@
 }}
 
 with bb_meta_data as (
-  select * from {{ref ('bb_meldinger_til_aa_pakke_ut')}}
+    select * from {{ref ('bb_meldinger_til_aa_pakke_ut')}}
 ),
 
 bb_fagsak as (
-  select VEDTAKS_ID, pk_bb_fagsak, kafka_offset from {{ref ('fam_bb_fagsak')}}
+    select vedtaks_id, pk_bb_fagsak, kafka_offset
+    from {{ref ('fam_bb_fagsak')}}
 ),
 
 pre_final as (
-select * from bb_meta_data,
-  json_table(melding, '$'
-    COLUMNS (
-            VEDTAKS_ID    VARCHAR2 PATH '$.vedtaksid',
-        NESTED PATH '$.forskuddPeriodeListe[*]'
-        COLUMNS (
-           PERIODE_FRA VARCHAR2 PATH '$.periodeFra'
-          ,PERIODE_TIL VARCHAR2 PATH '$.periodeTil'
-          ,BELOP VARCHAR2 PATH '$.beløp'
-          ,RESULTAT VARCHAR2 PATH '$.resultat'
-          ,BARNETS_ALDERS_GRUPPE VARCHAR2 PATH '$.barnetsAldersgruppe'
-          ,ANTALL_BARN_I_EGEN_HUSSTAND VARCHAR2 PATH '$.antallBarnIEgenHusstand'
-          ,SIVILSTAND VARCHAR2 PATH '$.sivilstand'
-          ,BARN_BOR_MED_BM VARCHAR2 PATH '$.barnBorMedBM'
-         ))
+    select *
+    from bb_meta_data
+        ,json_table(melding, '$'
+            columns (
+                vedtaks_id varchar2(255) path '$.vedtaksid',
+                nested path '$.forskuddPeriodeListe[*]'
+                columns (
+                    periode_fra                 varchar2(255) path '$.periodeFra'
+                   ,periode_til                 varchar2(255) path '$.periodeTil'
+                   ,belop                       varchar2(255) path '$.beløp'
+                   ,resultat                    varchar2(255) path '$.resultat'
+                   ,barnets_alders_gruppe       varchar2(255) path '$.barnetsAldersgruppe'
+                   ,antall_barn_i_egen_husstand varchar2(255) path '$.antallBarnIEgenHusstand'
+                   ,sivilstand                  varchar2(255) path '$.sivilstand'
+                   ,barn_bor_med_bm             varchar2(255) path '$.barnBorMedBM'
+                   ))
         ) j
     where json_value (melding, '$.forskuddPeriodeListe.size()' ) > 0
 ),
 
 final as (
-  select
-     to_date(PERIODE_FRA,'yyyy-mm-dd') as PERIODE_FRA
-    ,to_date(PERIODE_TIL,'yyyy-mm-dd') as PERIODE_TIL
-    ,BELOP
-    ,RESULTAT
-    ,BARNETS_ALDERS_GRUPPE
-    ,ANTALL_BARN_I_EGEN_HUSSTAND
-    ,SIVILSTAND
-    ,CASE
-        WHEN BARN_BOR_MED_BM = 'true' THEN '1'
-        WHEN BARN_BOR_MED_BM = 'false' THEN '0'
-        ELSE BARN_BOR_MED_BM  
-    END BARN_BOR_MED_BM
-    ,pre_final.kafka_offset
-    ,bb_fagsak.pk_bb_fagsak as fk_bb_fagsak
-  from pre_final
-  join bb_fagsak
-  on pre_final.kafka_offset = bb_fagsak.kafka_offset
-  and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
+    select
+        to_date(periode_fra,'yyyy-mm-dd') as periode_fra
+       ,to_date(periode_til,'yyyy-mm-dd') as periode_til
+       ,belop
+       ,resultat
+       ,barnets_alders_gruppe
+       ,antall_barn_i_egen_husstand
+       ,sivilstand
+       ,case
+           when barn_bor_med_bm = 'true' then '1'
+           when barn_bor_med_bm = 'false' then '0'
+           else barn_bor_med_bm  
+        end barn_bor_med_bm
+       ,pre_final.kafka_offset
+       ,bb_fagsak.pk_bb_fagsak as fk_bb_fagsak
+    from pre_final
+    join bb_fagsak
+    on pre_final.kafka_offset = bb_fagsak.kafka_offset
+    and pre_final.vedtaks_id = bb_fagsak.vedtaks_id
 )
 
-select dvh_fam_bb.DVH_FAMBB_KAFKA.nextval as PK_BB_FORSKUDDS_PERIODE
+select dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_forskudds_periode
     ,fk_bb_fagsak
-    ,PERIODE_FRA
-    ,PERIODE_TIL
-    ,BELOP
-    ,RESULTAT
-    ,BARNETS_ALDERS_GRUPPE
-    ,ANTALL_BARN_I_EGEN_HUSSTAND
-    ,SIVILSTAND
-    ,BARN_BOR_MED_BM
+    ,periode_fra
+    ,periode_til
+    ,belop
+    ,resultat
+    ,barnets_alders_gruppe
+    ,antall_barn_i_egen_husstand
+    ,sivilstand
+    ,barn_bor_med_bm
     ,kafka_offset
     ,localtimestamp as lastet_dato
 from final

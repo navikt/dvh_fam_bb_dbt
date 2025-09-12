@@ -137,7 +137,11 @@ periode_uten_opphort as (
         ,'{{ var ("periode_type") }}' periode_type --Input periode_type
         ,dim_kravhaver.pk_dim_person as fk_dim_person_kravhaver
         ,floor(months_between(vedtak.siste_dato_i_perioden, dim_kravhaver.fodt_dato)/12) alder_kravhaver
-        ,dim_kravhaver.kjonn_nr kjonn_kravhaver
+        ,case 
+            when dim_kravhaver.kjonn_nr = 1 then 'M'
+            when dim_kravhaver.kjonn_nr = 0 then 'K'
+            else 'U'
+        end kjonn_kravhaver 
         ,dim_mottaker.pk_dim_person as fk_dim_person_mottaker
         ,dim_mottaker.bosted_kommune_nr as bosted_kommune_nr_mottaker
         ,dim_mottaker.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_mottaker

@@ -56,6 +56,8 @@ sources:
       - name: fam_bb_fagsak_ord
         description: 'inneholder vedtaksinformasjon for bidrga biten'
       - name: fam_bb_forskudds_periode
+      - name: fam_bb_bidrags_periode_ord
+      - name: fam_bb_inntekts_liste_ord
       - name: STG_FAM_BB_BARN_BIS
       - name: STG_FAM_BB_MOTTAKER_BIS      
       - name: STG_FAM_BB_PLIKTIGE_BIS
