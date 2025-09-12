@@ -21,6 +21,7 @@ select * from bb_meta_data,
           ,fnr_mottaker       varchar2(255) path '$.mottaker'
           ,historisk_vedtak   varchar2(255) path '$.historiskVedtak'
           ,innkreving_flagg   varchar2(255) path '$.innkreving'
+          ,stonadstype        varchar2(255) path '$.stønadstype'
           )
         ) j 
 ),
@@ -34,6 +35,7 @@ final as (
         p.fnr_kravhaver,
         p.fnr_mottaker,
         p.innkreving_flagg,
+        p.stonadstype,
         p.pk_bb_meta_data as fk_bb_meta_data,
         p.vedtakstidspunkt,
         p.historisk_vedtak,
@@ -60,6 +62,7 @@ select
     kafka_offset,
     vedtakstidspunkt,
     saksnr,
+    stonadstype,
     fk_person1_kravhaver,
     fk_person1_mottaker,
     fk_person1_skyldner,
