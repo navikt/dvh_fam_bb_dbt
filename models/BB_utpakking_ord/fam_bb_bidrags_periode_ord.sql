@@ -33,6 +33,8 @@ pre_final as (
                    ,samvaersklasse              varchar2(255) path '$.samværsklasse'
                    ,bps_andel_underholdskostnad number(18,2)  path '$.bpsAndelUnderholdskostnad'
                    ,bpbor_med_andre_voksne      varchar2(255) path '$.bpborMedAndreVoksne'
+                   ,netto_tilsynsutgift         number(18,2)  path '$.nettoTilsynsutgift'
+                   ,faktisk_tilsynutgift       number(18,2)  path '$.faktiskUtgift'
                    ))
         ) j
     where periode_fra is not null
@@ -76,6 +78,8 @@ select dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_bidrags_periode
     ,bidragsevne
     ,underholdskostnad
     ,samvaersfradrag
+    ,netto_tilsynsutgift
+    ,faktisk_tilsynutgift
     ,netto_barnetillegg_bp
     ,netto_barnetillegg_bm
     ,samvaersklasse
