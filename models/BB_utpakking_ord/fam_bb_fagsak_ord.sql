@@ -9,20 +9,20 @@ with bb_meta_data as (
 ),
 
 pre_final as (
-    select *
-    from bb_meta_data
-        ,json_table(melding, '$'
-            columns (
-                vedtaks_id       varchar2(255) path '$.vedtaksid'
-               ,vedtakstidspunkt timestamp(9)  path '$.vedtakstidspunkt'
-               ,behandlings_type             varchar2(255) path '$.type'
-               ,saksnr           varchar2(255) path '$.saksnr'
-               ,fnr_skyldner     varchar2(255) path '$.skyldner'
-               ,fnr_kravhaver    varchar2(255) path '$.kravhaver'
-               ,fnr_mottaker     varchar2(255) path '$.mottaker'
-               ,historisk_vedtak varchar2(255) path '$.historiskVedtak'
-               )
-        ) j
+select * from bb_meta_data,
+  json_table(melding, '$'
+    COLUMNS (
+          VEDTAKS_ID          VARCHAR2 PATH '$.vedtaksid'
+          ,VEDTAKSTIDSPUNKT   timestamp PATH '$.vedtakstidspunkt'
+          ,type               VARCHAR2 PATH '$.type'
+          ,saksnr             VARCHAR2 PATH '$.saksnr'
+          ,pliktig            VARCHAR2 PATH '$.skyldner'
+          ,FNR_KRAVHAVER      VARCHAR2 PATH '$.kravhaver'
+          ,FNR_MOTTAKER       VARCHAR2 PATH '$.mottaker'
+          ,historisk_vedtak   VARCHAR2 PATH '$.historiskVedtak'
+          ,innkreving_flagg   VARCHAR2 PATH '$.innkreving'
+          )
+        ) j 
 ),
 
 final as (
