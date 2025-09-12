@@ -54,7 +54,7 @@ final as (
     ,NETTO_BARNETILLEGG_BM
     ,netto_tilsynsutgift
     ,faktisk_tilsynutgift 
-    ,SAMVAESKLASSE
+    ,samvaersklasse
     ,BPS_ANDEL_UNDERHOLDSKOSTNAD
     ,CASE
         WHEN BPBOR_MED_ANDRE_VOKSNE = 'true' THEN '1'
