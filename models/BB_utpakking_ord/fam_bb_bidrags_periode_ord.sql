@@ -35,6 +35,7 @@ pre_final as (
                    ,bpbor_med_andre_voksne      varchar2(255) path '$.bpborMedAndreVoksne'
                    ,netto_tilsynsutgift         number(18,2)  path '$.nettoTilsynsutgift'
                    ,faktisk_tilsynsutgift       number(18,2)  path '$.faktiskUtgift'
+                   ,valutakode                  varchar2(255)  path '$.nettoBarnetilleggBM'
                    ))
         ) j
     where periode_fra is not null
@@ -55,6 +56,7 @@ final as (
     ,netto_tilsynsutgift
     ,faktisk_tilsynsutgift 
     ,samvaersklasse
+    ,valutakode
     ,BPS_ANDEL_UNDERHOLDSKOSTNAD
     ,CASE
         WHEN BPBOR_MED_ANDRE_VOKSNE = 'true' THEN '1'
@@ -75,6 +77,7 @@ select dvh_fam_bb.dvh_fambb_kafka.nextval as pk_bb_bidrags_periode
     ,periode_til
     ,belop
     ,resultat
+    ,valutakode
     ,bidragsevne
     ,underholdskostnad
     ,samvaersfradrag
