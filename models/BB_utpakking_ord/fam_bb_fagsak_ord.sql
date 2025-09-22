@@ -9,20 +9,21 @@ with bb_meta_data as (
 ),
 
 pre_final as (
-    select *
-    from bb_meta_data
-        ,json_table(melding, '$'
-            columns (
-                vedtaks_id       varchar2(255) path '$.vedtaksid'
-               ,vedtakstidspunkt timestamp(9)  path '$.vedtakstidspunkt'
-               ,behandlings_type             varchar2(255) path '$.type'
-               ,saksnr           varchar2(255) path '$.saksnr'
-               ,fnr_skyldner     varchar2(255) path '$.skyldner'
-               ,fnr_kravhaver    varchar2(255) path '$.kravhaver'
-               ,fnr_mottaker     varchar2(255) path '$.mottaker'
-               ,historisk_vedtak varchar2(255) path '$.historiskVedtak'
-               )
-        ) j
+select * from bb_meta_data,
+  json_table(melding, '$'
+    COLUMNS (
+          vedtaks_id          varchar2(255) path '$.vedtaksid'
+          ,vedtakstidspunkt   timestamp(9)  path '$.vedtakstidspunkt'
+          ,behandlings_type   varchar2(255) path '$.type'
+          ,saksnr             varchar2(255) path '$.saksnr'
+          ,fnr_skyldner       varchar2(255) path '$.skyldner'
+          ,fnr_kravhaver      varchar2(255) path '$.kravhaver'
+          ,fnr_mottaker       varchar2(255) path '$.mottaker'
+          ,historisk_vedtak   varchar2(255) path '$.historiskVedtak'
+          ,innkreving_flagg   varchar2(255) path '$.innkreving'
+          ,stonadstype        varchar2(255) path '$.stønadstype'
+          )
+        ) j 
 ),
 
 final as (
@@ -33,6 +34,8 @@ final as (
         p.saksnr,
         p.fnr_kravhaver,
         p.fnr_mottaker,
+        p.innkreving_flagg,
+        p.stonadstype,
         p.pk_bb_meta_data as fk_bb_meta_data,
         p.vedtakstidspunkt,
         p.historisk_vedtak,
@@ -59,6 +62,7 @@ select
     kafka_offset,
     vedtakstidspunkt,
     saksnr,
+    stonadstype,
     fk_person1_kravhaver,
     fk_person1_mottaker,
     fk_person1_skyldner,
@@ -66,6 +70,7 @@ select
     case when fk_person1_mottaker = -1 then fnr_mottaker else null end as fnr_mottaker,
     case when fk_person1_skyldner = -1 then fnr_skyldner else null end as fnr_skyldner,
     case when historisk_vedtak = 'true' then 1 else 0 end as historisk_vedtak,
+    case when innkreving_flagg = 'true' then 1 else 0 end as innkreving_flagg,
     fk_bb_meta_data,
     localtimestamp as lastet_dato
 from final
