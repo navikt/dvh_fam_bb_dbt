@@ -35,7 +35,7 @@ pre_final as (
                    ,bpbor_med_andre_voksne      varchar2(255) path '$.bpborMedAndreVoksne'
                    ,netto_tilsynsutgift         number(18,2)  path '$.nettoTilsynsutgift'
                    ,faktisk_tilsynsutgift       number(18,2)  path '$.faktiskUtgift'
-                   ,valutakode                  varchar2(255)  path '$.nettoBarnetilleggBM'
+                   ,valutakode                  varchar2(255)  path '$.valutakode'
                    ))
         ) j
     where periode_fra is not null
