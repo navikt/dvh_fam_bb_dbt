@@ -82,6 +82,7 @@ siste as (
 opphor_fra as (
 
       select fagsak.fk_person1_kravhaver, fagsak.saksnr, fagsak.vedtakstidspunkt
+      ,fagsak.stonadstype
       ,min(periode.periode_fra) periode_fra_opphor
       from {{ source ('fam_bb', 'fam_bb_fagsak_ord') }} fagsak 
 
@@ -92,7 +93,7 @@ opphor_fra as (
       where fagsak.behandlings_type not in ('ENDRING_MOTTAKER')
       and trunc(fagsak.vedtakstidspunkt, 'dd') <= TO_DATE('{{ var ("max_vedtaksdato") }}', 'yyyymmdd')--Begrense max_vedtaksdato på dag nivå
 
-      group by fagsak.fk_person1_kravhaver, fagsak.saksnr, fagsak.vedtakstidspunkt
+      group by fagsak.fk_person1_kravhaver, fagsak.saksnr, fagsak.vedtakstidspunkt, fagsak.stonadstype
 ),
 
 siste_opphør as (
@@ -104,6 +105,7 @@ siste_opphør as (
     and opphor_fra.saksnr = siste.saksnr
 
     and opphor_fra.vedtakstidspunkt > siste.vedtakstidspunkt
+    and opphor_fra.stonadstype = siste.stonadstype
 ),
 
 opphor_hvis_finnes as
