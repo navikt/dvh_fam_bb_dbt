@@ -1,42 +1,44 @@
-inntekt as (
-    select  
-        fk_bb_bidrags_periode,
-        type_inntekt,
-        belop,
+with inntekt AS (
+    SELECT  
+        FK_BB_BIDRAGS_PERIODE,
+        TYPE_INNTEKT,
+        BELOP,
         flagg,
-        row_number() over (partition by fk_bb_bidrags_periode, flagg order by type_inntekt) as nr
-    from {{ source ('fam_bb', 'fam_bb_inntekts_liste_ord') }} 
+        ROW_NUMBER() OVER (PARTITION BY FK_BB_BIDRAGS_PERIODE, flagg ORDER BY TYPE_INNTEKT) AS NR
+    FROM {{ source ('fam_bb', 'fam_bb_inntekts_liste_ord') }}
 ),
 
 inntekts_typer as (
-select
-        fk_bb_bidrags_periode,
-        max(case when nr = 1 and flagg = 'P' then type_inntekt end) as p_type_inntekt_1,
-        max(case when nr = 1 and flagg = 'P' then belop end) as p_inntekt_1,
-        max(case when nr = 2 and flagg = 'P' then type_inntekt end) as p_type_inntekt_2,
-        max(case when nr = 2 and flagg = 'P' then belop end) as p_inntekt_2,
-        max(case when nr = 3 and flagg = 'P' then type_inntekt end) as p_type_inntekt_3,
-        max(case when nr = 3 and flagg = 'P' then belop end) as p_inntekt_3,
-        sum(case when flagg = 'P' then belop else 0 end) as p_inntekt_total,
-        max(case when flagg = 'P' then nr else 0 end) as p_antall_typer,
+SELECT
+        FK_BB_BIDRAGS_PERIODE,
+        MAX(CASE WHEN NR = 1 AND flagg = 'P' THEN TYPE_INNTEKT END) AS P_TYPE_INNTEKT_1,
+        MAX(CASE WHEN NR = 1 AND flagg = 'P' THEN BELOP END) AS P_INNTEKT_1,
+        MAX(CASE WHEN NR = 2 AND flagg = 'P' THEN TYPE_INNTEKT END) AS P_TYPE_INNTEKT_2,
+        MAX(CASE WHEN NR = 2 AND flagg = 'P' THEN BELOP END) AS P_INNTEKT_2,
+        MAX(CASE WHEN NR = 3 AND flagg = 'P' THEN TYPE_INNTEKT END) AS P_TYPE_INNTEKT_3,
+        MAX(CASE WHEN NR = 3 AND flagg = 'P' THEN BELOP END) AS P_INNTEKT_3,
+																			
+																		
         
-        max(case when nr = 1 and flagg = 'M' then type_inntekt end) as m_type_inntekt_1,
-        max(case when nr = 1 and flagg = 'M' then belop end) as m_inntekt_1,
-        max(case when nr = 2 and flagg = 'M' then type_inntekt end) as m_type_inntekt_2,
-        max(case when nr = 2 and flagg = 'M' then belop end) as m_inntekt_2,
-        max(case when nr = 3 and flagg = 'M' then type_inntekt end) as m_type_inntekt_3,
-        max(case when nr = 3 and flagg = 'M' then belop end) as m_inntekt_3,
-        max(case when nr = 4 and flagg = 'M' then type_inntekt end) as m_type_inntekt_4,
-        max(case when nr = 4 and flagg = 'M' then belop end) as m_inntekt_4,
-        max(case when nr = 5 and flagg = 'M' then type_inntekt end) as m_type_inntekt_5,
-        max(case when nr = 5 and flagg = 'M' then belop end) as m_inntekt_5,
-        max(case when nr = 5 and flagg = 'M' then type_inntekt end) as m_type_inntekt_6,
-        max(case when nr = 5 and flagg = 'M' then belop end) as m_inntekt_6,3
-        sum(case when flagg = 'M' then belop else 0 end) as m_inntekt_total,
-        max(case when flagg = 'M' then nr else 0 end) as m_antall_typer
+        MAX(CASE WHEN NR = 1 AND flagg = 'M' THEN TYPE_INNTEKT END) AS M_TYPE_INNTEKT_1,
+        MAX(CASE WHEN NR = 1 AND flagg = 'M' THEN BELOP END) AS M_INNTEKT_1,
+        MAX(CASE WHEN NR = 2 AND flagg = 'M' THEN TYPE_INNTEKT END) AS M_TYPE_INNTEKT_2,
+        MAX(CASE WHEN NR = 2 AND flagg = 'M' THEN BELOP END) AS M_INNTEKT_2,
+        MAX(CASE WHEN NR = 3 AND flagg = 'M' THEN TYPE_INNTEKT END) AS M_TYPE_INNTEKT_3,
+        MAX(CASE WHEN NR = 3 AND flagg = 'M' THEN BELOP END) AS M_INNTEKT_3,
+        MAX(CASE WHEN NR = 4 AND flagg = 'M' THEN TYPE_INNTEKT END) AS M_TYPE_INNTEKT_4,
+        MAX(CASE WHEN NR = 4 AND flagg = 'M' THEN BELOP END) AS M_INNTEKT_4,
+        MAX(CASE WHEN NR = 5 AND flagg = 'M' THEN TYPE_INNTEKT END) AS M_TYPE_INNTEKT_5,
+        MAX(CASE WHEN NR = 5 AND flagg = 'M' THEN BELOP END) AS M_INNTEKT_5,
 
-    from inntekt
-    group by fk_bb_bidrags_periode
+        SUM(CASE WHEN flagg = 'P' THEN BELOP ELSE 0 END) AS P_INNTEKT_TOTAL,
+        MAX(CASE WHEN flagg = 'P' THEN NR ELSE 0 END) AS P_ANTALL_TYPER,
+
+        SUM(CASE WHEN flagg = 'M' THEN BELOP ELSE 0 END) AS M_INNTEKT_TOTAL,
+        MAX(CASE WHEN flagg = 'M' THEN NR ELSE 0 END) AS M_ANTALL_TYPER
+
+    FROM INNTEKT
+    GROUP BY FK_BB_BIDRAGS_PERIODE
 )
 
 select * 
