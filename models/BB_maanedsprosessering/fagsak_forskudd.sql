@@ -1,7 +1,7 @@
 with tid as (
  
   select aar_maaned, siste_dato_i_perioden, aar, pk_dim_tid
-  from {{ source ('dt_kodeverk', 'dim_tid') }}
+  from {{ source ('kode_verk', 'dim_tid') }}
   where gyldig_flagg = 1
   and dim_nivaa = 3
 
