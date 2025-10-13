@@ -102,54 +102,56 @@ opphor_hvis_finnes as
             ,resultat, barnets_alders_gruppe, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
             ,forste_vedtakstidspunkt
 ),
---Hent ut inntektsliste fra siste versjon som har den. inntekt_versjon=1
---Dette kan være en eldre versjon enn siste, og derfor blir fagsak koblet opp, ikke siste. Fagsak har alle versjoner.
-siste_inntekt as (
-    select fagsak.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr
-          ,max(inntekt.fk_bb_forskudds_periode) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) inntekt_fk_bb_forskudds_periode
-          ,max(fagsak.resultat) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) siste_inntekt_resultat
-          ,max(fagsak.barnets_alders_gruppe) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) siste_inntekt_barnets_alders_gruppe
-          ,max(fagsak.antall_barn_i_egen_husstand) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) siste_inntekt_antall_barn_i_egen_husstand
-          ,max(fagsak.sivilstand) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) siste_inntekt_sivilstand
-          ,max(fagsak.barn_bor_med_bm) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) siste_inntekt_barn_bor_med_bm
-          ,max(fagsak.vedtakstidspunkt) siste_inntekt_vedtakstidspunkt
+--Hent ut inntekt for aktuell fagsak
+--Det kan hende at siste versjon av vedtaket ikke har inntektsliste, derfor blir fagsak(inneholder alle versjoner) koblet opp, ikke siste(av vedtaket)
+inntekt as (
+    select fagsak.*
+          ,inntekt.fk_bb_forskudds_periode
+          ,inntekt.type_inntekt, inntekt.belop
     from fagsak
     join {{ source ('fam_bb_forskudd_maaned', 'fam_bb_inntekt') }} inntekt
     on fagsak.pk_bb_forskudds_periode = inntekt.fk_bb_forskudds_periode
-    group by fagsak.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr
+),
+--Hent ut siste versjon av inntektsliste
+siste_inntekt as (
+    select aar_maaned, fk_person1_kravhaver, saksnr
+          ,max(fk_bb_forskudds_periode) (order by vedtakstidspunkt desc) inntekt_fk_bb_forskudds_periode --Versjonen som er fra siste vedtakstidspunkt
+    from inntekt
+    group by aar_maaned, fk_person1_kravhaver, saksnr
+),
+--Inner join brukes for å beholde kun siste versjon av inntektsliste
+--En periode kan ha flere typer av inntekt. Hent ut alle typer med sortert row_number.
+inntekt_detalj as (
+    select inntekt.*
+          ,row_number() over (partition by pk_bb_forskudds_periode order by type_inntekt desc) nr --Inntektstype-sortering fra en bestemt versjon, og UTVIDET_BARNETRYGD0 har høy prioritering
+    from inntekt
+    join siste_inntekt
+    on inntekt.pk_bb_forskudds_periode = siste_inntekt.inntekt_fk_bb_forskudds_periode
 )
 ,
-inntekt as (
-    select siste_inntekt.*
-          ,inntekt.type_inntekt, inntekt.belop
-          ,row_number() over (partition by inntekt.fk_bb_forskudds_periode order by inntekt.type_inntekt desc) nr --Inntektstype-sortering fra en bestemt versjon, og UTVIDET_BARNETRYGD0 har høy prioritering
-    from siste_inntekt
-    join fam_bb_inntekt inntekt
-    on siste_inntekt.inntekt_fk_bb_forskudds_periode = inntekt.fk_bb_forskudds_periode
-)
-,
---Pivotere ut inntekter til en linje per aar_maaned, fk_person1_kravhaver ,saksnr
+--Pivotere ut inntekter til en linje per aar_maaned, fk_person1_kravhaver, saksnr
 inntekts_typer as (
     select  
-        aar_maaned, fk_person1_kravhaver, saksnr, siste_inntekt_vedtakstidspunkt
-       ,siste_inntekt_resultat, siste_inntekt_barnets_alders_gruppe
-       ,siste_inntekt_antall_barn_i_egen_husstand
-       ,siste_inntekt_sivilstand, siste_inntekt_barn_bor_med_bm,
-        max(case when nr=1 then type_inntekt end) type_inntekt_1,
-        max(case when nr=1 then belop end) inntekt_1,
-        max(case when nr=2 then type_inntekt end) type_inntekt_2,
-        max(case when nr=2 then belop end) inntekt_2,
-        max(case when nr=3 then type_inntekt end) type_inntekt_3,
-        max(case when nr=3 then belop end) inntekt_3,
-        max(case when nr=4 then type_inntekt end) type_inntekt_4,
-        max(case when nr=4 then belop end) inntekt_4,
-        sum(belop) inntekt_total,
-        count(distinct type_inntekt) antall_inntekts_typer
-    from inntekt
-    group by aar_maaned, fk_person1_kravhaver, saksnr, siste_inntekt_vedtakstidspunkt
-            ,siste_inntekt_resultat, siste_inntekt_barnets_alders_gruppe
-            ,siste_inntekt_antall_barn_i_egen_husstand
-            ,siste_inntekt_sivilstand, siste_inntekt_barn_bor_med_bm
+        aar_maaned, fk_person1_kravhaver, saksnr
+       ,vedtakstidspunkt as siste_inntekt_vedtakstidspunkt
+       ,resultat as siste_inntekt_resultat, barnets_alders_gruppe as siste_inntekt_barnets_alders_gruppe
+       ,antall_barn_i_egen_husstand as siste_inntekt_antall_barn_i_egen_husstand
+       ,sivilstand as siste_inntekt_sivilstand, barn_bor_med_bm as siste_inntekt_barn_bor_med_bm
+       ,max(case when nr=1 then type_inntekt end) type_inntekt_1
+       ,max(case when nr=1 then belop end) inntekt_1
+       ,max(case when nr=2 then type_inntekt end) type_inntekt_2
+       ,max(case when nr=2 then belop end) inntekt_2
+       ,max(case when nr=3 then type_inntekt end) type_inntekt_3
+       ,max(case when nr=3 then belop end) inntekt_3
+       ,max(case when nr=4 then type_inntekt end) type_inntekt_4
+       ,max(case when nr=4 then belop end) inntekt_4
+       ,sum(belop) inntekt_total
+       ,count(distinct type_inntekt) antall_inntekts_typer
+    from inntekt_detalj
+    group by aar_maaned, fk_person1_kravhaver, saksnr
+            ,resultat, barnets_alders_gruppe, antall_barn_i_egen_husstand
+            ,sivilstand, barn_bor_med_bm
+            ,vedtakstidspunkt
 )
 ,
 
