@@ -36,9 +36,9 @@ fagsak as (
                            order by fagsak.vedtakstidspunkt desc
                           ) nr,
         min(fagsak.vedtakstidspunkt) over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr) forste_vedtakstidspunkt           
-    from {{ source ('fam_bb', 'fam_bb_fagsak') }} fagsak
+    from {{ source ('fam_bb_forskudd_maaned', 'fam_bb_fagsak') }} fagsak
  
-    join {{ source ('fam_bb', 'fam_bb_forskudds_periode') }} periode
+    join {{ source ('fam_bb_forskudd_maaned', 'fam_bb_forskudds_periode') }} periode
     on fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
     and periode.belop > 0
  
@@ -59,9 +59,9 @@ siste as (
 opphor_fra as (
     select fagsak.fk_person1_kravhaver, fagsak.saksnr, fagsak.vedtakstidspunkt
           ,min(periode.periode_fra) periode_fra_opphor
-    from {{ source ('fam_bb', 'fam_bb_fagsak') }} fagsak 
+    from {{ source ('fam_bb_forskudd_maaned', 'fam_bb_fagsak') }} fagsak 
 
-    join {{ source ('fam_bb', 'fam_bb_forskudds_periode') }} periode
+    join {{ source ('fam_bb_forskudd_maaned', 'fam_bb_forskudds_periode') }} periode
     on fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
     and periode.belop is null
 
@@ -111,7 +111,7 @@ siste_inntekt as (
           ,max(fagsak.barn_bor_med_bm) keep (dense_rank first order by fagsak.vedtakstidspunkt desc) siste_inntekt_barn_bor_med_bm
           ,max(fagsak.vedtakstidspunkt) siste_inntekt_vedtakstidspunkt
     from fagsak
-    join {{ source ('fam_bb', 'fam_bb_inntekt') }} inntekt
+    join {{ source ('fam_bb_forskudd_maaned', 'fam_bb_inntekt') }} inntekt
     on fagsak.pk_bb_forskudds_periode = inntekt.fk_bb_forskudds_periode
     group by fagsak.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr
 )
@@ -191,12 +191,12 @@ periode_uten_opphort as (
           ,forste_vedtakstidspunkt
     from opphor_hvis_finnes vedtak
    
-    left join dt_person.dim_person dim_kravhaver
+    left join {{ source ('dt_person', 'dim_person') }} dim_kravhaver
     on dim_kravhaver.fk_person1 = vedtak.fk_person1_kravhaver
     and vedtak.fk_person1_kravhaver != -1
     and vedtak.siste_dato_i_perioden between dim_kravhaver.gyldig_fra_dato and dim_kravhaver.gyldig_til_dato
    
-    left join dt_person.dim_person dim_mottaker
+    left join {{ source ('dt_person', 'dim_person') }} dim_mottaker
     on dim_mottaker.fk_person1 = vedtak.fk_person1_mottaker
     and vedtak.fk_person1_mottaker != -1
     and vedtak.siste_dato_i_perioden between dim_mottaker.gyldig_fra_dato and dim_mottaker.gyldig_til_dato
