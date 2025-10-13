@@ -10,3 +10,9 @@ sources:
         descripion: 'Inneholder periodisk info for forskudd.'
       - name: fam_bb_inntekt
         descripion: 'Inneholder periodisk inntekts info for forskudd.'
+
+  - name: dt_person
+    schema: dt_person
+    tables:
+      - name: dim_person
+        descripion: 'Dimensjonstabell i datavarehus.'
