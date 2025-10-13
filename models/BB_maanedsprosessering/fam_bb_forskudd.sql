@@ -155,10 +155,10 @@ inntekts_typer as (
 
 periode_uten_opphort as (
  
-    select aar_maaned, fk_person1_kravhaver, fk_person1_mottaker, vedtakstidspunkt
-          ,pk_bb_fagsak as fk_bb_fagsak, saksnr
-          ,vedtaks_id, behandlings_type, pk_bb_forskudds_periode as fk_bb_forskudds_periode
-          ,periode_fra, periode_til, belop
+    select vedtak.aar_maaned, vedtak.fk_person1_kravhaver, vedtak.fk_person1_mottaker, vedtak.vedtakstidspunkt
+          ,vedtak.pk_bb_fagsak as fk_bb_fagsak, vedtak.saksnr
+          ,vedtak.vedtaks_id, vedtak.behandlings_type, vedtak.pk_bb_forskudds_periode as fk_bb_forskudds_periode
+          ,vedtak.periode_fra, vedtak.periode_til, vedtak.belop
           --Hent ut resultat, barnets_alders_gruppe, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
           --fra siste versjon av inntekt. Hvis inntekt ikke finnes, returneres disse feltene fra siste versjon av vedtaket
           ,inntekts_typer.siste_inntekt_vedtakstidspunkt
@@ -168,10 +168,10 @@ periode_uten_opphort as (
           ,nvl(inntekts_typer.siste_inntekt_sivilstand, vedtak.sivilstand) as sivilstand
           ,nvl(inntekts_typer.siste_inntekt_barn_bor_med_bm, vedtak.barn_bor_med_bm) as barn_bor_med_bm
           --
-          ,periode_fra_opphor, aar
+          ,vedtak.periode_fra_opphor, vedtak.aar
           --,TO_DATE(TO_CHAR(LAST_DAY(SYSDATE), 'YYYYMMDD'), 'YYYYMMDD') MAX_VEDTAKSDATO --Input max_vedtaksdato
           ,to_date('{{ var ("max_vedtaksdato") }}', 'yyyymmdd') max_vedtaksdato
-          ,fk_dim_tid_mnd
+          ,vedtak.fk_dim_tid_mnd
           ,'{{ var ("periode_type") }}' periode_type --Input periode_type
           ,dim_kravhaver.pk_dim_person as fk_dim_person_kravhaver
           ,floor(months_between(vedtak.siste_dato_i_perioden, dim_kravhaver.fodt_dato)/12) alder_kravhaver
@@ -191,7 +191,7 @@ periode_uten_opphort as (
           ,inntekts_typer.inntekt_4
           ,'{{ var ("gyldig_flagg") }}' as gyldig_flagg --Input gyldig_flagg
           ,localtimestamp as lastet_dato
-          ,forste_vedtakstidspunkt
+          ,vedtak.forste_vedtakstidspunkt
     from opphor_hvis_finnes vedtak
    
     left join {{ source ('dt_person', 'dim_person') }} dim_kravhaver
