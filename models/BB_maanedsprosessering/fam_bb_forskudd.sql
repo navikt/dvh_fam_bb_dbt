@@ -185,7 +185,7 @@ periode_uten_opphort as (
           ,dim_mottaker.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_mottaker
           ,dim_mottaker.fk_dim_geografi_bosted as fk_dim_geografi_bosted_mottaker
           ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
-          ,inntekts_typer.inntekt_total, inntekts_typer.antall_inttekts_typer, inntekts_typer.type_inntekt_1
+          ,inntekts_typer.inntekt_total, inntekts_typer.antall_inntekts_typer, inntekts_typer.type_inntekt_1
           ,inntekts_typer.inntekt_1, inntekts_typer.type_inntekt_2, inntekts_typer.inntekt_2
           ,inntekts_typer.type_inntekt_3, inntekts_typer.inntekt_3, inntekts_typer.type_inntekt_4
           ,inntekts_typer.inntekt_4
