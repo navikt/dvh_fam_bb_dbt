@@ -36,7 +36,7 @@ fagsak as (
         tid.aar, 
         tid.pk_dim_tid as fk_dim_tid_mnd,
         row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr 
-                           order by fagsak.vedtakstidspunkt desc
+                           order by fagsak.vedtakstidspunkt desc, fagsak.vedtaks_id desc
                           ) nr,
         min(fagsak.vedtakstidspunkt) over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr) forste_vedtakstidspunkt           
     from {{ source ('fam_bb_forskudd_maaned', 'fam_bb_fagsak') }} fagsak
