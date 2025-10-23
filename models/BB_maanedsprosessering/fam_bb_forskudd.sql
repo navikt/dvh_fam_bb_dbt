@@ -222,7 +222,7 @@ select
    ,fk_dim_tid_mnd, periode_type, fk_dim_person_kravhaver, alder_kravhaver, fk_dim_person_mottaker
    ,case when bosted_kommune_nr_mottaker like '%-%' then '9999'
          else bosted_kommune_nr_mottaker
-    end
+    end --Sett verdi til 9999 som betyr ukjent etter avtale med Kumar
    ,fk_dim_land_statsborgerskap_mottaker, fk_dim_geografi_bosted_mottaker
    ,alder_mottaker, inntekt_total, antall_inntekts_typer, gyldig_flagg, lastet_dato, inntekt_1, inntekt_2, inntekt_3, inntekt_4
    ,saksnr, behandlings_type, resultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
