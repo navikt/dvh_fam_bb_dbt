@@ -183,7 +183,9 @@ periode_uten_opphort as (
               else 'U'
           end kjonn_kravhaver 
           ,dim_mottaker.pk_dim_person as fk_dim_person_mottaker
-          ,dim_mottaker.bosted_kommune_nr as bosted_kommune_nr_mottaker
+          ,case when dim_mottaker.bosted_kommune_nr like '%-%' then dim_mottaker.gt_verdi
+                else dim_mottaker.bosted_kommune_nr
+           end bosted_kommune_nr_mottaker
           ,dim_mottaker.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_mottaker
           ,dim_mottaker.fk_dim_geografi_bosted as fk_dim_geografi_bosted_mottaker
           ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
@@ -218,7 +220,10 @@ select
     aar_maaned, fk_person1_kravhaver, fk_person1_mottaker, vedtakstidspunkt, fk_bb_fagsak, vedtaks_id
    ,fk_bb_forskudds_periode, periode_fra, periode_til, belop, periode_fra_opphor, aar, max_vedtaksdato
    ,fk_dim_tid_mnd, periode_type, fk_dim_person_kravhaver, alder_kravhaver, fk_dim_person_mottaker
-   ,bosted_kommune_nr_mottaker, fk_dim_land_statsborgerskap_mottaker, fk_dim_geografi_bosted_mottaker
+   ,case when bosted_kommune_nr_mottaker like '%-%' then '9999'
+         else bosted_kommune_nr_mottaker
+    end
+   ,fk_dim_land_statsborgerskap_mottaker, fk_dim_geografi_bosted_mottaker
    ,alder_mottaker, inntekt_total, antall_inntekts_typer, gyldig_flagg, lastet_dato, inntekt_1, inntekt_2, inntekt_3, inntekt_4
    ,saksnr, behandlings_type, resultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
    ,kjonn_kravhaver, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
