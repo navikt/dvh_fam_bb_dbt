@@ -164,7 +164,7 @@ periode_uten_opphort as (
           --Hent ut resultat, barnets_alders_gruppe, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
           --fra siste versjon av inntekt. Hvis inntekt ikke finnes, returneres disse feltene fra siste versjon av vedtaket
           ,inntekts_typer.siste_inntekt_vedtakstidspunkt
-          ,nvl(inntekts_typer.siste_inntekt_resultat, vedtak.resultat) as resultat
+          ,nvl(vedtak.resultat, inntekts_typer.siste_inntekt_resultat) as resultat --Prioritere resultat fra siste versjon
           ,nvl(inntekts_typer.siste_inntekt_barnets_alders_gruppe, vedtak.barnets_alders_gruppe) as barnets_alders_gruppe
           ,nvl(inntekts_typer.siste_inntekt_antall_barn_i_egen_husstand, vedtak.antall_barn_i_egen_husstand) as antall_barn_i_egen_husstand
           ,nvl(inntekts_typer.siste_inntekt_sivilstand, vedtak.sivilstand) as sivilstand
