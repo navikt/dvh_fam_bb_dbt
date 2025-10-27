@@ -175,20 +175,29 @@ periode_uten_opphort as (
           ,to_date('{{ var ("max_vedtaksdato") }}', 'yyyymmdd') max_vedtaksdato
           ,vedtak.fk_dim_tid_mnd
           ,'{{ var ("periode_type") }}' periode_type --Input periode_type
+           --Dimensjonsinfo om kravhaver starter
           ,dim_kravhaver.pk_dim_person as fk_dim_person_kravhaver
           ,floor(months_between(vedtak.siste_dato_i_perioden, dim_kravhaver.fodt_dato)/12) alder_kravhaver
           ,case 
               when dim_kravhaver.kjonn_nr = 1 then 'M'
               when dim_kravhaver.kjonn_nr = 0 then 'K'
               else 'U'
-          end kjonn_kravhaver 
+          end kjonn_kravhaver
+          ,dim_kravhaver.bosted_kommune_nr as bosted_kommune_nr_kravhaver
+          ,dim_kravhaver.bosted_land as bosted_land_kravhaver
+          ,dim_kravhaver.gt_verdi as gt_verdi_kravhaver
+          ,dim_kravhaver.getitype as getitype_kravhaver
+           --Dimensjonsinfo om kravhaver slutter
+           --Dimensjonsinfo om mottaker starter
           ,dim_mottaker.pk_dim_person as fk_dim_person_mottaker
-          ,case when dim_mottaker.bosted_kommune_nr like '%-%' then dim_mottaker.gt_verdi
-                else dim_mottaker.bosted_kommune_nr
-           end bosted_kommune_nr_mottaker
+          ,dim_mottaker.bosted_kommune_nr as bosted_kommune_nr_mottaker
+          ,dim_mottaker.bosted_land as bosted_land_mottaker
+          ,dim_mottaker.gt_verdi as gt_verdi_mottaker
+          ,dim_mottaker.getitype as getitype_mottaker
           ,dim_mottaker.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_mottaker
           ,dim_mottaker.fk_dim_geografi_bosted as fk_dim_geografi_bosted_mottaker
           ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
+          --Dimensjonsinfo om mottaker slutter
           ,inntekts_typer.inntekt_total, inntekts_typer.antall_inntekts_typer, inntekts_typer.type_inntekt_1
           ,inntekts_typer.inntekt_1, inntekts_typer.type_inntekt_2, inntekts_typer.inntekt_2
           ,inntekts_typer.type_inntekt_3, inntekts_typer.inntekt_3, inntekts_typer.type_inntekt_4
@@ -216,16 +225,16 @@ periode_uten_opphort as (
     where siste_dato_i_perioden < nvl(periode_fra_opphor, siste_dato_i_perioden+1)
 )
 
-select 
-    aar_maaned, fk_person1_kravhaver, fk_person1_mottaker, vedtakstidspunkt, fk_bb_fagsak, vedtaks_id
-   ,fk_bb_forskudds_periode, periode_fra, periode_til, belop, periode_fra_opphor, aar, max_vedtaksdato
-   ,fk_dim_tid_mnd, periode_type, fk_dim_person_kravhaver, alder_kravhaver, fk_dim_person_mottaker
-   ,case when bosted_kommune_nr_mottaker like '%-%' then '9999'
-         else bosted_kommune_nr_mottaker
-    end bosted_kommune_nr_mottaker --Sett verdi til 9999 som betyr ukjent etter avtale med Kumar
-   ,fk_dim_land_statsborgerskap_mottaker, fk_dim_geografi_bosted_mottaker
-   ,alder_mottaker, inntekt_total, antall_inntekts_typer, gyldig_flagg, lastet_dato, inntekt_1, inntekt_2, inntekt_3, inntekt_4
-   ,saksnr, behandlings_type, resultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
+select
+    aar_maaned, fk_person1_kravhaver, fk_person1_mottaker, vedtakstidspunkt, fk_bb_fagsak
+   ,vedtaks_id, fk_bb_forskudds_periode, periode_fra, periode_til, belop, periode_fra_opphor
+   ,aar, max_vedtaksdato, fk_dim_tid_mnd, periode_type, fk_dim_person_kravhaver, alder_kravhaver
+   ,fk_dim_person_mottaker, bosted_kommune_nr_mottaker, fk_dim_land_statsborgerskap_mottaker
+   ,fk_dim_geografi_bosted_mottaker, alder_mottaker, inntekt_total, antall_inntekts_typer
+   ,gyldig_flagg, lastet_dato, inntekt_1, inntekt_2, inntekt_3, inntekt_4, saksnr, behandlings_type
+   ,esultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
    ,kjonn_kravhaver, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
-   ,siste_inntekt_vedtakstidspunkt, forste_vedtakstidspunkt
+   ,siste_inntekt_vedtakstidspunkt, forste_vedtakstidspunkt, bosted_land_mottaker
+   ,gt_verdi_mottaker, getitype_mottaker, bosted_land_kravhaver, gt_verdi_kravhaver
+   ,getitype_kravhaver, bosted_kommune_nr_kravhaver
 from periode_uten_opphort
