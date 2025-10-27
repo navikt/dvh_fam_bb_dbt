@@ -232,7 +232,7 @@ select
    ,fk_dim_person_mottaker, bosted_kommune_nr_mottaker, fk_dim_land_statsborgerskap_mottaker
    ,fk_dim_geografi_bosted_mottaker, alder_mottaker, inntekt_total, antall_inntekts_typer
    ,gyldig_flagg, lastet_dato, inntekt_1, inntekt_2, inntekt_3, inntekt_4, saksnr, behandlings_type
-   ,esultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
+   ,resultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
    ,kjonn_kravhaver, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
    ,siste_inntekt_vedtakstidspunkt, forste_vedtakstidspunkt, bosted_land_mottaker
    ,gt_verdi_mottaker, getitype_mottaker, bosted_land_kravhaver, gt_verdi_kravhaver
