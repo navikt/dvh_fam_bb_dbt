@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: fam_bb_forskudd_maaned
+    schema: dvh_fam_bb
+    tables:
+      - name: fam_bb_fagsak
+        description: 'Inneholder vedtaksinformasjon for forskudd.'
+      - name: fam_bb_forskudds_periode
+        descripion: 'Inneholder periodisk info for forskudd.'
+      - name: fam_bb_inntekt
+        descripion: 'Inneholder periodisk inntekts info for forskudd.'
+
+  - name: dt_person
+    schema: dt_person
+    tables:
+      - name: dim_person
+        descripion: 'Dimensjonstabell i datavarehus.'

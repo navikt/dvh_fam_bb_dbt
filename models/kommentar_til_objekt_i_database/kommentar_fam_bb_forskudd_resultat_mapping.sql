@@ -1,0 +1,3 @@
+comment on table dvh_fam_bb.fam_bb_forskudd_resultat_mapping is '#NAVN FAM_BB_FORSKUDD_RESULTAT_MAPPING #INNHOLD Inneholder mapping av resultat mellom Bisys og vedtak-grensesnitt.';
+comment on column dvh_fam_bb.fam_bb_forskudd_resultat_mapping.resultat_fra is '#NAVN RESULTAT_FRA #INNHOLD Vedtaket fra Bisys inneholder numerisk resultat. Dette ble erstattet av tekst resultat som gir mer detaljer, fra det nye vedtak-grensesnitt.';
+comment on column dvh_fam_bb.fam_bb_forskudd_resultat_mapping.resultat_til is '#NAVN RESULTAT_TIL #INNHOLD Resultatet av vedtak fra det nye vedtak-grensesnitt. Vurderingen av saksen for en bestemt periode.';

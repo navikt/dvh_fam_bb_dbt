@@ -21,9 +21,9 @@ fagsak as (
     row_number() over (partition by tid.aar_maaned, fagsak.fk_person1_kravhaver ,fagsak.saksnr 
 	    order by fagsak.vedtakstidspunkt desc) nr
 
-  from {{ source ('fam_bb', 'fam_bb_fagsak') }} fagsak
+  from {{ source ('fam_bb_forskudd_maaned', 'fam_bb_fagsak') }} fagsak
  
-  join {{ source ('fam_bb', 'fam_bb_forskudds_periode') }} periode
+  join {{ source ('fam_bb_forskudd_maaned', 'fam_bb_forskudds_periode') }} periode
   on fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
   and periode.belop > 0
  
