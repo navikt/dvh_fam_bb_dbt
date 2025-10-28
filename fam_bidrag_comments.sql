@@ -1,0 +1,90 @@
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BIDRAGSEVNE IS'#NAVN BIDRAGSEVNE #INNHOLD Den økonomiske kapasiteten en forelder har til å betale et barnebidrag';-------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.UNDERHOLDSKOSTNAD IS'#NAVN UNDERHOLDSKOSTNAD #INNHOLD Den beregnede kostnaden for å forsørge et barn';--------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.SAMVAERSFRADRAG IS'#NAVN SAMVAERSFRADRAG #INNHOLD Et beløp som trekkes fra barnebidraget når en bidragspliktig har regelmessig samvær med barnet';--------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.NETTO_BARNETILLEGG_BP IS'#NAVN NETTO_BARNETILLEGG_BP #INNHOLD ';-------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.NETTO_BARNETILLEGG_BM IS'#NAVN NETTO_BARNETILLEGG_BM #INNHOLD ';------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BPS_ANDEL_UNDERHOLDSKOSTNAD IS'#NAVN BPS_ANDEL_UNDERHOLDSKOSTNAD #INNHOLD ';-----------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_PERSON_SKYLDNER IS'#NAVN FK_DIM_PERSON_SKYLDNER #INNHOLD Fk_dim_person til skyldner (fremmednøkkel i dim person tabell)';---------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BOSTED_KOMMUNE_NR_SKYLDNER IS '#NAVN BOSTED_KOMMUNE_NR_SKYLDNER #INNHOLD Kommune nummer til kommunen skyldner bor i';-------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_LAND_STATSBORGERSKAP_SKYLDNER IS'#NAVN FK_DIM_LAND_STATSBORGERSKAP_SKYLDNER #INNHOLD Fremmednøkkel til landet skyldner er statsborger i';-------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_GEOGRAFI_BOSTED_SKYLDNER IS'#NAVN FK_DIM_GEOGRAFI_BOSTED_SKYLDNER #INNHOLD Fremmednøkkel til det geografiske omraadet skyldner bor i';---------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.ALDER_SKYLDNER IS'#NAVN ALDER_SKYLDNER #INNHOLD Skyldners alder';-----------------------
+
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.P_INNTEKT_1 IS'#NAVN P_INNTEKT_1 #INNHOLD Belop paa inntekt 1 hos skyldner (hvis finnes)';---------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.P_INNTEKT_2 IS'#NAVN P_INNTEKT_2 #INNHOLD Belop paa inntekt 2 hos skyldner (hvis finnes)';-------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.P_INNTEKT_3 IS'#NAVN P_INNTEKT_3 #INNHOLD Belop paa inntekt 3 hos skyldner	(hvis finnes)';-------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.P_INNTEKT_TOTAL IS'#NAVN P_INNTEKT_TOTAL #INNHOLD Sum av alle belop hos skyldner';-----------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.P_ANTALL_TYPER IS'#NAVN P_ANTALL_TYPER #INNHOLD Antall type inntekt hos skyldner';-----------------
+
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_1 IS'#NAVN M_INNTEKT_1 #INNHOLD Belop paa inntekt 1 hos mottaker  (hvis finnes)';---------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_2 IS'#NAVN M_INNTEKT_2 #INNHOLD Belop paa inntekt 2 hos mottaker  (hvis finnes)';-----------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_3 IS'#NAVN M_INNTEKT_3 #INNHOLD Belop paa inntekt 3 hos mottaker  (hvis finnes)';------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_4 IS'#NAVN M_INNTEKT_4 #INNHOLD Belop paa inntekt 4 hos mottaker  (hvis finnes)';-------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_5 IS'#NAVN M_INNTEKT_5 #INNHOLD Belop paa inntekt 5 hos mottaker  (hvis finnes)';-----------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_TOTAL IS'#NAVN M_INNTEKT_TOTAL #INNHOLD Sum av alle belop hos mottaker';--------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_ANTALL_TYPER IS'#NAVN M_ANTALL_TYPER #INNHOLD Antall type inntekt hos mottaker';------------------
+
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.TYPE_INNTEKT_2 IS'#NAVN TYPE_INNTEKT_2 #INNHOLD Inntekts type 2 hos mottaker';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.TYPE_INNTEKT_3 IS'#NAVN TYPE_INNTEKT_3 #INNHOLD Inntekts type 3 hos mottaker';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.TYPE_INNTEKT_4 IS'#NAVN TYPE_INNTEKT_4 #INNHOLD Inntekts type 4 hos mottaker';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.INNTEKT_TOTAL IS'#NAVN INNTEKT_TOTAL #INNHOLD Sum av alle belop hos mottaker';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.M_INNTEKT_1 IS'#NAVN INNTEKT_1 #INNHOLD Belop paa inntekt 1 hos mottaker  (hvis finnes)';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.INNTEKT_2 IS'#NAVN INNTEKT_2 #INNHOLD Belop paa inntekt 2 hos mottaker  (hvis finnes)';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.INNTEKT_3 IS'#NAVN INNTEKT_3 #INNHOLD BELOP Paa inntekt 3 hos mottaker  (hvis finnes)';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.INNTEKT_4 IS'#NAVN INNTEKT_4 #INNHOLD BELOP PAa Inntekt 4 Hos Mottaker  (Hvis Finnes)';
+
+
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.AAR IS'#NAVN AAR #INNHOLD Statistikkår';--------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.AAR_MAANED IS'#NAVN AAR_MAANED #INNHOLD  AAR_MAANED #INNHOLD Statistikk maaned (yyyymm)'; ----------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.ALDER_KRAVHAVER IS'#NAVN ALDER_KRAVHAVER #INNHOLD Barnets alder';---------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.ALDER_MOTTAKER IS'#NAVN ALDER_MOTTAKER #INNHOLD Mottakerens alder';----------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.ANTALL_INTTEKTS_TYPER IS'#NAVN ANTALL_INTTEKTS_TYPER #INNHOLD Antall type inntekt hos mottaker';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BARNETS_ALDERS_GRUPPE IS'#NAVN BARNETS_ALDERS_GRUPPE #INNHOLD Alders_gruppe til kravhaver, alders gruppe er delt til 2 grupper "ALDER_0_10_ÅR" og "ALDER_11_17_ÅR"';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BEHANDLINGS_TYPE IS '#NAVN BEHANDLINGS_TYPE #INNHOLD Grunnlag for å behandle saken';-----------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BELOP IS '#NAVN BELOP #INNHOLD Sum beløp som er betalt til mottaker fra skyldner';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BOSTED_KOMMUNE_NR_MOTTAKER IS '#NAVN BOSTED_KOMMUNE_NR_MOTTAKER #INNHOLD Kommune nummer til kommunen mottaker bor i';-----------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_BB_FAGSAK IS '#NAVN FK_BB_FAGSAK #INNHOLD Fremmednøkkel til rekorden i fam_bb_fagsak_ord tabellen';--------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_BB_BIDRAGS_PERIODE IS '#NAVN FK_BB_BIDRAGS_PERIODE #INNHOLD Fremmednøkkel til rekorden i Fam_bb_bidrags_periode_ord';-----------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_GEOGRAFI_BOSTED_MOTTAKER IS'#NAVN FK_DIM_GEOGRAFI_BOSTED_MOTTAKER #INNHOLD Fremmednøkkel til det geografiske omraadet mottaker bor i';---------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_LAND_STATSBORGERSKAP_MOTTAKER IS'#NAVN FK_DIM_LAND_STATSBORGERSKAP_MOTTAKER #INNHOLD Fremmednøkkel til landet mottaker er statsborger i';---------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_PERSON_KRAVHAVER IS'#NAVN FK_DIM_PERSON_KRAVHAVER #INNHOLD Fk_dim_person til barn (fremmednøkkel i dim person tabell)';----------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_PERSON_MOTTAKER IS'#NAVN FK_DIM_PERSON_MOTTAKER #INNHOLD Fk_dim_person til mottaker';-----------------------
+
+
+
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_PERSON1_KRAVHAVER IS'#NAVN FK_PERSON1_KRAVHAVER #INNHOLD Fk_person1 til barn (kravhaver) = mapping til fnr';-------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_PERSON1_MOTTAKER IS'#NAVN FK_PERSON1_MOTTAKER #INNHOLD Fk_person1 til mottaker = mapping til fnr';----------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_PERSON1_SKYLDNER IS'#NAVN FK_PERSON1_SKYLDNER #INNHOLD Fk_person1 til skyldner = mapping til fnr'; -------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FK_DIM_TID_MND IS'#NAVN FK_DIM_TID_MND #INNHOLD Fremmednøkkel til dim tid';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.GYLDIG_FLAGG IS'#NAVN GYLDIG_FLAGG #INNHOLD Et flagg som vi setter til aa merke en kjøring';------------------
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.KJONN_KRAVHAVER IS'#NAVN KJONN_KRAVHAVER #INNHOLD Barnets kjønn';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.LASTET_DATO IS'#NAVN LASTET_DATO #INNHOLD Dato naar datat ble lastet opp til tabellen';---------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.MAX_VEDTAKSDATO IS'#NAVN MAX_VEDTAKSDATO #INNHOLD Max dato for vedtak som blir prosessert per perioden';------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.PERIODE_FRA IS'#NAVN PERIODE_FRA #INNHOLD Perioden_fra når vedtaket er gyeldig';-----------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.PERIODE_FRA_OPPHOR IS'#NAVN PERIODE_FRA_OPPHOR #INNHOLD Perioden fra når vedtaket ble opphørt (denne kan være null)';--------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.PERIODE_TIL IS'#NAVN PERIODE_TIL #INNHOLD Perioden til når vedtaket er gyeldig (hvis den er null, betyr det at vedtaket er fortsatt gyeldig)';--------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.PERIODE_TYPE IS'#NAVN PERIODE_TYPE #INNHOLD Den kan være alt fra "m" (maaned), "y" (aar), "k" (kvartal) osv';------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.RESULTAT IS'#NAVN RESULTAT #INNHOLD Resultat av vurdering av saksen for en bestemt periode';--------------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.SAKSNR IS'#NAVN SAKSNR #INNHOLD Saksnummer';-----------------------
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.VEDTAKS_ID IS'#NAVN VEDTAKS_ID #INNHOLD Versjon av aktuell saksnummer';------------------
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.VEDTAKSTIDSPUNKT IS'#NAVN VEDTAKSTIDSPUNKT #INNHOLD Tidspunkt til når vedtaket ble fattet';------------------
+
+
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.SISTE_KOMPLETT_VEDTAK IS'#NAVN SISTE_KOMPLETT_VEDTAK #INNHOLD Vedtaks_id til siste komplett vedtak (info om blant annet, bidragsevne, inntektslist osv) av et sak';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.SISTE_KOMPLETT_VEDTAKSTIDSPUNKT IS'#NAVN SISTE_KOMPLETT_VEDTAKSTIDSPUNKT #INNHOLD VEDTAKSTIDSPUNKT for siste komplett vedtak';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.STONADSTYPE IS'#NAVN STONADSTYPE #INNHOLD stønadstype på saken, stønadstype vi har per dags dato er oppfostringsbidrag, bidrag, bidrag18aar';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.NETTO_TILSYNSUTGIFT IS'#NAVN NETTO_TILSYNSUTGIFT #INNHOLD Netto kostnaden en person har for tilsyn av barn';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.FAKTISK_TILSYNSUTGIFT IS'#NAVN FAKTISK_TILSYNSUTGIFT #INNHOLD Faktisk/reell kostnaden en person har for tilsyn av barn';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.INNKREVING_FLAGG IS'#NAVN INNKREVING_FLAGG #INNHOLD Flagg som settes på løpene saker';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.KJONN_MOTTAKER IS'#NAVN KJONN_MOTTAKER #INNHOLD Mottakers kjønn';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.VALUTAKODE IS'#NAVN VALUTAKODE #INNHOLD Valutakoden til landet bidraget ble betalt fra';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.SAMVAERSKLASSE IS'#NAVN SAMVAERSKLASSE #INNHOLD En klassekode som angir typen avtale mellom mottaker og skyldner når det gjelder fordeling av tid med kravhaver';
+COMMENT ON COLUMN DVH_FAM_BB.FAM_BB_BIDRAG.BPBOR_MED_ANDRE_VOKSNE IS'#NAVN BPBOR_MED_ANDRE_VOKSNE #INNHOLD Flagg som sier om skyldner bor med en annen voksen';

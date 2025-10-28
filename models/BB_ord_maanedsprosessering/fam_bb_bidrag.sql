@@ -7,12 +7,12 @@
 
 with periode_uten_opphort as (
  
-  select aar_maaned, fk_person1_kravhaver, fk_person1_mottaker, fk_person1_skyldner, vedtakstidspunkt
-        ,pk_bb_fagsak as fk_bb_fagsak, saksnr
+  select aar_maaned, vedtak.fk_person1_kravhaver, fk_person1_mottaker, fk_person1_skyldner, vedtak.vedtakstidspunkt
+        ,pk_bb_fagsak as fk_bb_fagsak, vedtak.saksnr
         ,vedtaks_id, behandlings_type, pk_bb_bidrags_periode as fk_bb_bidrags_periode
         ,periode_fra, periode_til, belop as belop_vedtak
-        ,resultat
-        ,periode_fra_opphor, aar, STONADSTYPE, NETTO_TILSYNSUTGIFT, FAKTISK_TILSYNSUTGIFT, INNKREVING_FLAGG
+        ,resultat,resultat_tekst,forste_vedtakstidspunkt
+        ,periode_fra_opphor, aar, vedtak.STONADSTYPE, NETTO_TILSYNSUTGIFT, FAKTISK_TILSYNSUTGIFT, INNKREVING_FLAGG
         ,BIDRAGSEVNE, UNDERHOLDSKOSTNAD, SAMVAERSFRADRAG, NETTO_BARNETILLEGG_BP, NETTO_BARNETILLEGG_BM,
         SAMVAERSKLASSE, BPS_ANDEL_UNDERHOLDSKOSTNAD, BPBOR_MED_ANDRE_VOKSNE, valutakode
         --,TO_DATE(TO_CHAR(LAST_DAY(SYSDATE), 'YYYYMMDD'), 'YYYYMMDD') MAX_VEDTAKSDATO --Input max_vedtaksdato
@@ -31,7 +31,7 @@ with periode_uten_opphort as (
             when vedtak.valutakode != 'NOK' then 
                 belop * (
                     select valutakurser
-                    from norges_bank_valuta nb
+                    from dim_nb_valuta nb
                     where nb.base_cur = vedtak.valutakode
                       and nb.periode <= vedtak.aar_maaned
                     order by nb.periode desc fetch first 1 row only
@@ -39,8 +39,8 @@ with periode_uten_opphort as (
             else belop
         end belop
 		
-        ,1234 SISTE_KOMPLETT_VEDTAK
-        ,TO_TIMESTAMP('30.06.2025 07:03:43.360199', 'DD.MM.YYYY HH24:MI:SS.FF6') SISTE_KOMPLETT_VEDTAKSTIDSPUNKT
+        ,SISTE_KOMPLETT_VEDTAK
+        ,SISTE_KOMPLETT_VEDTAKSTIDSPUNKT
         
         ,dim_mottaker.pk_dim_person as fk_dim_person_mottaker
         ,case 
@@ -87,10 +87,24 @@ with periode_uten_opphort as (
   and vedtak.fk_person1_skyldner != -1
   and vedtak.siste_dato_i_perioden between dim_skyldner.gyldig_fra_dato and dim_skyldner.gyldig_til_dato
 
-  left join {{ ref("inntekt_bidrag") }} inntekts_typer
+  --left join {{ ref("inntekt_bidrag") }} inntekts_typer
 
-  on vedtak.pK_BB_BIDRAGS_PERIODE = inntekts_typer.FK_BB_BIDRAGS_PERIODE
- 
+  --on vedtak.pK_BB_BIDRAGS_PERIODE = inntekts_typer.FK_BB_BIDRAGS_PERIODE
+
+  left join (
+  select * from (
+    select i.*,
+            ROW_NUMBER() OVER (PARTITION BY i.saksnr, i.fk_person1_kravhaver--, i.stonadstype
+            ORDER BY 
+                CASE WHEN i.fk_bb_bidrags_periode IS NOT NULL THEN 0 ELSE 1 END,
+                    i.vedtakstidspunkt DESC) AS rn
+    from {{ ref("inntekt_bidrag") }} i
+  ) inntekt
+  where rn = 1
+  ) inntekts_typer
+  ON vedtak.saksnr = inntekts_typer.saksnr
+  and vedtak.fk_person1_kravhaver = inntekts_typer.fk_person1_kravhaver
+
   where siste_dato_i_perioden < nvl(periode_fra_opphor, siste_dato_i_perioden+1)
 )
 

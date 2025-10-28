@@ -64,6 +64,7 @@ sources:
       - name: STG_FAM_BB_BARN_BERM
       - name: STG_FAM_BB_MOTTAKER_BERM      
       - name: STG_FAM_BB_PLIKTIGE_BERM
+      - name: FAM_BB_BIDRAG_RESULTAT_MAPPING
 
 
 

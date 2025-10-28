@@ -19,7 +19,7 @@ siste as (
       select *
       from {{ ref('fagsak_bidrag') }}
       where nr = 1
-      and INNKREVING_FLAGG = '1'
+      --and INNKREVING_FLAGG = '1'
 ),
 
 siste_opphør as (
@@ -39,8 +39,9 @@ opphor_hvis_finnes as
   select aar_maaned, siste_dato_i_perioden, aar, pk_bb_fagsak,fk_dim_tid_mnd,innkreving_flagg,stonadstype,
         vedtaks_id, behandlings_type, vedtakstidspunkt, saksnr, fk_person1_kravhaver, fk_person1_mottaker,
         fk_person1_skyldner, pk_bb_bidrags_periode, periode_fra, periode_til, belop,netto_tilsynsutgift,faktisk_tilsynsutgift,
-        resultat, BIDRAGSEVNE, UNDERHOLDSKOSTNAD, SAMVAERSFRADRAG, NETTO_BARNETILLEGG_BP, NETTO_BARNETILLEGG_BM, 
-        SAMVAERSKLASSE, BPS_ANDEL_UNDERHOLDSKOSTNAD, BPBOR_MED_ANDRE_VOKSNE,valutakode,
+        resultat,resultat_tekst, BIDRAGSEVNE, UNDERHOLDSKOSTNAD, SAMVAERSFRADRAG, NETTO_BARNETILLEGG_BP, NETTO_BARNETILLEGG_BM, 
+        SAMVAERSKLASSE, BPS_ANDEL_UNDERHOLDSKOSTNAD, BPBOR_MED_ANDRE_VOKSNE,valutakode,forste_vedtakstidspunkt,
+        SISTE_KOMPLETT_VEDTAK,SISTE_KOMPLETT_VEDTAKSTIDSPUNKT,
         min(periode_fra_opphor) periode_fra_opphor
   from siste_opphør
 																				
@@ -48,9 +49,9 @@ opphor_hvis_finnes as
   group by aar_maaned, siste_dato_i_perioden, aar, pk_bb_fagsak,fk_dim_tid_mnd,
         vedtaks_id, behandlings_type, vedtakstidspunkt, saksnr, fk_person1_kravhaver, fk_person1_mottaker,
         fk_person1_skyldner, pk_bb_bidrags_periode, periode_fra, periode_til, belop,
-        resultat, BIDRAGSEVNE, UNDERHOLDSKOSTNAD, SAMVAERSFRADRAG, NETTO_BARNETILLEGG_BP, NETTO_BARNETILLEGG_BM, 
+        resultat,resultat_tekst, BIDRAGSEVNE, UNDERHOLDSKOSTNAD, SAMVAERSFRADRAG, NETTO_BARNETILLEGG_BP, NETTO_BARNETILLEGG_BM, 
         SAMVAERSKLASSE, BPS_ANDEL_UNDERHOLDSKOSTNAD, BPBOR_MED_ANDRE_VOKSNE,innkreving_flagg,stonadstype,
-        netto_tilsynsutgift,faktisk_tilsynsutgift,valutakode
+        netto_tilsynsutgift,faktisk_tilsynsutgift,valutakode,forste_vedtakstidspunkt,SISTE_KOMPLETT_VEDTAK,SISTE_KOMPLETT_VEDTAKSTIDSPUNKT
 )
 
 select * 
