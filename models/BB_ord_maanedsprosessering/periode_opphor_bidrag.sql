@@ -7,7 +7,7 @@ with opphor_fra as (
 
       join {{ source ('fam_bb', 'fam_bb_bidrags_periode_ord') }} periode
       on fagsak.pk_bb_fagsak = periode.fk_bb_fagsak
-      and periode.belop is null
+      and (periode.belop is null OR periode.belop = 0)
 
       where fagsak.behandlings_type not in ('ENDRING_MOTTAKER')
       and trunc(fagsak.vedtakstidspunkt, 'dd') <= TO_DATE('{{ var ("max_vedtaksdato") }}', 'yyyymmdd')--Begrense max_vedtaksdato på dag nivå
