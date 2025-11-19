@@ -25,11 +25,11 @@ COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.INNTEKT_4 IS'#NAVN INNTEKT_4 #INNHO
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.KJONN_KRAVHAVER IS'#NAVN KJONN_KRAVHAVER #INNHOLD Barnets kjønn';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.LASTET_DATO IS'#NAVN LASTET_DATO #INNHOLD Dato naar datat ble lastet opp til tabellen';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.MAX_VEDTAKSDATO IS'#NAVN MAX_VEDTAKSDATO #INNHOLD Max dato for vedtak som blir prosessert per perioden';
-COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.PERIODE_FRA IS'#NAVN PERIODE_FRA #INNHOLD Perioden_fra når vedtaket er gyeldig';
+COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.PERIODE_FRA IS'#NAVN PERIODE_FRA #INNHOLD Datoen forskudd gjelder fra';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.PERIODE_FRA_OPPHOR IS'#NAVN PERIODE_FRA_OPPHOR #INNHOLD Perioden fra når vedtaket ble opphørt (denne kan være null)';
-COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.PERIODE_TIL IS'#NAVN PERIODE_TIL #INNHOLD Perioden til når vedtaket er gyeldig (hvis den er null, betyr det at vedtaket er fortsatt gyeldig)';
+COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.PERIODE_TIL IS'#NAVN PERIODE_TIL #INNHOLD Datoen forskudd gjelder til (hvis den er null, betyr det at vedtaket er fortsatt gyldig)';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.PERIODE_TYPE IS'#NAVN PERIODE_TYPE #INNHOLD Den kan være alt fra "m" (maaned), "y" (aar), "k" (kvartal) osv';
-COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.RESULTAT IS'#NAVN RESULTAT #INNHOLD Resultat av vurdering av saksen for en bestemt periode';
+COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.RESULTAT IS'#NAVN RESULTAT #INNHOLD Resultatet av saksvurderingen for den aktuelle perioden';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.SAKSNR IS'#NAVN SAKSNR #INNHOLD Saksnummer';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.TYPE_INNTEKT_1 IS'#NAVN TYPE_INNTEKT_1 #INNHOLD Inntekts type 1 hos mottaker';
 COMMENT ON COLUMN DVH_FAM_BB.FAK_BB_forskudd.TYPE_INNTEKT_2 IS'#NAVN TYPE_INNTEKT_2 #INNHOLD Inntekts type 2 hos mottaker';
