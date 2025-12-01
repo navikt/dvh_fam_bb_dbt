@@ -112,4 +112,3 @@ select
     kafka_offset,
     localtimestamp as lastet_dato
 from final
-where fk_p1= 12
