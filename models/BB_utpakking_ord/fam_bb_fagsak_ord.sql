@@ -74,3 +74,4 @@ select
     fk_bb_meta_data,
     localtimestamp as lastet_dato
 from final
+where nav_id = "R123456"
