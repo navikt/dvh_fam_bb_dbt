@@ -1,4 +1,4 @@
-dvh_fam_bb_dbt:
+dvh_fam_bb:
   target: "{{env_var('DBT_DB_TARGET')}}"
   outputs:
     U:
