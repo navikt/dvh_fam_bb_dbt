@@ -8,9 +8,10 @@ dvh_fam_bb_dbt:
       protocol: tcp
       host: dmv04-scan.adeo.no
       port: 1521
-      service: ccdwhu1_ha
+      dbname: dwhu1
+      service: ccfdwhu1
       schema: "{{env_var('DBT_DB_SCHEMA')}}"
-      threads: 10
+      threads: 4
     R:
       type: oracle
       user: "{{env_var('DBT_ENV_SECRET_USER')}}"
@@ -18,9 +19,10 @@ dvh_fam_bb_dbt:
       protocol: tcp
       host: dmv04-scan.adeo.no
       port: 1521
+      dbname: dwhpr
       service: dwhr_ha
       schema: "{{env_var('DBT_DB_SCHEMA')}}"
-      threads: 10
+      threads: 4
     P:
       type: oracle
       user: "{{env_var('DBT_ENV_SECRET_USER')}}"
@@ -28,8 +30,9 @@ dvh_fam_bb_dbt:
       protocol: tcp
       host: dmv09-scan.adeo.no
       port: 1521
+      dbname: dwhpr
       service: dwh_ha
       schema: "{{env_var('DBT_DB_SCHEMA')}}"
-      threads: 10
+      threads: 4
 config:
   send_anonymous_usage_stats: False
