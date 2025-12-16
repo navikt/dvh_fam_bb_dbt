@@ -24,7 +24,7 @@ with periode_uten_opphort as (
         
         ,case 
             when dim_kravhaver.kjonn_nr = 1 then 'M'
-            when dim_kravhaver.kjonn_nr = 0 then 'K'			
+            when dim_kravhaver.kjonn_nr = 0 then 'K'
         end kjonn_kravhaver   
 		
         ,case 
@@ -47,12 +47,20 @@ with periode_uten_opphort as (
             when dim_mottaker.kjonn_nr = 1 then 'M'
             when dim_mottaker.kjonn_nr = 0 then 'K'
         end kjonn_mottaker  
+        ,dim_mottaker.gt_verdi as gt_verdi_mottaker
+        ,dim_mottaker.getitype as gt_type_mottaker
         ,dim_mottaker.bosted_kommune_nr as bosted_kommune_nr_mottaker
         ,dim_mottaker.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_mottaker
         ,dim_mottaker.fk_dim_geografi_bosted as fk_dim_geografi_bosted_mottaker
         ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
         
         ,dim_skyldner.pk_dim_person as fk_dim_person_skyldner
+        ,case 
+            when dim_skyldner.kjonn_nr = 1 then 'M'
+            when dim_skyldner.kjonn_nr = 0 then 'K'
+        end kjonn_skyldner 
+        ,dim_skyldner.gt_verdi as gt_verdi_skyldner
+        ,dim_skyldner.getitype as gt_type_skyldner
         ,dim_skyldner.bosted_kommune_nr as bosted_kommune_nr_skyldner
         ,dim_skyldner.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_skyldner
         ,dim_skyldner.fk_dim_geografi_bosted as fk_dim_geografi_bosted_skyldner
