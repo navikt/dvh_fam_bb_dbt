@@ -29,13 +29,13 @@ with periode_uten_opphort as (
 		
         ,case 
             when vedtak.valutakode != 'NOK' then 
-                belop * (
-                    select valutakurser
+                belop * nvl((
+                    select max(valutakurser) as valutakurser --Return max i tilfelle valuta ikke finnes i tabellen
                     from dim_nb_valuta nb
                     where nb.base_cur = vedtak.valutakode
                       and nb.periode <= vedtak.aar_maaned
-                    order by nb.periode desc fetch first 1 row only
-            )
+                    --order by nb.periode desc fetch first 1 row only
+                        ), 0) --Return 0 hvis valuta ikke finnes i tabellen. Beløp fra vedtak finnes i felt belop_vedtak
             else belop
         end belop
 		
