@@ -30,7 +30,7 @@ with periode_uten_opphort as (
         ,case 
             when vedtak.valutakode != 'NOK' then 
                 belop * nvl((
-                    select max(valutakurser) keep (dense_rank first order by periode desc) as valutakurser --Return max i tilfelle valuta ikke finnes i tabellen
+                    select max(nb.valutakurser) keep (dense_rank first order by nb.periode desc) as valutakurser --Return valuta fra siste periode som finnes i tabellen
                     from dim_nb_valuta nb
                     where nb.base_cur = vedtak.valutakode
                       and nb.periode <= vedtak.aar_maaned
