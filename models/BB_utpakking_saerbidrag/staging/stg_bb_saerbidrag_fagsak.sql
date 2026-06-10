@@ -11,9 +11,9 @@ pre_final as (
                 ,type varchar2(50 char) PATH '$.type'
                 ,kategori varchar2(255 char) PATH '$.kategori'
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
-                ,fk_person1_skyldner varchar2(255 char) PATH '$.skyldner'
-                ,fk_person1_kravhaver varchar2(255 char) PATH '$.kravhaver'
-                ,fk_person1_mottaker varchar2(255 char) PATH '$.mottaker'
+                ,skyldner varchar2(255 char) PATH '$.skyldner'
+                ,kravhaver varchar2(255 char) PATH '$.kravhaver'
+                ,mottaker varchar2(255 char) PATH '$.mottaker'
                 ,belop number PATH '$.beløp'
                 ,valutakode varchar2(5 char) PATH '$.valutakode'
                 ,resultat varchar2(255 char) PATH '$.resultat'
@@ -30,14 +30,15 @@ pre_final as (
 
 final as (
     select kafka_offset
+    ,pk_bb_meta_data as fk_bb_meta_data
     ,vedtaksid
     ,vedtakstidspunkt
     ,type
     ,kategori
     ,saksnr
-    ,fk_person1_skyldner
-    ,fk_person1_kravhaver
-    ,fk_person1_mottaker
+    ,skyldner
+    ,kravhaver
+    ,mottaker
     ,belop
     ,valutakode
     ,resultat
