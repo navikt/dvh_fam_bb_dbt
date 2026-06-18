@@ -7,6 +7,7 @@ sources:
       - name: dim_person
         description: 'inneholder informasjon om brukere, bla kjonn, fodeland, statsborgerskap osv'
       - name: ident_off_id_til_fk_person1
+      - name: IDENT_OFF_ID_TIL_FK_PERSON1_IKKE_SKJERMET
 
   - name: kode_verk
     schema: dt_kodeverk
@@ -34,6 +35,10 @@ sources:
       - name: stg_fam_bb_pliktige_berm
       - name: fam_bb_bidrag_resultat_mapping
       - name: stg_bb_saerbidrag_fagsak
-
+      - name: stg_bb_saerbidrag_inntekt
+      - name: int_bb_saerbidrag_fagsak
+      - name: int_bb_saerbidrag_inntekt
+      - name: bb_saerbidrag_fagsak
+      - name: fak_bb_saerbidrag_inntekt
 
 
