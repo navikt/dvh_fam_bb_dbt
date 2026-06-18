@@ -47,12 +47,12 @@ final as (
 select kafka_offset
 ,vedtaksid
 ,saksnr
-,skyldner
-,kravhaver
-,mottaker
+--,skyldner
+--,kravhaver
+--,mottaker
 ,type_inntekt
 ,belop
-,'p' as flagg
+,'p' as inntekt_flagg
 ,localtimestamp as lastet_dato 
 from bp
  
@@ -61,12 +61,12 @@ union all
  select kafka_offset
 ,vedtaksid
 ,saksnr
-,skyldner
-,kravhaver
-,mottaker
+--,skyldner
+--,kravhaver
+--,mottaker
 ,type_inntekt
 ,belop
-,'m' as flagg
+,'m' as inntekt_flagg
 ,localtimestamp as lastet_dato 
 from bm
 )

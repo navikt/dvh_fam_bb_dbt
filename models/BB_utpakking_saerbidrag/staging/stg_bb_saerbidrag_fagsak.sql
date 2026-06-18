@@ -17,7 +17,7 @@ pre_final as (
                 ,belop number PATH '$.beløp'
                 ,valutakode varchar2(5 char) PATH '$.valutakode'
                 ,resultat varchar2(255 char) PATH '$.resultat'
-                ,innkreving_flagg varchar2(1 char) PATH '$.innkreving'
+                ,innkreving_flagg varchar2(255 char) PATH '$.innkreving'
                 ,omgjor_vedtak_id varchar2(255 char) PATH '$.omgjørVedtakId'
                 ,historisk_vedtak varchar2(255 char) PATH '$.historiskVedtak'
                 ,kravbelop number PATH '$.kravbeløp'

@@ -33,6 +33,7 @@ sources:
       - name: stg_fam_bb_mottaker_berm      
       - name: stg_fam_bb_pliktige_berm
       - name: fam_bb_bidrag_resultat_mapping
+      - name: stg_bb_saerbidrag_fagsak
 
 
 
