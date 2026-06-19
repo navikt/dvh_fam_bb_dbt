@@ -8,6 +8,7 @@ bp as (
         ,json_table(melding, '$'
             columns (
                 vedtaksid  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
@@ -28,12 +29,13 @@ bm as (
         ,json_table(melding, '$'
             columns (
                 vedtaksid  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
                 
-                ,nested PATH '$.bpinntektListe[*]'
+                ,nested PATH '$.bminntektListe[*]'
                     columns(
                         type_inntekt VARCHAR2(255)   PATH '$.type',
                         belop    NUMBER(16,2)    PATH '$.beløp'
@@ -47,13 +49,14 @@ final as (
 select kafka_offset
 ,vedtaksid
 ,saksnr
+,vedtakstidspunkt
 --,skyldner
---,kravhaver
+,kravhaver
 --,mottaker
 ,type_inntekt
 ,belop
 ,'p' as inntekt_flagg
-,localtimestamp as lastet_dato 
+--,localtimestamp as lastet_dato 
 from bp
  
 union all
@@ -61,13 +64,14 @@ union all
  select kafka_offset
 ,vedtaksid
 ,saksnr
+,vedtakstidspunkt
 --,skyldner
---,kravhaver
+,kravhaver
 --,mottaker
 ,type_inntekt
 ,belop
 ,'m' as inntekt_flagg
-,localtimestamp as lastet_dato 
+--,localtimestamp as lastet_dato 
 from bm
 )
 

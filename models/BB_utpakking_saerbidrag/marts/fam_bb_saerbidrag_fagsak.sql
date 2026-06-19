@@ -8,7 +8,8 @@ with sb as (
 ),
 
 final as (
-    select key_saerbidrag_fagsak
+    select pk_bb_saerbidrag_fagsak
+    ,kafka_offset
     ,fk_bb_meta_data
     ,vedtaksid
     ,vedtakstidspunkt

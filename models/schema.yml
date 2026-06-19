@@ -7,7 +7,7 @@ sources:
       - name: dim_person
         description: 'inneholder informasjon om brukere, bla kjonn, fodeland, statsborgerskap osv'
       - name: ident_off_id_til_fk_person1
-      - name: IDENT_OFF_ID_TIL_FK_PERSON1_IKKE_SKJERMET
+      #- name: ident_off_id_til_fk_person1_ikke_skjermet
 
   - name: kode_verk
     schema: dt_kodeverk

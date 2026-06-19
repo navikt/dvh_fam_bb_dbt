@@ -48,7 +48,7 @@ final as (
     ,kravbelop
     ,godkjent_belop
     ,betalt_belop
-    ,localtimestamp as lastet_dato 
+    --,localtimestamp as lastet_dato 
     from pre_final
 )
 

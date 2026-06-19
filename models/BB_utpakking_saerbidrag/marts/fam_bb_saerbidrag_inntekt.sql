@@ -9,7 +9,8 @@ with sb_inn as (
 
 
 final as (
-select key_saerbidrag_fagsak
+select fk_bb_saerbidrag_fagsak
+,kafka_offset
 ,vedtaksid
 ,saksnr
 --,skyldner
