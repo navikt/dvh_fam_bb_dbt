@@ -1,6 +1,7 @@
-{{ config(
-    materialized='table'
-    ) 
+{{
+    config(
+        materialized='incremental'
+    )
 }}
 
 with sb_inn as (
@@ -9,7 +10,8 @@ with sb_inn as (
 
 
 final as (
-select fk_bb_saerbidrag_fagsak
+select pk_bb_inntekt_saerbidrag
+,fk_bb_saerbidrag_fagsak
 ,kafka_offset
 ,vedtaksid
 ,saksnr

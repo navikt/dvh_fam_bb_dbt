@@ -1,6 +1,7 @@
-{{ config(
-    materialized='table'
-    ) 
+{{
+    config(
+        materialized='incremental'
+    )
 }}
 
 with sb as (

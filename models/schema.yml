@@ -34,11 +34,28 @@ sources:
       - name: stg_fam_bb_mottaker_berm      
       - name: stg_fam_bb_pliktige_berm
       - name: fam_bb_bidrag_resultat_mapping
-      - name: stg_bb_saerbidrag_fagsak
-      - name: stg_bb_saerbidrag_inntekt
-      - name: int_bb_saerbidrag_fagsak
-      - name: int_bb_saerbidrag_inntekt
-      - name: bb_saerbidrag_fagsak
-      - name: fak_bb_saerbidrag_inntekt
 
 
+
+models:
+  - name: fam_bb_saerbidrag_fagsak
+    columns:
+      - name: pk_bb_saerbidrag_fagsak
+        tests:
+          - not_null
+          - unique
+
+  - name: fam_bb_saerbidrag_inntekt
+    columns:
+      - name: pk_bb_inntekt_saerbidrag  
+        tests:
+          - not_null
+          - unique    
+      - name: fk_bb_saerbidrag_fagsak
+        tests:
+          - not_null
+
+          # FOREIGN KEY
+          - relationships:
+              to: ref('fam_bb_saerbidrag_fagsak')
+              field: pk_bb_saerbidrag_fagsak 

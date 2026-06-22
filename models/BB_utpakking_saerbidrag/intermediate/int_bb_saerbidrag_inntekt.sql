@@ -5,7 +5,8 @@ with sb_inn as (
 
 final as (
 select kafka_offset
-,STANDARD_HASH(t1.vedtaksid || t1.saksnr || nvl(t2.fk_person1, -1 ), 'MD5') as fk_bb_saerbidrag_fagsak
+,STANDARD_HASH(t1.vedtaksid || t1.saksnr || kravhaver, 'MD5') as fk_bb_saerbidrag_fagsak
+,row_number() over (partition by vedtaksid, inntekt_flagg, type_inntekt order by kafka_offset) as type_inntekt_nr
 ,vedtaksid
 ,saksnr
 ,nvl(t2.fk_person1, -1 ) as fk_person1_kravhaver
@@ -25,5 +26,7 @@ from sb_inn t1
     and t2.skjermet_kode = 0
 )
 
-select * from final
+select final.*
+,standard_hash(vedtaksid || '|' || inntekt_flagg || '|' || type_inntekt || '|' || type_inntekt_nr,'MD5') as pk_bb_inntekt_saerbidrag
+ from final
 where fk_person1_kravhaver <> -1

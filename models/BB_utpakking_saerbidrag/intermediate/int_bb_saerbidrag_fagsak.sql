@@ -12,7 +12,7 @@ final as (
     ,type as bidragstype
     ,kategori
     ,saksnr
-    ,STANDARD_HASH(t1.vedtaksid || t1.saksnr || nvl(t3.fk_person1, -1 ), 'MD5') as pk_bb_saerbidrag_fagsak
+    ,STANDARD_HASH(t1.vedtaksid || t1.saksnr || t1.kravhaver, 'MD5') as pk_bb_saerbidrag_fagsak
     ,nvl(t2.fk_person1, -1 ) as fk_person1_skyldner
     ,nvl(t3.fk_person1, -1 ) as fk_person1_kravhaver
     ,nvl(t4.fk_person1, -1 ) as fk_person1_mottaker
