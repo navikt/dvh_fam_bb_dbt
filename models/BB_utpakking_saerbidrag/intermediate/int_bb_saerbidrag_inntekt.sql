@@ -29,4 +29,3 @@ from sb_inn t1
 select final.*
 ,standard_hash(vedtaksid || '|' || inntekt_flagg || '|' || type_inntekt || '|' || type_inntekt_nr,'MD5') as pk_bb_inntekt_saerbidrag
  from final
-where fk_person1_kravhaver <> -1
