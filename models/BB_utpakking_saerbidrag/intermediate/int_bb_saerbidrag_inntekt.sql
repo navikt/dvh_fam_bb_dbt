@@ -19,11 +19,10 @@ select kafka_offset
 --,localtimestamp as lastet_dato 
 from sb_inn t1
 
-    left outer join {{ source('person', 'ident_off_id_til_fk_person1') }} t2 on
+    left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t2 on
     t1.kravhaver = t2.off_id
     and t2.gyldig_fra_dato <= t1.vedtakstidspunkt
     and t2.gyldig_til_dato >= t1.vedtakstidspunkt
-    and t2.skjermet_kode = 0
 )
 
 select final.*

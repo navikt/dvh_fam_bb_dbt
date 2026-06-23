@@ -27,23 +27,20 @@ final as (
     ,betalt_belop
     --,localtimestamp as lastet_dato 
     from sb t1
-    left outer join {{ source('person', 'ident_off_id_til_fk_person1') }} t2 on
+    left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t2 on
     t1.skyldner = t2.off_id
     and t2.gyldig_fra_dato <= t1.vedtakstidspunkt
     and t2.gyldig_til_dato >= t1.vedtakstidspunkt
-    and t2.skjermet_kode = 0
 
-    left outer join {{ source('person', 'ident_off_id_til_fk_person1') }} t3 on
+    left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t3 on
     t1.kravhaver = t3.off_id
     and t3.gyldig_fra_dato <= t1.vedtakstidspunkt
     and t3.gyldig_til_dato >= t1.vedtakstidspunkt
-    and t3.skjermet_kode = 0
 
-    left outer join {{ source('person', 'ident_off_id_til_fk_person1') }} t4 on
+    left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t4 on
     t1.mottaker = t4.off_id
     and t4.gyldig_fra_dato <= t1.vedtakstidspunkt
     and t4.gyldig_til_dato >= t1.vedtakstidspunkt
-    and t4.skjermet_kode = 0
 )
 
 
