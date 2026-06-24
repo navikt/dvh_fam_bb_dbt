@@ -34,3 +34,7 @@ final as (
 )
 
 select * from final
+
+{% if is_incremental() %}
+    WHERE kafka_offset > COALESCE(( SELECT MAX(t.kafka_offset) FROM {{ this }} t ), 0)
+{% endif %}

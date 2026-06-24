@@ -15,14 +15,15 @@ select pk_bb_inntekt_saerbidrag
 ,kafka_offset
 ,vedtaksid
 ,saksnr
---,skyldner
---,kravhaver
---,mottaker
 ,type_inntekt
 ,belop
-,inntekt_flagg
+,inntekt_for
 ,localtimestamp as lastet_dato 
 from sb_inn
 )
 
 select * from final
+
+{% if is_incremental() %}
+    WHERE kafka_offset > COALESCE(( SELECT MAX(t.kafka_offset) FROM {{ this }} t ), 0)
+{% endif %}

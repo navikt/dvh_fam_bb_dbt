@@ -55,7 +55,7 @@ select kafka_offset
 --,mottaker
 ,type_inntekt
 ,belop
-,'p' as inntekt_flagg
+,'p' as inntekt_for
 --,localtimestamp as lastet_dato 
 from bp
  
@@ -70,7 +70,7 @@ union all
 --,mottaker
 ,type_inntekt
 ,belop
-,'m' as inntekt_flagg
+,'m' as inntekt_for
 --,localtimestamp as lastet_dato 
 from bm
 )
