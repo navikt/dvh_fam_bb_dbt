@@ -5,6 +5,8 @@ sources:
     schema: sys
     tables:
       - name: dba_tables
+      - name: dba_views
+      - name: user_tab_privs
 
   - name: person
     schema: dt_person
