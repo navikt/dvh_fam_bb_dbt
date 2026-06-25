@@ -1,6 +1,11 @@
 version: 2
 
 sources:
+  - name: admin
+    schema: sys
+    tables:
+      - name: dba_tables
+
   - name: person
     schema: dt_person
     tables:
