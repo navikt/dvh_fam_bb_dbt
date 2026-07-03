@@ -8,6 +8,11 @@ sources:
       - name: dba_views
       - name: user_tab_privs
 
+  - name: admin_dmo
+    schema: dvh_dmo
+    tables: 
+       - name: dmo_ops_users
+
   - name: person
     schema: dt_person
     tables:
