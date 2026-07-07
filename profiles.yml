@@ -12,5 +12,5 @@ dvh_fam_bb:
       threads: 8    
       type: oracle      
       user: "{{env_var('DBT_ENV_SECRET_USER')}}"
-config:
-  send_anonymous_usage_stats: False
+#config: # Flyttet til dbt_project.yml siden dette er depricated fra profiles.
+#  send_anonymous_usage_stats: False

@@ -12,6 +12,7 @@ select kafka_offset
 ,type_inntekt
 ,belop
 ,inntekt_for
+,case when historisk_vedtak = 'true' then 1 else 0 end as historisk_flagg
 --,localtimestamp as lastet_dato 
 from sb_inn
 )

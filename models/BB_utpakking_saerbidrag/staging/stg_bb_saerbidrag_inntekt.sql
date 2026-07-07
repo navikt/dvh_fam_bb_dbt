@@ -12,11 +12,13 @@ bp as (
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
-                ,mottaker varchar2(255 char) PATH '$.mottaker',
-                    nested PATH '$.bpinntektListe[*]'
-                        columns(
-                            type_inntekt VARCHAR2(255)   PATH '$.type',
-                            belop    NUMBER(16,2)    PATH '$.beløp'
+                ,mottaker varchar2(255 char) PATH '$.mottaker'
+                ,historisk_vedtak varchar2(255 char) PATH '$.historiskVedtak'
+
+                ,nested PATH '$.bpinntektListe[*]'
+                    columns(
+                        type_inntekt VARCHAR2(255)   PATH '$.type'
+                        ,belop    NUMBER(16,2)    PATH '$.beløp'
                     )
             )
         ) j
@@ -34,11 +36,12 @@ bm as (
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
-                
+                ,historisk_vedtak varchar2(255 char) PATH '$.historiskVedtak'
+
                 ,nested PATH '$.bminntektListe[*]'
                     columns(
-                        type_inntekt VARCHAR2(255)   PATH '$.type',
-                        belop    NUMBER(16,2)    PATH '$.beløp'
+                        type_inntekt VARCHAR2(255)   PATH '$.type'
+                        ,belop    NUMBER(16,2)    PATH '$.beløp'
                     )
             )
         ) j
@@ -56,6 +59,7 @@ select kafka_offset
 ,type_inntekt
 ,belop
 ,'p' as inntekt_for
+,historisk_vedtak
 --,localtimestamp as lastet_dato 
 from bp
  
@@ -71,6 +75,7 @@ union all
 ,type_inntekt
 ,belop
 ,'m' as inntekt_for
+,historisk_vedtak
 --,localtimestamp as lastet_dato 
 from bm
 )

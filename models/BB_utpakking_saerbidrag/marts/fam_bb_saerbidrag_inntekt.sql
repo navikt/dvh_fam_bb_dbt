@@ -4,6 +4,7 @@
     )
 }}
 
+
 with sb_inn as (
     select * from {{ref ('int_bb_saerbidrag_inntekt')}}
 ),
@@ -18,6 +19,7 @@ select pk_bb_inntekt_saerbidrag
 ,type_inntekt
 ,belop
 ,inntekt_for
+,historisk_flagg
 ,localtimestamp as lastet_dato 
 from sb_inn
 )
