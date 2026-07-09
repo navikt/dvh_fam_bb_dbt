@@ -6,7 +6,9 @@ sources:
     tables:
       - name: dba_tables
       - name: dba_views
-      - name: user_tab_privs
+      - name: dba_role_privs
+      - name: dba_tab_privs
+      - name: dba_sys_privs
 
   - name: admin_dmo
     schema: dvh_dmo

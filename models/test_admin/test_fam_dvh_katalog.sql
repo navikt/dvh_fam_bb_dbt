@@ -1,7 +1,7 @@
 with katalog as (
 select skjema
 ,table_name as navn
-,'tabell' as format
+,'TABLE' as format
 ,has_identity as id_flagg
 ,num_rows as antall_rader
 ,sample_size as storrelse
@@ -12,7 +12,7 @@ union all
 
 select skjema
 ,view_name as navn
-,'view' as format
+,'VIEW' as format
 ,NULL as id_flagg
 ,NULL as antall_rader
 ,NULL as storrelse
@@ -22,6 +22,7 @@ from  {{ref ('test_views')}}
 
 final as (
     select concat( concat(lower(skjema), '-'),lower(navn)) as key_fam_dvh_katalog
+    ,REGEXP_SUBSTR(navn, '[^_]+', 1, 1) AS kategori
     ,katalog.* 
 from katalog
 
