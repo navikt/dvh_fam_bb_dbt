@@ -4,8 +4,6 @@ sources:
   - name: admin
     schema: sys
     tables:
-      - name: dba_tables
-      - name: dba_views
       - name: dba_role_privs
       - name: dba_tab_privs
       - name: dba_sys_privs
@@ -14,6 +12,7 @@ sources:
     schema: dvh_dmo
     tables: 
        - name: dmo_ops_users
+       - name: dmo_dstr_objects_to_team
 
   - name: person
     schema: dt_person

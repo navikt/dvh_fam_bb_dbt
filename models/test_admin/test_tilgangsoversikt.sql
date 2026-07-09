@@ -6,14 +6,14 @@ union
 
 select
 t2.grantee
-,t1.skjema as owner
-,t1.navn as table_name
+,t1.SCHEMA_NAME as owner
+,t1.OBJECT_NAME as table_name
 ,'SELECT ANY TABLE' as grantor 
 ,'SELECT' as privilege
 ,NULL as grantable
 ,NULL as hierarchy 
 ,null as common
-,t1.format as type
+,t1.object_type as type
 ,t2.inherited
 from {{ref ('test_fam_dvh_katalog')}} t1
 cross join (select GRANTEE, inherited from {{ref ('test_tilgang_til_alt')}} 
