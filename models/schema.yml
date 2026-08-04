@@ -1,12 +1,26 @@
 version: 2
 
 sources:
+  - name: admin
+    schema: sys
+    tables:
+      - name: dba_role_privs
+      - name: dba_tab_privs
+      - name: dba_sys_privs
+
+  - name: admin_dmo
+    schema: dvh_dmo
+    tables: 
+       - name: dmo_ops_users
+       - name: dmo_dstr_objects_to_team
+
   - name: person
     schema: dt_person
     tables:
       - name: dim_person
         description: 'inneholder informasjon om brukere, bla kjonn, fodeland, statsborgerskap osv'
       - name: ident_off_id_til_fk_person1
+      - name: ident_off_id_til_fk_person1_ikke_skjermet
 
   - name: kode_verk
     schema: dt_kodeverk
@@ -36,3 +50,25 @@ sources:
 
 
 
+models:
+  - name: fam_bb_saerbidrag_fagsak
+    columns:
+      - name: pk_bb_saerbidrag_fagsak
+        tests:
+          - not_null
+          - unique
+
+  - name: fam_bb_saerbidrag_inntekt
+    columns:
+      - name: pk_bb_inntekt_saerbidrag  
+        tests:
+          - not_null
+          - unique    
+      - name: fk_bb_saerbidrag_fagsak
+        tests:
+          - not_null
+
+          # FOREIGN KEY
+          - relationships:
+              to: ref('fam_bb_saerbidrag_fagsak')
+              field: pk_bb_saerbidrag_fagsak 

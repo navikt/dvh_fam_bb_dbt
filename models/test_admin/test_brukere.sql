@@ -1,0 +1,1 @@
+select * from {{ source('admin_dmo', 'dmo_ops_users') }}
