@@ -15,6 +15,7 @@ FROM (
     FK_BB_SAERBIDRAG_FAGSAK,
     VEDTAKS_ID,
     SAKSNR,
+    vedtaks_tidspunkt,
     TYPE_INNTEKT,
     INNTEKT_FOR,
     BELOP,

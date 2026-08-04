@@ -16,6 +16,7 @@ select pk_bb_inntekt_saerbidrag
 ,kafka_offset
 ,vedtaks_id
 ,saksnr
+,vedtaks_tidspunkt
 ,type_inntekt
 ,belop
 ,inntekt_for

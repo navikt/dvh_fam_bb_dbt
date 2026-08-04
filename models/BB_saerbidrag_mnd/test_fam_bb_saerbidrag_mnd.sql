@@ -11,6 +11,26 @@ and resultat = 'SÆRBIDRAG_INNVILGET'
 and INNKREVING_FLAGG = 1
 ),
 
+inntekt as (
+    SELECT * 
+    FROM ( 
+        SELECT
+            FK_BB_SAERBIDRAG_FAGSAK,
+            TYPE_INNTEKT,
+            INNTEKT_FOR,
+            BELOP
+        FROM {{ ref('fam_bb_saerbidrag_inntekt') }}
+    )
+    PIVOT ( 
+        SUM(BELOP) as totalt,
+        COUNT(DISTINCT TYPE_INNTEKT) AS antall_typer  
+        FOR INNTEKT_FOR IN ( 
+            'm' AS inntekt_mottaker,
+            'p' AS inntekt_pliktig
+        ) 
+    ) piv
+),
+
 
 omgjoring as (
     select t1.vedtaks_id
@@ -34,7 +54,8 @@ on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
 
 sammenstilling as (
 SELECT pk_bb_saerbidrag_fagsak
-,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aarmnd
+,concat(TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm'),to_char('03')) as fk_dim_tid
+,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aar_mnd
 ,case when OMGJOR_VEDTAKS_ID is null then concat(concat(to_char(t1.VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) 
 else concat(concat(to_char(OMGJOR_VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) end as sammenhengende_vedtak
 ,case when t2.gyldig is null then 1 else t2.gyldig end as gyldig_flagg
@@ -66,6 +87,7 @@ UNION ALL
 
 select 
 NULL as pk_bb_saerbidrag_fagsak
+,concat(TO_CHAR(aarmnd_omgjort_belopsendring),to_char('03')) as fk_dim_tid
 ,aarmnd_omgjort_belopsendring as aarmnd
 ,NULL as sammenhengende_vedtak
     ,1 as gyldig_flagg
@@ -92,8 +114,20 @@ from omgjoring
 group by aarmnd_omgjort_belopsendring
 ) t3
 where belop <> 0
+),
+
+final as (
+    select t1.*
+    ,t2.inntekt_mottaker_totalt
+    ,t2.inntekt_mottaker_antall_typer
+    ,t2.inntekt_pliktig_totalt
+    ,t2.inntekt_pliktig_antall_typer
+    from sammenstilling t1
+    left join inntekt t2
+    on t1.pk_bb_saerbidrag_fagsak = t2.fk_bb_saerbidrag_fagsak
 )
 
 
-select sammenstilling.*
-,localtimestamp as lastet_dato  from sammenstilling
+select final.*
+,localtimestamp as lastet_dato  
+from final

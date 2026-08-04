@@ -9,6 +9,7 @@ select kafka_offset
 ,row_number() over (partition by vedtaks_id, inntekt_for, type_inntekt order by kafka_offset) as type_inntekt_nr
 ,vedtaks_id
 ,saksnr
+,vedtaks_tidspunkt
 ,type_inntekt
 ,belop
 ,inntekt_for
