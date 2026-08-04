@@ -6,8 +6,8 @@ pre_final as (
     select * from bb_meta_data
         ,json_table(melding, '$'
             columns (
-                vedtaksid  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
+                vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtaks_tidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,type varchar2(50 char) PATH '$.type'
                 ,kategori varchar2(255 char) PATH '$.kategori'
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
@@ -15,12 +15,12 @@ pre_final as (
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
                 ,belop number PATH '$.beløp'
-                ,valutakode varchar2(5 char) PATH '$.valutakode'
+                ,valuta_kode varchar2(5 char) PATH '$.valutakode'
                 ,resultat varchar2(255 char) PATH '$.resultat'
                 ,innkreving_flagg varchar2(255 char) PATH '$.innkreving'
-                ,omgjor_vedtak_id varchar2(255 char) PATH '$.omgjørVedtakId'
+                ,omgjor_vedtaks_id varchar2(255 char) PATH '$.omgjørVedtakId'
                 ,historisk_vedtak varchar2(255 char) PATH '$.historiskVedtak'
-                ,kravbelop number PATH '$.kravbeløp'
+                ,krav_belop number PATH '$.kravbeløp'
                 ,godkjent_belop number PATH '$.godkjentBeløp'
                 ,betalt_belop number PATH '$.betaltBeløp'
                )
@@ -31,8 +31,8 @@ pre_final as (
 final as (
     select kafka_offset
     ,pk_bb_meta_data as fk_bb_meta_data
-    ,vedtaksid
-    ,vedtakstidspunkt
+    ,vedtaks_id
+    ,vedtaks_tidspunkt
     ,type
     ,kategori
     ,saksnr
@@ -40,12 +40,12 @@ final as (
     ,kravhaver
     ,mottaker
     ,belop
-    ,valutakode
+    ,valuta_kode
     ,resultat
     ,innkreving_flagg
-    ,omgjor_vedtak_id
+    ,omgjor_vedtaks_id
     ,historisk_vedtak
-    ,kravbelop
+    ,krav_belop
     ,godkjent_belop
     ,betalt_belop
     --,localtimestamp as lastet_dato 

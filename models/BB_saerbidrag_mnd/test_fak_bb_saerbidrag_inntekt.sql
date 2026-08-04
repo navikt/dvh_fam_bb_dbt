@@ -13,7 +13,7 @@ final as (
 FROM ( 
     SELECT
     FK_BB_SAERBIDRAG_FAGSAK,
-    VEDTAKSID,
+    VEDTAKS_ID,
     SAKSNR,
     TYPE_INNTEKT,
     INNTEKT_FOR,

@@ -7,8 +7,8 @@ bp as (
     from bb_meta_data
         ,json_table(melding, '$'
             columns (
-                vedtaksid  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
+                vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtaks_tidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
@@ -30,8 +30,8 @@ bm as (
     from bb_meta_data
         ,json_table(melding, '$'
             columns (
-                vedtaksid  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
+                vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtaks_tidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,saksnr varchar2(255 char) PATH '$.saksnr'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
@@ -50,9 +50,9 @@ bm as (
 
 final as (
 select kafka_offset
-,vedtaksid
+,vedtaks_id
 ,saksnr
-,vedtakstidspunkt
+,vedtaks_tidspunkt
 --,skyldner
 ,kravhaver
 --,mottaker
@@ -66,9 +66,9 @@ from bp
 union all
 
  select kafka_offset
-,vedtaksid
+,vedtaks_id
 ,saksnr
-,vedtakstidspunkt
+,vedtaks_tidspunkt
 --,skyldner
 ,kravhaver
 --,mottaker

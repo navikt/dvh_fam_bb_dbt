@@ -14,7 +14,7 @@ final as (
 select pk_bb_inntekt_saerbidrag
 ,fk_bb_saerbidrag_fagsak
 ,kafka_offset
-,vedtaksid
+,vedtaks_id
 ,saksnr
 ,type_inntekt
 ,belop

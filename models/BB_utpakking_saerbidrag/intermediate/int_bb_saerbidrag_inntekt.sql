@@ -5,9 +5,9 @@ with sb_inn as (
 
 final as (
 select kafka_offset
-,STANDARD_HASH(vedtaksid || saksnr || kravhaver, 'MD5') as fk_bb_saerbidrag_fagsak
-,row_number() over (partition by vedtaksid, inntekt_for, type_inntekt order by kafka_offset) as type_inntekt_nr
-,vedtaksid
+,STANDARD_HASH(vedtaks_id || saksnr || kravhaver, 'MD5') as fk_bb_saerbidrag_fagsak
+,row_number() over (partition by vedtaks_id, inntekt_for, type_inntekt order by kafka_offset) as type_inntekt_nr
+,vedtaks_id
 ,saksnr
 ,type_inntekt
 ,belop
@@ -18,5 +18,5 @@ from sb_inn
 )
 
 select final.*
-,standard_hash(vedtaksid || '|' || inntekt_for || '|' || type_inntekt || '|' || type_inntekt_nr,'MD5') as pk_bb_inntekt_saerbidrag
+,standard_hash(vedtaks_id || '|' || inntekt_for || '|' || type_inntekt || '|' || type_inntekt_nr,'MD5') as pk_bb_inntekt_saerbidrag
  from final

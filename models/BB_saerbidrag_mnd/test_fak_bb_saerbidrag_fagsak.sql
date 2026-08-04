@@ -13,33 +13,33 @@ and INNKREVING_FLAGG = 1
 
 
 omgjoring as (
-    select t1.vedtaksid
+    select t1.vedtaks_id
 ,case when aarmnd_original = aarmnd_omgjort then 0 else 1 end as gyldig
 ,aarmnd_omgjort as aarmnd_omgjort_belopsendring
 ,case when aarmnd_original < aarmnd_omgjort then belop * (-1) else 0 end as belop_endring
 from (
-select vedtaksid
-,TO_CHAR(VEDTAKSTIDSPUNKT, 'yyyymm') as aarmnd_original
+select vedtaks_id
+,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aarmnd_original
 ,belop
 FROM fag
 ) t1
 inner join (
-select OMGJOR_VEDTAK_ID
-,TO_CHAR(VEDTAKSTIDSPUNKT, 'yyyymm') as aarmnd_omgjort
+select OMGJOR_VEDTAKS_ID
+,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aarmnd_omgjort
 FROM fag
-where OMGJOR_VEDTAK_ID is not null) t2
-on t1.vedtaksid = t2.OMGJOR_VEDTAK_ID
+where OMGJOR_VEDTAKS_ID is not null) t2
+on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
 ),
 
 
 sammenstilling as (
 SELECT pk_bb_saerbidrag_fagsak
-,TO_CHAR(VEDTAKSTIDSPUNKT, 'yyyymm') as aarmnd
-,case when OMGJOR_VEDTAK_ID is null then concat(concat(to_char(t1.VEDTAKSID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) 
-else concat(concat(to_char(OMGJOR_VEDTAK_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) end as sammenhengende_vedtak
+,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aarmnd
+,case when OMGJOR_VEDTAKS_ID is null then concat(concat(to_char(t1.VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) 
+else concat(concat(to_char(OMGJOR_VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) end as sammenhengende_vedtak
 ,case when t2.gyldig is null then 1 else t2.gyldig end as gyldig_flagg
-    ,t1.vedtaksid
-    ,vedtakstidspunkt
+    ,t1.vedtaks_id
+    ,vedtaks_tidspunkt
     ,bidragstype
     ,kategori
     ,saksnr
@@ -47,20 +47,20 @@ else concat(concat(to_char(OMGJOR_VEDTAK_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER
     ,fk_person1_kravhaver
     ,fk_person1_mottaker
     ,belop
-    ,valutakode
+    ,valuta_kode
     ,resultat
     --,innkreving_flagg
     --,omgjor_vedtak_id
     --,historisk_flagg
-    ,kravbelop
+    ,krav_belop
     ,godkjent_belop
     ,betalt_belop
     ,lastet_dato as mart_lastet_dato
 
 from fag t1
-left join (select vedtaksid, gyldig 
+left join (select vedtaks_id, gyldig 
 from omgjoring) t2
-on t1.vedtaksid = t2.vedtaksid
+on t1.vedtaks_id = t2.vedtaks_id
 
 UNION ALL
 
@@ -69,8 +69,8 @@ NULL as pk_bb_saerbidrag_fagsak
 ,aarmnd_omgjort_belopsendring as aarmnd
 ,NULL as sammenhengende_vedtak
     ,1 as gyldig_flagg
-    ,NULL as vedtaksid
-    ,NULL as vedtakstidspunkt
+    ,NULL as vedtaks_id
+    ,NULL as vedtaks_tidspunkt
     ,NULL as bidragstype
     ,NULL as kategori
     ,NULL as saksnr
@@ -78,12 +78,12 @@ NULL as pk_bb_saerbidrag_fagsak
     ,NULL as fk_person1_kravhaver
     ,NULL as fk_person1_mottaker
     ,belop
-    ,NULL as valutakode   -- må håndteres tidligere
+    ,NULL as valuta_kode   -- må håndteres tidligere
     ,NULL as resultat
     --,NULL as innkreving_flagg
    -- ,NULL as omgjor_vedtak_id
    -- ,NULL as historisk_flagg
-    ,NULL as kravbelop
+    ,NULL as krav_belop
     ,NULL as godkjent_belop
     ,NULL as betalt_belop
     ,NULL as mart_lastet_dato

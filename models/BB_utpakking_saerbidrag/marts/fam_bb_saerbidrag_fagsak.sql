@@ -12,8 +12,8 @@ final as (
     select pk_bb_saerbidrag_fagsak
     ,kafka_offset
     ,fk_bb_meta_data
-    ,vedtaksid
-    ,vedtakstidspunkt
+    ,vedtaks_id
+    ,vedtaks_tidspunkt
     ,bidragstype
     ,kategori
     ,saksnr
@@ -21,12 +21,12 @@ final as (
     ,fk_person1_kravhaver
     ,fk_person1_mottaker
     ,belop
-    ,valutakode
+    ,valuta_kode
     ,resultat
     ,innkreving_flagg
-    ,omgjor_vedtak_id
+    ,omgjor_vedtaks_id
     ,historisk_flagg
-    ,kravbelop
+    ,krav_belop
     ,godkjent_belop
     ,betalt_belop
     ,localtimestamp as lastet_dato 
