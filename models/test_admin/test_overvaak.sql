@@ -34,7 +34,7 @@ fagsak_saer as (
     select 
         'DAG' as typelinje, 
         'SÆRBIDRAG' as stonadstype,
-        trunc(vedtaks_tidspunkt) as lastet_dato, 
+        trunc(lastet_dato) as lastet_dato, 
         count(distinct fk_bb_meta_data) as antfagsak, 
         min(vedtaks_tidspunkt) as tidspunkt_vedtak_min, 
         max(vedtaks_tidspunkt) as tidspunkt_vedtak_max,
@@ -42,8 +42,8 @@ fagsak_saer as (
         max(kafka_offset) as kafka_offset_max,
         count(distinct fk_bb_meta_data) - max(kafka_offset) + min(kafka_offset) - 1 as diff
     from {{ ref('fam_bb_saerbidrag_fagsak') }}
-    where trunc(vedtaks_tidspunkt) > current_date - 30
-    group by trunc(vedtaks_tidspunkt)
+    where trunc(lastet_dato) > current_date - 30
+    group by trunc(lastet_dato)
 ),
 
 final as (

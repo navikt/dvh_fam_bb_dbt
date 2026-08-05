@@ -11,6 +11,15 @@ and resultat = 'SÆRBIDRAG_INNVILGET'
 and INNKREVING_FLAGG = 1
 ),
 
+org_vedtak as (
+    SELECT
+    CONNECT_BY_ROOT vedtaks_id AS original_vedtaks_id,
+    vedtaks_id                 AS vedtaks_id
+FROM {{ref ('fam_bb_saerbidrag_fagsak')}}
+START WITH omgjor_vedtaks_id IS NULL
+CONNECT BY NOCYCLE PRIOR vedtaks_id = omgjor_vedtaks_id
+),
+
 inntekt as (
     SELECT * 
     FROM ( 
@@ -34,7 +43,7 @@ inntekt as (
 
 omgjoring as (
     select t1.vedtaks_id
-,case when aarmnd_original = aarmnd_omgjort then 0 else 1 end as gyldig
+,case when aarmnd_original = aarmnd_omgjort then 0 else 1 end as aktuell
 ,aarmnd_omgjort as aarmnd_omgjort_belopsendring
 ,case when aarmnd_original < aarmnd_omgjort then belop * (-1) else 0 end as belop_endring
 from (
@@ -56,9 +65,8 @@ sammenstilling as (
 SELECT pk_bb_saerbidrag_fagsak
 ,concat(TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm'),to_char('03')) as fk_dim_tid
 ,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aar_mnd
-,case when OMGJOR_VEDTAKS_ID is null then concat(concat(to_char(t1.VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) 
-else concat(concat(to_char(OMGJOR_VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVER)) end as sammenhengende_vedtak
-,case when t2.gyldig is null then 1 else t2.gyldig end as gyldig_flagg
+,concat(concat(to_char(t3.original_vedtaks_id),'-' ), to_char(FK_PERSON1_KRAVHAVER)) as sammenhengende_vedtak
+,case when t2.aktuell is null then 1 else t2.aktuell end as aktuell_flagg
     ,t1.vedtaks_id
     ,vedtaks_tidspunkt
     ,bidragstype
@@ -79,9 +87,11 @@ else concat(concat(to_char(OMGJOR_VEDTAKS_ID),'-' ), to_char(FK_PERSON1_KRAVHAVE
     ,lastet_dato as mart_lastet_dato
 
 from fag t1
-left join (select vedtaks_id, gyldig 
+left join (select vedtaks_id, aktuell 
 from omgjoring) t2
 on t1.vedtaks_id = t2.vedtaks_id
+left join org_vedtak t3
+on t1.vedtaks_id = t3.vedtaks_id
 
 UNION ALL
 
@@ -90,7 +100,7 @@ NULL as pk_bb_saerbidrag_fagsak
 ,concat(TO_CHAR(aarmnd_omgjort_belopsendring),to_char('03')) as fk_dim_tid
 ,aarmnd_omgjort_belopsendring as aarmnd
 ,NULL as sammenhengende_vedtak
-    ,1 as gyldig_flagg
+    ,1 as aktuell_flagg
     ,NULL as vedtaks_id
     ,NULL as vedtaks_tidspunkt
     ,NULL as bidragstype
@@ -129,5 +139,6 @@ final as (
 
 
 select final.*
+,'{{ var("gyldig_flagg") }}'  as gyldig_flagg
 ,localtimestamp as lastet_dato  
 from final

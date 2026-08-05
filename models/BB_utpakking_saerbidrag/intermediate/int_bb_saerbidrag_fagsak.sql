@@ -46,7 +46,6 @@ final as (
 
 
 select * from final
-where fk_person1_kravhaver <> -1
  
 
  
