@@ -60,8 +60,7 @@ where OMGJOR_VEDTAKS_ID is not null) t2
 on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
 ),
 
-
-sammenstilling as (
+vedtak as (
 SELECT pk_bb_saerbidrag_fagsak
 ,concat(TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm'),to_char('03')) as fk_dim_tid
 ,TO_CHAR(VEDTAKS_TIDSPUNKT, 'yyyymm') as aar_mnd
@@ -92,26 +91,26 @@ from omgjoring) t2
 on t1.vedtaks_id = t2.vedtaks_id
 left join org_vedtak t3
 on t1.vedtaks_id = t3.vedtaks_id
+),
 
-UNION ALL
-
+omgjorings_vedtak as (
 select 
 NULL as pk_bb_saerbidrag_fagsak
-,concat(TO_CHAR(aarmnd_omgjort_belopsendring),to_char('03')) as fk_dim_tid
-,aarmnd_omgjort_belopsendring as aarmnd
-,NULL as sammenhengende_vedtak
+,concat(TO_CHAR(t2.aarmnd_omgjort_belopsendring),to_char('03')) as fk_dim_tid
+,t2.aarmnd_omgjort_belopsendring as aarmnd
+,t1.sammenhengende_vedtak as sammenhengende_vedtak
     ,1 as aktuell_flagg
-    ,NULL as vedtaks_id
-    ,NULL as vedtaks_tidspunkt
+    ,t2.vedtaks_id
+    ,t1.vedtaks_tidspunkt
     ,NULL as bidragstype
     ,NULL as kategori
-    ,NULL as saksnr
-    ,NULL as fk_person1_skyldner
-    ,NULL as fk_person1_kravhaver
-    ,NULL as fk_person1_mottaker
-    ,belop
-    ,NULL as valuta_kode   -- må håndteres tidligere
-    ,NULL as resultat
+    ,t1.saksnr
+    ,t1.fk_person1_skyldner
+    ,t1.fk_person1_kravhaver
+    ,t1.fk_person1_mottaker
+    ,t2.belop
+    ,t1.valuta_kode   -- må håndteres tidligere
+    ,t1.resultat
     --,NULL as innkreving_flagg
    -- ,NULL as omgjor_vedtak_id
    -- ,NULL as historisk_flagg
@@ -119,11 +118,22 @@ NULL as pk_bb_saerbidrag_fagsak
     ,NULL as godkjent_belop
     ,NULL as betalt_belop
     ,NULL as mart_lastet_dato
-from (select aarmnd_omgjort_belopsendring, sum(belop_endring) as belop
-from omgjoring
-group by aarmnd_omgjort_belopsendring
-) t3
-where belop <> 0
+    from vedtak t1
+    inner join  (select aarmnd_omgjort_belopsendring,vedtaks_id, sum(belop_endring) as belop
+        from omgjoring
+        group by aarmnd_omgjort_belopsendring, vedtaks_id
+    ) t2
+    on t1.vedtaks_id = t2.vedtaks_id
+    where t2.belop <> 0
+),
+
+
+sammenstilling as (
+SELECT * from vedtak
+
+UNION ALL
+
+select * from omgjorings_vedtak
 ),
 
 final as (
