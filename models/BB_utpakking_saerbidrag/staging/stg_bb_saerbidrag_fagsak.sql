@@ -30,25 +30,24 @@ pre_final as (
 
 final as (
     select kafka_offset
-    ,pk_bb_meta_data as fk_bb_meta_data
-    ,vedtaks_id
-    ,vedtaks_tidspunkt
-    ,type
-    ,kategori
-    ,saksnr
-    ,skyldner
-    ,kravhaver
-    ,mottaker
-    ,belop
-    ,valuta_kode
-    ,resultat
-    ,innkreving_flagg
-    ,omgjor_vedtaks_id
-    ,historisk_vedtak
-    ,krav_belop
-    ,godkjent_belop
-    ,betalt_belop
-    --,localtimestamp as lastet_dato 
+        ,pk_bb_meta_data as fk_bb_meta_data
+        ,vedtaks_id
+        ,vedtaks_tidspunkt
+        ,type
+        ,kategori
+        ,saksnr
+        ,skyldner
+        ,kravhaver
+        ,mottaker
+        ,belop
+        ,valuta_kode
+        ,resultat
+        ,innkreving_flagg
+        ,omgjor_vedtaks_id
+        ,historisk_vedtak
+        ,krav_belop
+        ,godkjent_belop
+        ,betalt_belop
     from pre_final
 )
 

@@ -10,26 +10,26 @@ with sb as (
 
 final as (
     select pk_bb_saerbidrag_fagsak
-    ,kafka_offset
-    ,fk_bb_meta_data
-    ,vedtaks_id
-    ,vedtaks_tidspunkt
-    ,bidragstype
-    ,kategori
-    ,saksnr
-    ,fk_person1_skyldner
-    ,fk_person1_kravhaver
-    ,fk_person1_mottaker
-    ,belop
-    ,valuta_kode
-    ,resultat
-    ,innkreving_flagg
-    ,omgjor_vedtaks_id
-    ,historisk_flagg
-    ,krav_belop
-    ,godkjent_belop
-    ,betalt_belop
-    ,localtimestamp as lastet_dato 
+        ,kafka_offset
+        ,fk_bb_meta_data
+        ,vedtaks_id
+        ,vedtaks_tidspunkt
+        ,bidragstype
+        ,kategori
+        ,saksnr
+        ,fk_person1_skyldner
+        ,fk_person1_kravhaver
+        ,fk_person1_mottaker
+        ,belop
+        ,valuta_kode
+        ,resultat
+        ,innkreving_flagg
+        ,omgjor_vedtaks_id
+        ,historisk_flagg
+        ,krav_belop
+        ,godkjent_belop
+        ,betalt_belop
+        ,localtimestamp as lastet_dato 
     from sb
 )
 

@@ -49,35 +49,29 @@ bm as (
 ),
 
 final as (
-select kafka_offset
-,vedtaks_id
-,saksnr
-,vedtaks_tidspunkt
---,skyldner
-,kravhaver
---,mottaker
-,type_inntekt
-,belop
-,'p' as inntekt_for
-,historisk_vedtak
---,localtimestamp as lastet_dato 
-from bp
+    select kafka_offset
+        ,vedtaks_id
+        ,saksnr
+        ,vedtaks_tidspunkt
+        ,kravhaver
+        ,type_inntekt
+        ,belop
+        ,'p' as inntekt_for
+        ,historisk_vedtak
+    from bp
  
-union all
+    union all
 
- select kafka_offset
-,vedtaks_id
-,saksnr
-,vedtaks_tidspunkt
---,skyldner
-,kravhaver
---,mottaker
-,type_inntekt
-,belop
-,'m' as inntekt_for
-,historisk_vedtak
---,localtimestamp as lastet_dato 
-from bm
+    select kafka_offset
+        ,vedtaks_id
+        ,saksnr
+        ,vedtaks_tidspunkt
+        ,kravhaver
+        ,type_inntekt
+        ,belop
+        ,'m' as inntekt_for
+        ,historisk_vedtak
+    from bm
 )
 
 select * from final
