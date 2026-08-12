@@ -1,4 +1,6 @@
 
+{{ config (materialized='table') }}
+
 select
     pk_bb_meta_data,
     kafka_offset,

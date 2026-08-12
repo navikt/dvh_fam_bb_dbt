@@ -1,8 +1,10 @@
 with bb_meta_data as (
-  select * from {{ref ('stg_bb_meta_data')}}
+  select 
+    kafka_offset, melding 
+  from {{ref ('stg_bb_meta_data')}}
 ),
 
-pre_final as (
+final as (
     select *
     from bb_meta_data
         ,json_table(melding, '$'
@@ -20,10 +22,14 @@ pre_final as (
           )
        )
     ) j
-    --where json_value (melding, '$.forskuddPeriodeListe.inntektListe.size()' ) > 0
     where type_inntekt is not null
 )
 
 select 
-    * 
-from pre_final 
+    kafka_offset
+    ,vedtaks_id
+    ,periode_fra
+    ,periode_til
+    ,type_inntekt
+    ,belop
+from final 

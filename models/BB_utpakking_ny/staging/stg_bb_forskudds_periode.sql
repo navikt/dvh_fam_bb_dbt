@@ -1,8 +1,10 @@
 with bb_meta_data as (
-    select * from {{ref ('stg_bb_meta_data')}}
+    select 
+        kafka_offset, melding 
+    from {{ref ('stg_bb_meta_data')}}
 ),
 
-pre_final as (
+final as (
     select *
     from bb_meta_data
         ,json_table(melding, '$'
@@ -24,5 +26,14 @@ pre_final as (
 )
 
 select 
-    *
-from pre_final
+    vedtaks_id
+    ,periode_fra
+    ,periode_til
+    ,belop
+    ,resultat
+    ,barnets_alders_gruppe
+    ,antall_barn_i_egen_husstand
+    ,sivilstand
+    ,barn_bor_med_bm
+    ,kafka_offset
+from final
