@@ -6,9 +6,11 @@
 
 with fag as (
     select * from {{ref ('fam_bb_saerbidrag_fagsak')}}
-    where HISTORISK_FLAGG = 0 
-and resultat = 'SÆRBIDRAG_INNVILGET'
-and INNKREVING_FLAGG = 1
+    where belop is not null OR omgjor_vedtaks_id is not null
+    and INNKREVING_FLAGG = 1
+    --HISTORISK_FLAGG = 0 
+--and resultat = 'SÆRBIDRAG_INNVILGET'
+
 ),
 
 org_vedtak as (
