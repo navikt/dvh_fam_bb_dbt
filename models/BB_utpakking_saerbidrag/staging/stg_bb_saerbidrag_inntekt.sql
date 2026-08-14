@@ -7,9 +7,9 @@ bp as (
     from bb_meta_data
         ,json_table(melding, '$'
             columns (
-                vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtaks_tidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
-                ,saksnr varchar2(255 char) PATH '$.saksnr'
+                saksnr varchar2(255 char) PATH '$.saksnr'
+                ,vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtaks_ts TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
@@ -18,11 +18,11 @@ bp as (
                 ,nested PATH '$.bpinntektListe[*]'
                     columns(
                         type_inntekt VARCHAR2(255)   PATH '$.type'
-                        ,belop    NUMBER(16,2)    PATH '$.beløp'
+                        ,inntekt_belop    NUMBER(16,2)    PATH '$.beløp'
                     )
             )
         ) j
-    where belop is not null
+    where inntekt_belop is not null
 ),
 
 bm as (
@@ -30,9 +30,9 @@ bm as (
     from bb_meta_data
         ,json_table(melding, '$'
             columns (
-                vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtaks_tidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
-                ,saksnr varchar2(255 char) PATH '$.saksnr'
+                saksnr varchar2(255 char) PATH '$.saksnr'
+                ,vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
+                ,vedtaks_ts TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
@@ -41,36 +41,36 @@ bm as (
                 ,nested PATH '$.bminntektListe[*]'
                     columns(
                         type_inntekt VARCHAR2(255)   PATH '$.type'
-                        ,belop    NUMBER(16,2)    PATH '$.beløp'
+                        ,inntekt_belop    NUMBER(16,2)    PATH '$.beløp'
                     )
             )
         ) j
-    where belop is not null
+    where inntekt_belop is not null
 ),
 
 final as (
     select kafka_offset
-        ,vedtaks_id
         ,saksnr
-        ,vedtaks_tidspunkt
+        ,vedtaks_id
+        ,vedtaks_ts
         ,kravhaver
-        ,type_inntekt
-        ,belop
-        ,'p' as inntekt_for
         ,historisk_vedtak
+        ,type_inntekt
+        ,'p' as inntekt_for
+        ,inntekt_belop
     from bp
  
     union all
 
     select kafka_offset
-        ,vedtaks_id
         ,saksnr
-        ,vedtaks_tidspunkt
+        ,vedtaks_id
+        ,vedtaks_ts
         ,kravhaver
-        ,type_inntekt
-        ,belop
-        ,'m' as inntekt_for
         ,historisk_vedtak
+        ,type_inntekt
+        ,'m' as inntekt_for
+        ,inntekt_belop
     from bm
 )
 

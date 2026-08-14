@@ -12,20 +12,20 @@ final as (
     select pk_bb_saerbidrag_fagsak
         ,kafka_offset
         ,fk_bb_meta_data
-        ,vedtaks_id
-        ,vedtaks_tidspunkt
-        ,bidragstype
-        ,kategori
         ,saksnr
+        ,vedtaks_id
+        ,omgjor_vedtaks_id
+        ,vedtaks_tid
+        ,behandlings_type
+        ,kategori
         ,fk_person1_skyldner
         ,fk_person1_kravhaver
         ,fk_person1_mottaker
-        ,belop
-        ,valuta_kode
-        ,resultat
         ,innkreving_flagg
-        ,omgjor_vedtaks_id
         ,historisk_flagg
+        ,resultat
+        ,valuta_kode
+        ,belop
         ,krav_belop
         ,godkjent_belop
         ,betalt_belop

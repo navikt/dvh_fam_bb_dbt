@@ -14,13 +14,13 @@ final as (
     select pk_bb_inntekt_saerbidrag
         ,fk_bb_saerbidrag_fagsak
         ,kafka_offset
-        ,vedtaks_id
         ,saksnr
-        ,vedtaks_tidspunkt
-        ,type_inntekt
-        ,belop
-        ,inntekt_for
+        ,vedtaks_id
+        ,vedtaks_tid
         ,historisk_flagg
+        ,type_inntekt
+        ,inntekt_for
+        ,inntekt_belop
         ,localtimestamp as lastet_dato 
     from sb_inn
 )

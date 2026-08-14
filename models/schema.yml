@@ -82,9 +82,9 @@ models:
         description: "Syntetisk fremmednøkkel mot kildetabellen."
       - name: vedtaks_id
         description: "Vedtakets ID."
-      - name: vedtaks_tidspunkt
+      - name: vedtaks_tid
         description: "Vedtakets tidspunkt."
-      - name: bidragstype
+      - name: behandlings_type
         description: "Vedtakets type, for eksempel fastsettelse, endring eller klage."
       - name: kategori
         description: "Vedtakets kategori, for eksempel tannregulering."
