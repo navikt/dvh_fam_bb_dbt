@@ -13,17 +13,17 @@ final as (
 FROM ( 
     SELECT
     FK_BB_SAERBIDRAG_FAGSAK,
-    VEDTAKS_ID,
     SAKSNR,
-    vedtaks_tidspunkt,
+    VEDTAKS_ID,
+    vedtaks_tid,
     TYPE_INNTEKT,
     INNTEKT_FOR,
-    BELOP,
+    inntekt_belop,
     lastet_dato as mart_lastet_dato
     FROM inn
 ) 
 PIVOT ( 
-    SUM(BELOP)  
+    SUM(inntekt_belop)  
     FOR INNTEKT_FOR IN ( 
         'm' AS inntekt_mottaker,
         'p' AS inntekt_pliktig
@@ -35,7 +35,7 @@ select
     FK_BB_SAERBIDRAG_FAGSAK,
     VEDTAKS_ID,
     SAKSNR,
-    vedtaks_tidspunkt,
+    vedtaks_tid,
     TYPE_INNTEKT,
     inntekt_mottaker,
     inntekt_pliktig,
