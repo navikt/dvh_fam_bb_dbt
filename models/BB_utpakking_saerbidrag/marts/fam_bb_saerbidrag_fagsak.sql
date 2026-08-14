@@ -8,6 +8,12 @@ with sb as (
     select * from {{ref ('int_bb_saerbidrag_fagsak')}}
 ),
 
+map_resultat as (
+    select resultat_fra
+        ,resultat_til as resultat
+    from {{ source ('fam_bb', 'fam_bb_bidrag_resultat_mapping') }}
+),
+
 final as (
     select pk_bb_saerbidrag_fagsak
         ,kafka_offset
@@ -23,14 +29,17 @@ final as (
         ,fk_person1_mottaker
         ,innkreving_flagg
         ,historisk_flagg
-        ,resultat
+        ,case when t2.resultat is null then t1.resultat else t2.resultat end as resultat
         ,valuta_kode
         ,belop
         ,krav_belop
         ,godkjent_belop
         ,betalt_belop
         ,localtimestamp as lastet_dato 
-    from sb
+    from sb t1
+    left join map_resultat t2
+    on t1.resultat = t2.resultat_fra
+
 )
 
 select * from final
