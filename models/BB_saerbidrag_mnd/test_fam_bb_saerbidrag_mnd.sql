@@ -147,9 +147,9 @@ final as (
     ,t2.inntekt_mottaker_antall_typer
     ,t2.inntekt_pliktig_totalt
     ,t2.inntekt_pliktig_antall_typer
-    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t3', prefix='SKYLDNER_') }}
-    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t4', prefix='MOTTAKER_') }}
-    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t5', prefix='KRAVHAVER_') }}
+    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t3', prefix='SKYLDNER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t4', prefix='MOTTAKER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t5', prefix='KRAVHAVER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
     from sammenstilling t1
     left join inntekt t2
     on t1.pk_bb_saerbidrag_fagsak = t2.fk_bb_saerbidrag_fagsak
