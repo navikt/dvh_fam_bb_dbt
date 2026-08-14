@@ -6,8 +6,12 @@
 
 with fag as (
     select * from {{ref ('fam_bb_saerbidrag_fagsak')}}
-    where belop is not null OR omgjor_vedtaks_id is not null
+    where belop is not null 
+    or omgjor_vedtaks_id is not null
     and INNKREVING_FLAGG = 1
+    and fk_person1_skyldner <> -5
+    and fk_person1_kravhaver <> -5
+    and fk_person1_mottaker <> -5
 ),
 
 org_vedtak as (
@@ -48,7 +52,7 @@ omgjoring as (
     from (
         select vedtaks_id
             ,TO_CHAR(vedtaks_tid, 'yyyymm') as aarmnd_original
-            ,belop
+            ,case when belop is null then 0 else belop end as belop
         FROM fag
     ) t1
     inner join (
