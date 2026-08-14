@@ -26,6 +26,8 @@ sources:
     schema: dt_kodeverk
     tables:
      - name: dim_tid
+     - name: dim_geografi
+     - name: dim_kjonn
 
   - name: fam_bb
     schema: dvh_fam_bb
