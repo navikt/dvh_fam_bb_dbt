@@ -67,7 +67,7 @@ omgjoring as (
 
 vedtak as (
     SELECT pk_bb_saerbidrag_fagsak
-        ,concat(TO_CHAR(vedtaks_tid, 'yyyymm'),to_char('03')) as fk_dim_tid
+        ,concat(TO_CHAR(vedtaks_tid, 'yyyymm'),to_char('003')) as fk_dim_tid
         ,TO_CHAR(vedtaks_tid, 'yyyymm') as aar_mnd
         ,concat(concat(to_char(t3.original_vedtaks_id),'-' ), to_char(FK_PERSON1_KRAVHAVER)) as sammenhengende_vedtak
         ,case when t2.aktuell is null then 1 else t2.aktuell end as aktuell_flagg
