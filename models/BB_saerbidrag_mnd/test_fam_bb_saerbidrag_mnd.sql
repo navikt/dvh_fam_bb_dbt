@@ -6,8 +6,8 @@
 
 with fag as (
     select * from {{ref ('fam_bb_saerbidrag_fagsak')}}
-    where belop is not null 
-    or omgjor_vedtaks_id is not null
+    where (belop is not null 
+    or omgjor_vedtaks_id is not null)
     and INNKREVING_FLAGG = 1
     and fk_person1_skyldner <> -5
     and fk_person1_kravhaver <> -5
@@ -67,7 +67,7 @@ omgjoring as (
 
 vedtak as (
     SELECT pk_bb_saerbidrag_fagsak
-        ,concat(TO_CHAR(vedtaks_tid, 'yyyymm'),to_char('003')) as fk_dim_tid
+        ,concat(TO_CHAR(vedtaks_tid, 'yyyymm'),'003') as fk_dim_tid
         ,TO_CHAR(vedtaks_tid, 'yyyymm') as aar_mnd
         ,concat(concat(to_char(t3.original_vedtaks_id),'-' ), to_char(FK_PERSON1_KRAVHAVER)) as sammenhengende_vedtak
         ,case when t2.aktuell is null then 1 else t2.aktuell end as aktuell_flagg
@@ -97,10 +97,11 @@ vedtak as (
     on t1.vedtaks_id = t3.vedtaks_id
 ),
 
+
 omgjorings_vedtak as (
     select 
         NULL as pk_bb_saerbidrag_fagsak
-        ,concat(TO_CHAR(t2.aarmnd_omgjort_belopsendring),to_char('03')) as fk_dim_tid
+        ,concat(TO_CHAR(t2.aarmnd_omgjort_belopsendring),'003') as fk_dim_tid
         ,t2.aarmnd_omgjort_belopsendring as aarmnd
         ,t1.sammenhengende_vedtak as sammenhengende_vedtak
         ,1 as aktuell_flagg
@@ -166,7 +167,6 @@ final as (
         and t5.gyldig_fra_dato <= t1.vedtaks_tid
         and t5.gyldig_til_dato >= t1.vedtaks_tid
 )
-
 
 select final.*
 ,'{{ var("gyldig_flagg") }}'  as gyldig_flagg
