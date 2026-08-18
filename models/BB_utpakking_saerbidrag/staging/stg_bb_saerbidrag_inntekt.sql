@@ -9,7 +9,7 @@ bp as (
             columns (
                 saksnr varchar2(255 char) PATH '$.saksnr'
                 ,vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtaks_ts TIMESTAMP(3) PATH '$.vedtakstidspunkt'
+                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
@@ -17,8 +17,11 @@ bp as (
 
                 ,nested PATH '$.bpinntektListe[*]'
                     columns(
-                        type_inntekt VARCHAR2(255)   PATH '$.type'
+                        inntekt_kategori VARCHAR2(255)   PATH '$.type'
+                        ,gjelder_kravhaver   VARCHAR2(255)   PATH '$.gjelderKravhaver'
+                        ,inntekt_type VARCHAR2(255)   PATH '$.inntektstype'
                         ,inntekt_belop    NUMBER(16,2)    PATH '$.beløp'
+
                     )
             )
         ) j
@@ -32,7 +35,7 @@ bm as (
             columns (
                 saksnr varchar2(255 char) PATH '$.saksnr'
                 ,vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
-                ,vedtaks_ts TIMESTAMP(3) PATH '$.vedtakstidspunkt'
+                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
                 ,kravhaver varchar2(255 char) PATH '$.kravhaver'
                 ,mottaker varchar2(255 char) PATH '$.mottaker'
@@ -40,7 +43,9 @@ bm as (
 
                 ,nested PATH '$.bminntektListe[*]'
                     columns(
-                        type_inntekt VARCHAR2(255)   PATH '$.type'
+                        inntekt_kategori VARCHAR2(255)   PATH '$.type'
+                        ,gjelder_kravhaver   VARCHAR2(255)   PATH '$.gjelderKravhaver'
+                        ,inntekt_type VARCHAR2(255)   PATH '$.inntektstype'
                         ,inntekt_belop    NUMBER(16,2)    PATH '$.beløp'
                     )
             )
@@ -52,10 +57,12 @@ final as (
     select kafka_offset
         ,saksnr
         ,vedtaks_id
-        ,vedtaks_ts
+        ,vedtakstidspunkt
         ,kravhaver
+        ,gjelder_kravhaver
         ,historisk_vedtak
-        ,type_inntekt
+        ,inntekt_kategori
+        ,inntekt_type
         ,'p' as inntekt_for
         ,inntekt_belop
     from bp
@@ -65,10 +72,12 @@ final as (
     select kafka_offset
         ,saksnr
         ,vedtaks_id
-        ,vedtaks_ts
+        ,vedtakstidspunkt
         ,kravhaver
+        ,gjelder_kravhaver
         ,historisk_vedtak
-        ,type_inntekt
+        ,inntekt_kategori
+        ,inntekt_type
         ,'m' as inntekt_for
         ,inntekt_belop
     from bm

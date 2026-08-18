@@ -7,9 +7,10 @@ pre_final as (
         ,json_table(melding, '$'
             columns (
                 saksnr varchar2(255 char) PATH '$.saksnr'
+                ,referanse  varchar2(255 char) PATH '$.referanse'
                 ,vedtaks_id  VARCHAR2(255 CHAR) PATH '$.vedtaksid'
                 ,omgjor_vedtaks_id varchar2(255 char) PATH '$.omgjørVedtakId'
-                ,vedtaks_ts TIMESTAMP(3) PATH '$.vedtakstidspunkt'
+                ,vedtakstidspunkt TIMESTAMP(3) PATH '$.vedtakstidspunkt'
                 ,behandlings_type varchar2(50 char) PATH '$.type'
                 ,kategori varchar2(255 char) PATH '$.kategori'
                 ,skyldner varchar2(255 char) PATH '$.skyldner'
@@ -32,9 +33,10 @@ final as (
     select kafka_offset
         ,pk_bb_meta_data as fk_bb_meta_data
         ,saksnr
+        ,referanse
         ,vedtaks_id
         ,omgjor_vedtaks_id
-        ,vedtaks_ts
+        ,vedtakstidspunkt
         ,behandlings_type
         ,kategori
         ,skyldner

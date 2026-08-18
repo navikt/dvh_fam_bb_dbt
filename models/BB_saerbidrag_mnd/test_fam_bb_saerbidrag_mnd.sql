@@ -5,39 +5,38 @@
 }}
 
 with fag as (
-    select * from {{ref ('fam_bb_saerbidrag_fagsak')}}
-    where (belop is not null 
-    or omgjor_vedtaks_id is not null)
-    and INNKREVING_FLAGG = 1
-    and fk_person1_skyldner <> -5
-    and fk_person1_kravhaver <> -5
-    and fk_person1_mottaker <> -5
+    select t1.* from {{ref ('fam_bb_saerbidrag_fagsak')}} t1
+    left join (select omgjor.vedtaks_id
+       ,1 as forrige_belop_null
+        from {{ref ('fam_bb_saerbidrag_fagsak')}}  omgjor
+            left join {{ref ('fam_bb_saerbidrag_fagsak')}}  ved
+                on omgjor.omgjor_vedtaks_id = ved.vedtaks_id
+                where omgjor.omgjor_vedtaks_id is not null
+                and ved.belop is null) t2
+    on t1.vedtaks_id = t2.vedtaks_id
+    where (t1.belop is not null 
+    or t1.omgjor_vedtaks_id is not null)
+    and t1.INNKREVING_FLAGG = 1
+    and t2.forrige_belop_null is null
+    and t1.fk_person1_skyldner <> -5
+    and t1.fk_person1_kravhaver <> -5
+    and t1.fk_person1_mottaker <> -5
 ),
 
-
-
-org_vedtak as (
-    SELECT
-    CONNECT_BY_ROOT vedtaks_id AS original_vedtaks_id,
-    vedtaks_id                 AS vedtaks_id
-    FROM {{ref ('fam_bb_saerbidrag_fagsak')}}
-    START WITH omgjor_vedtaks_id IS NULL
-    CONNECT BY NOCYCLE PRIOR vedtaks_id = omgjor_vedtaks_id
-),
 
 inntekt as (
     SELECT * 
     FROM ( 
         SELECT
             FK_BB_SAERBIDRAG_FAGSAK,
-            TYPE_INNTEKT,
+            inntekt_kategori,
             INNTEKT_FOR,
             inntekt_belop
         FROM {{ ref('fam_bb_saerbidrag_inntekt') }}
     )
     PIVOT ( 
         SUM(inntekt_belop) as totalt,
-        COUNT(DISTINCT TYPE_INNTEKT) AS antall_typer  
+        COUNT(DISTINCT inntekt_kategori) AS antall_typer  
         FOR INNTEKT_FOR IN ( 
             'm' AS inntekt_mottaker,
             'p' AS inntekt_pliktig
@@ -53,13 +52,13 @@ omgjoring as (
         ,case when aarmnd_original < aarmnd_omgjort then belop * (-1) else 0 end as belop_endring
     from (
         select vedtaks_id
-            ,TO_CHAR(vedtaks_tid, 'yyyymm') as aarmnd_original
+            ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aarmnd_original
             ,case when belop is null then 0 else belop end as belop
         FROM fag
     ) t1
     inner join (
         select OMGJOR_VEDTAKS_ID
-            ,TO_CHAR(vedtaks_tid, 'yyyymm') as aarmnd_omgjort
+            ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aarmnd_omgjort
         FROM fag
         where OMGJOR_VEDTAKS_ID is not null) t2
         on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
@@ -67,19 +66,19 @@ omgjoring as (
 
 vedtak as (
     SELECT pk_bb_saerbidrag_fagsak
-        ,concat(TO_CHAR(vedtaks_tid, 'yyyymm'),'003') as fk_dim_tid
-        ,TO_CHAR(vedtaks_tid, 'yyyymm') as aar_mnd
-        ,concat(concat(to_char(t3.original_vedtaks_id),'-' ), to_char(FK_PERSON1_KRAVHAVER)) as sammenhengende_vedtak
+        ,concat(TO_CHAR(vedtakstidspunkt, 'yyyymm'),'003') as fk_dim_tid
+        ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aar_maaned
+        ,referanse
         ,case when t2.aktuell is null then 1 else t2.aktuell end as aktuell_flagg
         ,t1.vedtaks_id
-        ,vedtaks_tid
+        ,vedtakstidspunkt
         ,behandlings_type
         ,kategori
         ,saksnr
         ,fk_person1_skyldner
         ,fk_person1_kravhaver
         ,fk_person1_mottaker
-        ,belop
+        ,case when belop is null then 0 else belop end as belop
         ,valuta_kode
         ,resultat
         --,innkreving_flagg
@@ -93,8 +92,6 @@ vedtak as (
     left join (select vedtaks_id, aktuell 
         from omgjoring) t2
     on t1.vedtaks_id = t2.vedtaks_id
-    left join org_vedtak t3
-    on t1.vedtaks_id = t3.vedtaks_id
 ),
 
 
@@ -102,11 +99,11 @@ omgjorings_vedtak as (
     select 
         NULL as pk_bb_saerbidrag_fagsak
         ,concat(TO_CHAR(t2.aarmnd_omgjort_belopsendring),'003') as fk_dim_tid
-        ,t2.aarmnd_omgjort_belopsendring as aarmnd
-        ,t1.sammenhengende_vedtak as sammenhengende_vedtak
+        ,t2.aarmnd_omgjort_belopsendring as aar_maaned
+        ,t1.referanse as referanse
         ,1 as aktuell_flagg
         ,t2.vedtaks_id
-        ,t1.vedtaks_tid
+        ,t1.vedtakstidspunkt
         ,NULL as behandlings_type
         ,NULL as kategori
         ,t1.saksnr
@@ -156,16 +153,16 @@ final as (
     on t1.pk_bb_saerbidrag_fagsak = t2.fk_bb_saerbidrag_fagsak
     left join  {{ ref('dim_person') }} t3
     on t1.fk_person1_skyldner = t3.fk_person1
-        and t3.gyldig_fra_dato <= t1.vedtaks_tid
-        and t3.gyldig_til_dato >= t1.vedtaks_tid
+        and t3.gyldig_fra_dato <= t1.vedtakstidspunkt
+        and t3.gyldig_til_dato >= t1.vedtakstidspunkt
     left join  {{ ref('dim_person') }} t4
     on t1.fk_person1_mottaker = t4.fk_person1
-        and t4.gyldig_fra_dato <= t1.vedtaks_tid
-        and t4.gyldig_til_dato >= t1.vedtaks_tid
+        and t4.gyldig_fra_dato <= t1.vedtakstidspunkt
+        and t4.gyldig_til_dato >= t1.vedtakstidspunkt
     left join  {{ ref('dim_person') }} t5
     on t1.fk_person1_kravhaver = t5.fk_person1
-        and t5.gyldig_fra_dato <= t1.vedtaks_tid
-        and t5.gyldig_til_dato >= t1.vedtaks_tid
+        and t5.gyldig_fra_dato <= t1.vedtakstidspunkt
+        and t5.gyldig_til_dato >= t1.vedtakstidspunkt
 )
 
 select final.*

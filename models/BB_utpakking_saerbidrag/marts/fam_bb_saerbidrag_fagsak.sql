@@ -19,9 +19,10 @@ final as (
         ,kafka_offset
         ,fk_bb_meta_data
         ,saksnr
+        ,referanse
         ,vedtaks_id
         ,omgjor_vedtaks_id
-        ,vedtaks_tid
+        ,vedtakstidspunkt
         ,behandlings_type
         ,kategori
         ,fk_person1_skyldner

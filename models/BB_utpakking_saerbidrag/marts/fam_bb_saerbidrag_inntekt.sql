@@ -16,9 +16,10 @@ final as (
         ,kafka_offset
         ,saksnr
         ,vedtaks_id
-        ,vedtaks_tid
+        ,vedtakstidspunkt
         ,historisk_flagg
-        ,type_inntekt
+        ,inntekt_kategori
+        ,inntekt_type
         ,inntekt_for
         ,inntekt_belop
         ,localtimestamp as lastet_dato 

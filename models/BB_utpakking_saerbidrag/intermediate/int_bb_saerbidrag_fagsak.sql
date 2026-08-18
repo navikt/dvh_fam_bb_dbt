@@ -9,9 +9,10 @@ final as (
         ,fk_bb_meta_data
         ,STANDARD_HASH(t1.vedtaks_id || t1.saksnr || t1.kravhaver, 'MD5') as pk_bb_saerbidrag_fagsak
         ,saksnr
+        ,referanse
         ,vedtaks_id
         ,omgjor_vedtaks_id
-        ,cast(vedtaks_ts as timestamp(0))  as vedtaks_tid -- fjerner millisekunder
+        ,cast(vedtakstidspunkt as timestamp(0))  as vedtakstidspunkt -- fjerner millisekunder
         ,behandlings_type
         ,kategori
         ,nvl(t2.fk_person1, -5 ) as fk_person1_skyldner
@@ -28,18 +29,18 @@ final as (
     from sb t1
     left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t2 
     on t1.skyldner = t2.off_id
-    and t2.gyldig_fra_dato <= t1.vedtaks_ts
-    and t2.gyldig_til_dato >= t1.vedtaks_ts
+    and t2.gyldig_fra_dato <= t1.vedtakstidspunkt
+    and t2.gyldig_til_dato >= t1.vedtakstidspunkt
 
     left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t3
     on t1.kravhaver = t3.off_id
-    and t3.gyldig_fra_dato <= t1.vedtaks_ts
-    and t3.gyldig_til_dato >= t1.vedtaks_ts
+    and t3.gyldig_fra_dato <= t1.vedtakstidspunkt
+    and t3.gyldig_til_dato >= t1.vedtakstidspunkt
 
     left outer join {{ source('person', 'ident_off_id_til_fk_person1_ikke_skjermet') }} t4 
     on t1.mottaker = t4.off_id
-    and t4.gyldig_fra_dato <= t1.vedtaks_ts
-    and t4.gyldig_til_dato >= t1.vedtaks_ts
+    and t4.gyldig_fra_dato <= t1.vedtakstidspunkt
+    and t4.gyldig_til_dato >= t1.vedtakstidspunkt
 )
 
 select * from final

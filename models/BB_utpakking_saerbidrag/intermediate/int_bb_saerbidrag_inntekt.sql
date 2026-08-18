@@ -6,18 +6,23 @@ with sb_inn as (
 final as (
     select kafka_offset
         ,STANDARD_HASH(vedtaks_id || saksnr || kravhaver, 'MD5') as fk_bb_saerbidrag_fagsak
-        ,row_number() over (partition by vedtaks_id, inntekt_for, type_inntekt order by kafka_offset) as type_inntekt_nr
+        ,row_number() over (partition by vedtaks_id, inntekt_for, inntekt_kategori order by kafka_offset) as type_inntekt_nr
         ,saksnr
         ,vedtaks_id
-        ,cast(vedtaks_ts as timestamp(0))  as vedtaks_tid -- fjerner millisekunder
+        ,cast(vedtakstidspunkt as timestamp(0))  as vedtakstidspunkt -- fjerner millisekunder
         ,case when historisk_vedtak = 'true' then 1 else 0 end as historisk_flagg
-        ,type_inntekt
+        ,inntekt_kategori
+        ,inntekt_type
         ,inntekt_for
         ,inntekt_belop
     from sb_inn
 )
 
-select standard_hash(vedtaks_id || '|' || inntekt_for || '|' || type_inntekt || '|' || type_inntekt_nr,'MD5') as pk_bb_inntekt_saerbidrag
+
+
+
+
+select standard_hash(vedtaks_id || '|' || inntekt_for || '|' || inntekt_kategori || '|' || type_inntekt_nr,'MD5') as pk_bb_inntekt_saerbidrag
     ,final.*
 
  from final
