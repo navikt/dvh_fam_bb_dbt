@@ -3,41 +3,50 @@ models:
   - name: fam_bb_saerbidrag_inntekt
     description: "Tabell for inntekter knyttet til særbidragsvedtak."
     columns:
-      - name: pk_bb_inntekt_saerbidrag  
+      - name: pk_bb_inntekt_saerbidrag
         description: "Unik nøkkel for tabellen."
         tests:
           - not_null
-          - unique    
+          - unique
+        data_type: raw
       - name: fk_bb_saerbidrag_fagsak
         description: "Syntetisk fremmednøkkel mot særbidragstabellen for fagsak."
         tests:
           - not_null
-          # FOREIGN KEY
           - relationships:
               to: ref('fam_bb_saerbidrag_fagsak')
-              field: pk_bb_saerbidrag_fagsak 
+              field: pk_bb_saerbidrag_fagsak
+        data_type: raw
       - name: kafka_offset
         description: "Kafka-kø sekvensnummer."
+        data_type: number
       - name: saksnr
-        description: "Saksnummeret vedtaket er en del av."    
+        description: "Saksnummeret vedtaket er en del av."
+        data_type: varchar2
       - name: vedtaks_id
         description: "Vedtakets ID."
+        data_type: varchar2
       - name: vedtakstidspunkt
         description: "Vedtakets tidspunkt."
+        data_type: timestamp(0)
       - name: historisk_flagg
         description: "Binær verdi som viser vedtakets systemtilknytning. Hvis 1 er det snakk om eldre fagsystem."
+        data_type: number
       - name: inntekt_kategori
         description: "Inntektens kategori."
+        data_type: varchar2
       - name: inntekt_type
         description: "Inntektens type."
+        data_type: varchar2
       - name: inntekt_for
         description: "Personen inntekten gjelder for, med verdiene p for pliktig, m for mottaker, k for kravhaver."
+        data_type: char
       - name: inntekt_belop
         description: "Inntekt i beløp."
+        data_type: number
       - name: lastet_dato
         description: "Data lastet inn i tabellen i datavarehuset."
-  
-
+        data_type: timestamp(6)
 
   - name: fam_bb_saerbidrag_fagsak
     description: "Tabell for særbidragsvedtak."
@@ -47,45 +56,67 @@ models:
         tests:
           - not_null
           - unique
+        data_type: raw
       - name: kafka_offset
         description: "Kafka-kø sekvensnummer."
+        data_type: number
       - name: fk_bb_meta_data
         description: "Syntetisk fremmednøkkel mot kildetabellen."
+        data_type: number
       - name: referanse
         description: "Unik referanse for vedtaket."
+        data_type: varchar2
       - name: vedtaks_id
-        description: "Vedtakets ID."
+        description: "Vedtakets ID"
+        data_type: varchar2
       - name: vedtakstidspunkt
         description: "Vedtakets tidspunkt."
+        data_type: timestamp(0)
       - name: behandlings_type
         description: "Vedtakets type, for eksempel fastsettelse, endring eller klage."
+        data_type: varchar2
       - name: kategori
         description: "Vedtakets kategori, for eksempel tannregulering."
+        data_type: varchar2
       - name: saksnr
         description: "Saksnummeret vedtaket er en del av."
+        data_type: varchar2
       - name: fk_person1_skyldner
         description: "Syntetisk identifikator for skyldner."
+        data_type: number
       - name: fk_person1_kravhaver
         description: "Syntetisk identifikator for kravhaver."
+        data_type: number
       - name: fk_person1_mottaker
         description: "Syntetisk identifikator for mottaker."
+        data_type: number
       - name: belop
         description: "Skyldners andel av godkjent beløp."
+        data_type: number
       - name: valuta_kode
         description: "Valutakoden tilknyttet beløpet."
+        data_type: varchar2
       - name: resultat
         description: "Vedtakets resultat, for eksempel innvilget eller avslag."
+        data_type: varchar2
       - name: innkreving_flagg
         description: "Binær verdi som viser om vedtaket er registrert for innkreving via Skatt."
+        data_type: number
       - name: omgjor_vedtaks_id
         description: "Vedtak som er omgjort av dette vedtaket."
+        data_type: varchar2
       - name: historisk_flagg
         description: "Binær verdi som viser vedtakets systemtilknytning. Hvis 1 er det snakk om eldre fagsystem."
+        data_type: number
       - name: krav_belop
         description: "Beløpet mottaker ba om."
+        data_type: number
       - name: godkjent_belop
         description: "Beløpet som ble godkjent av saksbehandler."
+        data_type: number
       - name: betalt_belop
         description: "Beløpet som eventuelt er betalt tidligere av skyldner."
+        data_type: number
       - name: lastet_dato
         description: "Data lastet inn i tabellen i datavarehuset."
+        data_type: timestamp(6)
