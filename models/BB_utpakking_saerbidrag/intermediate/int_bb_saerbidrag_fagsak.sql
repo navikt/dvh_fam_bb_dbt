@@ -12,7 +12,7 @@ final as (
         ,referanse
         ,vedtaks_id
         ,omgjor_vedtaks_id
-        ,cast(vedtakstidspunkt as timestamp(0))  as vedtakstidspunkt -- fjerner millisekunder
+        ,vedtakstidspunkt
         ,behandlings_type
         ,kategori
         ,nvl(t2.fk_person1, -5 ) as fk_person1_skyldner

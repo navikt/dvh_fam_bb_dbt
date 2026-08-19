@@ -9,7 +9,7 @@ final as (
         ,row_number() over (partition by vedtaks_id, inntekt_for, inntekt_kategori order by kafka_offset) as type_inntekt_nr
         ,saksnr
         ,vedtaks_id
-        ,cast(vedtakstidspunkt as timestamp(0))  as vedtakstidspunkt -- fjerner millisekunder
+        ,vedtakstidspunkt
         ,case when historisk_vedtak = 'true' then 1 else 0 end as historisk_flagg
         ,inntekt_kategori
         ,inntekt_type
