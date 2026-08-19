@@ -107,7 +107,7 @@ opphor_hvis_finnes as
 inntekt as (
     select fagsak.*
           ,inntekt.fk_bb_forskudds_periode
-          ,inntekt.type_inntekt, inntekt.belop as belop_inntekt
+          ,inntekt.type_inntekt, inntekt.inntekt as belop_inntekt
     from fagsak
     join {{ source ('fam_bb', 'fam_bb_inntekt') }} inntekt
     on fagsak.pk_bb_forskudds_periode = inntekt.fk_bb_forskudds_periode
@@ -183,21 +183,29 @@ periode_uten_opphort as (
               when dim_kravhaver.kjonn_nr = 0 then 'K'
               else 'U'
           end kjonn_kravhaver
+
           ,dim_kravhaver.bosted_kommune_nr as bosted_kommune_nr_kravhaver
           ,dim_kravhaver.bosted_land as bosted_land_kravhaver
           ,dim_kravhaver.gt_verdi as gt_verdi_kravhaver
           ,dim_kravhaver.getitype as getitype_kravhaver
            --Dimensjonsinfo om kravhaver slutter
+
            --Dimensjonsinfo om mottaker starter
           ,dim_mottaker.pk_dim_person as fk_dim_person_mottaker
+          ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
+          ,case 
+              when dim_mottaker.kjonn_nr = 1 then 'M'
+              when dim_mottaker.kjonn_nr = 0 then 'K'
+              else 'U'
+          end kjonn_mottaker
           ,dim_mottaker.bosted_kommune_nr as bosted_kommune_nr_mottaker
           ,dim_mottaker.bosted_land as bosted_land_mottaker
           ,dim_mottaker.gt_verdi as gt_verdi_mottaker
           ,dim_mottaker.getitype as getitype_mottaker
           ,dim_mottaker.fk_dim_land_statsborgerskap as fk_dim_land_statsborgerskap_mottaker
           ,dim_mottaker.fk_dim_geografi_bosted as fk_dim_geografi_bosted_mottaker
-          ,floor(months_between(vedtak.siste_dato_i_perioden, dim_mottaker.fodt_dato)/12) alder_mottaker
           --Dimensjonsinfo om mottaker slutter
+
           ,inntekts_typer.inntekt_total, inntekts_typer.antall_inntekts_typer, inntekts_typer.type_inntekt_1
           ,inntekts_typer.inntekt_1, inntekts_typer.type_inntekt_2, inntekts_typer.inntekt_2
           ,inntekts_typer.type_inntekt_3, inntekts_typer.inntekt_3, inntekts_typer.type_inntekt_4
@@ -233,7 +241,7 @@ select
    ,fk_dim_geografi_bosted_mottaker, alder_mottaker, inntekt_total, antall_inntekts_typer
    ,gyldig_flagg, lastet_dato, inntekt_1, inntekt_2, inntekt_3, inntekt_4, saksnr, behandlings_type
    ,resultat, barnets_alders_gruppe, type_inntekt_1, type_inntekt_2, type_inntekt_3, type_inntekt_4
-   ,kjonn_kravhaver, antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
+   ,kjonn_kravhaver, kjonn_mottaker,antall_barn_i_egen_husstand, sivilstand, barn_bor_med_bm
    ,siste_inntekt_vedtakstidspunkt, forste_vedtakstidspunkt, bosted_land_mottaker
    ,gt_verdi_mottaker, getitype_mottaker, bosted_land_kravhaver, gt_verdi_kravhaver
    ,getitype_kravhaver, bosted_kommune_nr_kravhaver

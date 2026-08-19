@@ -1,4 +1,10 @@
 
+{{
+    config(
+        materialized='incremental'
+    )
+}}
+
 with forskudds_perioder as (
     select * from {{ref ('int_bb_forskudds_periode')}}
 )
@@ -16,4 +22,8 @@ select
     ,kafka_offset
     ,fk_bb_fagsak
 from forskudds_perioder
+
+{% if is_incremental() %}
+    WHERE kafka_offset > COALESCE(( SELECT MAX(t.kafka_offset) FROM {{ this }} t ), 0)
+{% endif %}
 

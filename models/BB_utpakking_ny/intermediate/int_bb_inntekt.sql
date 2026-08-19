@@ -17,7 +17,7 @@ bb_forskudds_periode as (
 final as (
     select
         type_inntekt
-       ,belop
+       ,inntekt
        ,fp.pk_bb_forskudds_periode as fk_bb_forskudds_periode
        ,fp.periode_fra
        ,fp.periode_til

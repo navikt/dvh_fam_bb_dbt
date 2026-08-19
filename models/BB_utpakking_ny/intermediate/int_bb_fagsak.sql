@@ -22,17 +22,27 @@ pre_final as (
     --så har kode6/7 ingen lokasjon info i utpakket tabellene og fk_person1 i seg selv er ikke identifiserende
     left join {{ source ('person', 'ident_off_id_til_fk_person1') }} ident_krav
         on fagsak.fnr_kravhaver = ident_krav.off_id
-        and fagsak.vedtakstidspunkt between ident_krav.gyldig_fra_dato and ident_krav.gyldig_til_dato
+        and TRUNC(fagsak.vedtakstidspunkt, 'DD') >= ident_krav.gyldig_fra_dato
+        and TRUNC(fagsak.vedtakstidspunkt, 'DD') <= ident_krav.gyldig_til_dato
 
     left join {{ source ('person', 'ident_off_id_til_fk_person1') }} ident_mottaker
         on fagsak.fnr_mottaker = ident_mottaker.off_id
-        and fagsak.vedtakstidspunkt between ident_mottaker.gyldig_fra_dato and ident_mottaker.gyldig_til_dato
+        and TRUNC(fagsak.vedtakstidspunkt, 'DD') >= ident_mottaker.gyldig_fra_dato 
+        and TRUNC(fagsak.vedtakstidspunkt, 'DD') <= ident_mottaker.gyldig_til_dato
 ),
 
 final as (
     select 
         STANDARD_HASH(p.vedtaks_id || '|' || p.fk_person1_kravhaver, 'MD5') as pk_bb_fagsak
-        ,p.*
+        ,vedtaks_id
+        ,behandlings_type
+        ,saksnr
+        ,vedtakstidspunkt
+        ,historisk_vedtak
+        ,fk_bb_meta_data
+        ,fk_person1_kravhaver
+        ,fk_person1_mottaker
+        ,kafka_offset
     from pre_final p
 )
 

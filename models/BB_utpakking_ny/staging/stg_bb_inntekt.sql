@@ -17,7 +17,7 @@ final as (
                     nested path '$.inntektListe[*]'
                     columns (
                         type_inntekt varchar2(255) path '$.type',
-                        belop        varchar2(255) path '$.beløp'
+                        inntekt        varchar2(255) path '$.beløp'
             )
           )
        )
@@ -31,5 +31,5 @@ select
     ,periode_fra
     ,periode_til
     ,type_inntekt
-    ,belop
+    ,inntekt
 from final 
