@@ -122,7 +122,9 @@ omgjorings_vedtak as (
         ,NULL as mart_lastet_dato
         from vedtak t1
         inner join  
-            (select aarmnd_omgjort_belopsendring,vedtaks_id, sum(belop_endring) as belop
+            (select aarmnd_omgjort_belopsendring
+                ,vedtaks_id
+                ,sum(belop_endring) as belop
             from omgjoring
             group by aarmnd_omgjort_belopsendring, vedtaks_id
             ) t2

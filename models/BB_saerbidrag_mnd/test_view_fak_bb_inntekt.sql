@@ -8,7 +8,7 @@ with fak as (
 final as (
     select 
         fak.*,
-        'SÆRBIDRAG' as stonads_type
+        'SÆRBIDRAG' as stonad_type
     from fak
     -- UNION med andre inntekter
 )
