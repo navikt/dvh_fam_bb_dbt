@@ -8,3 +8,4 @@ inner join (select  fk_person1
             group by fk_person1) t2
 on t1.fk_person1 = t2.fk_person1 
 and t1.gyldig_fra_dato = t2.max_gyldig
+where t1.utfaset = 0 

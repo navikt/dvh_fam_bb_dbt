@@ -33,7 +33,7 @@ PIVOT (
 )
 
 select     
-    FK_BB_SAERBIDRAG_FAGSAK,
+    RAWTOHEX(FK_BB_SAERBIDRAG_FAGSAK)  as key_fak_bb_saerbidrag,
     VEDTAKS_ID,
     SAKSNR,
     vedtakstidspunkt,

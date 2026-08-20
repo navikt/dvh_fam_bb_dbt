@@ -7,13 +7,19 @@
 with fag as (
     select t1.* from {{ref ('fam_bb_saerbidrag_fagsak')}} t1
     left join (select omgjor.vedtaks_id
+    ,omgjor.fk_person1_kravhaver
+    ,omgjor.saksnr
        ,1 as forrige_belop_null
         from {{ref ('fam_bb_saerbidrag_fagsak')}}  omgjor
             left join {{ref ('fam_bb_saerbidrag_fagsak')}}  ved
                 on omgjor.omgjor_vedtaks_id = ved.vedtaks_id
+                and omgjor.fk_person1_kravhaver = ved.fk_person1_kravhaver
+                and omgjor.saksnr = ved.saksnr
                 where omgjor.omgjor_vedtaks_id is not null
                 and ved.belop is null) t2
     on t1.vedtaks_id = t2.vedtaks_id
+    and t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
+    and t1.saksnr = t2.saksnr
     where (t1.belop is not null 
     or t1.omgjor_vedtaks_id is not null)
     and t1.INNKREVING_FLAGG = 1
@@ -28,7 +34,7 @@ inntekt as (
     SELECT * 
     FROM ( 
         SELECT
-            FK_BB_SAERBIDRAG_FAGSAK,
+            FK_BB_SAERBIDRAG_FAGSAK as key_fak_bb_saerbidrag,
             inntekt_kategori,
             INNTEKT_FOR,
             inntekt_belop
@@ -47,25 +53,49 @@ inntekt as (
 
 omgjoring as (
     select t1.vedtaks_id
+        ,t1.fk_person1_kravhaver
+        ,t1.saksnr
         ,case when aarmnd_original = aarmnd_omgjort then 0 else 1 end as aktuell
         ,aarmnd_omgjort as aarmnd_omgjort_belopsendring
         ,case when aarmnd_original < aarmnd_omgjort then belop * (-1) else 0 end as belop_endring
     from (
         select vedtaks_id
-            ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aarmnd_original
+            ,fk_person1_kravhaver
+            ,saksnr
+            ,to_char(vedtakstidspunkt, 'yyyymm') as aarmnd_original
             ,case when belop is null then 0 else belop end as belop
         FROM fag
     ) t1
     inner join (
-        select OMGJOR_VEDTAKS_ID
-            ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aarmnd_omgjort
-        FROM fag
-        where OMGJOR_VEDTAKS_ID is not null) t2
-        on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
+             select k1.OMGJOR_VEDTAKS_ID
+            ,k1.fk_person1_kravhaver
+            ,k1.saksnr
+            ,TO_CHAR(k1.vedtakstidspunkt, 'yyyymm') as aarmnd_omgjort
+        FROM test k1
+       
+        INNER JOIN (
+    SELECT OMGJOR_VEDTAKS_ID
+    ,fk_person1_kravhaver
+            ,saksnr
+            ,MAX(vedtakstidspunkt) AS max_date 
+    FROM test  
+    where OMGJOR_VEDTAKS_ID is not null
+    GROUP BY OMGJOR_VEDTAKS_ID
+    ,fk_person1_kravhaver
+            ,saksnr) k2
+        on  k1.OMGJOR_VEDTAKS_ID = k2.OMGJOR_VEDTAKS_ID
+        and  k1.fk_person1_kravhaver = k2.fk_person1_kravhaver
+        and k1.saksnr = k2.saksnr
+        and k1.vedtakstidspunkt = k2.max_date
+) t2 
+    on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
+    and  t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
+    and t1.saksnr = t2.saksnr
+
 ),
 
 vedtak as (
-    SELECT pk_bb_saerbidrag_fagsak
+    SELECT RAWTOHEX(pk_bb_saerbidrag_fagsak) as key_fak_bb_saerbidrag -- settes til string slik at omgjoringsvedtak kan få unik key som aldri vil knyttes mot inntekt
         ,concat(TO_CHAR(vedtakstidspunkt, 'yyyymm'),'003') as fk_dim_tid
         ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aar_maaned
         ,referanse
@@ -74,9 +104,9 @@ vedtak as (
         ,vedtakstidspunkt
         ,behandlings_type
         ,kategori
-        ,saksnr
+        ,t1.saksnr
         ,fk_person1_skyldner
-        ,fk_person1_kravhaver
+        ,t1.fk_person1_kravhaver
         ,fk_person1_mottaker
         ,case when belop is null then 0 else belop end as belop
         ,valuta_kode
@@ -89,15 +119,16 @@ vedtak as (
         ,betalt_belop
         ,lastet_dato as mart_lastet_dato
     from fag t1
-    left join (select vedtaks_id, aktuell 
-        from omgjoring) t2
+    left join omgjoring t2
     on t1.vedtaks_id = t2.vedtaks_id
+    and  t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
+    and t1.saksnr = t2.saksnr
 ),
 
 
 omgjorings_vedtak as (
     select 
-        NULL as pk_bb_saerbidrag_fagsak
+        'omgjøring' || '-' || t1.referanse || '-' || t2.vedtaks_id || '-' || t1.fk_person1_kravhaver || '-' || t1.saksnr as key_fak_bb_saerbidrag
         ,concat(TO_CHAR(t2.aarmnd_omgjort_belopsendring),'003') as fk_dim_tid
         ,t2.aarmnd_omgjort_belopsendring as aar_maaned
         ,t1.referanse as referanse
@@ -124,11 +155,18 @@ omgjorings_vedtak as (
         inner join  
             (select aarmnd_omgjort_belopsendring
                 ,vedtaks_id
+                ,fk_person1_kravhaver
+                ,saksnr
                 ,sum(belop_endring) as belop
             from omgjoring
-            group by aarmnd_omgjort_belopsendring, vedtaks_id
+            group by aarmnd_omgjort_belopsendring
+                ,vedtaks_id
+                ,fk_person1_kravhaver
+                ,saksnr
             ) t2
         on t1.vedtaks_id = t2.vedtaks_id
+        and  t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
+        and t1.saksnr = t2.saksnr
         where t2.belop <> 0
 ),
 
@@ -155,7 +193,7 @@ pre_final as (
     ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t8.fodt_aar_maaned, 'yyyymm')) / 12) AS kravhaver_alder
     from sammenstilling t1
     left join inntekt t2
-    on t1.pk_bb_saerbidrag_fagsak = t2.fk_bb_saerbidrag_fagsak
+    on t1.key_fak_bb_saerbidrag = t2.key_fak_bb_saerbidrag
     left join  {{ ref('dim_person_felter') }} t3
     on t1.fk_person1_skyldner = t3.fk_person1
         and t3.gyldig_fra_dato <= t1.vedtakstidspunkt
@@ -182,7 +220,7 @@ final as (
     ,t2.alder_gruppe5_besk as skyldner_alder_gruppe5
     ,t3.alder_gruppe5_besk as mottaker_alder_gruppe5
     ,t4.alder_gruppe5_besk as kravhvaer_alder_gruppe5
-    from prefinal t1
+    from pre_final t1
     left join  {{ ref('dim_alder') }} t2
     on t1.skyldner_alder = t2.alder
         left join  {{ ref('dim_alder') }} t3

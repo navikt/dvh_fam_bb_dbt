@@ -25,10 +25,11 @@ sources:
   - name: kode_verk
     schema: dt_kodeverk
     tables:
-     - name: dim_alder
-     - name: dim_tid
-     - name: dim_geografi
-     - name: dim_kjonn
+      - name: dim_alder
+        descrition: 'Dimensjonsverdier for alder.'
+      - name: dim_tid
+      - name: dim_geografi
+      - name: dim_kjonn
 
   - name: fam_bb
     schema: dvh_fam_bb
