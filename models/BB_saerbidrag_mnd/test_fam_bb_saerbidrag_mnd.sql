@@ -99,7 +99,9 @@ vedtak as (
         ,concat(TO_CHAR(vedtakstidspunkt, 'yyyymm'),'003') as fk_dim_tid
         ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aar_maaned
         ,referanse
-        ,case when t2.aktuell is null then 1 else t2.aktuell end as aktuell_flagg
+        ,case when t2.aktuell is null and t1.omgjor_vedtaks_id is null then 1 
+        when t2.aktuell is null and t1.omgjor_vedtaks_id is not null then 0
+        else t2.aktuell end as aktuell_flagg
         ,t1.vedtaks_id
         ,vedtakstidspunkt
         ,behandlings_type
