@@ -141,30 +141,54 @@ UNION ALL
 select * from omgjorings_vedtak
 ),
 
-final as (
+pre_final as (
     select t1.*
     ,t2.inntekt_mottaker_totalt
     ,t2.inntekt_mottaker_antall_typer
     ,t2.inntekt_pliktig_totalt
     ,t2.inntekt_pliktig_antall_typer
-    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t3', prefix='SKYLDNER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
-    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t4', prefix='MOTTAKER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
-    ,{{ dbt_utils.star(from=ref('dim_person'), relation_alias='t5', prefix='KRAVHAVER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t3', prefix='SKYLDNER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t6.fodt_aar_maaned, 'yyyymm')) / 12) AS skyldner_alder    
+    ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t4', prefix='MOTTAKER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t7.fodt_aar_maaned, 'yyyymm')) / 12) AS mottaker_alder    
+    ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t5', prefix='KRAVHAVER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t8.fodt_aar_maaned, 'yyyymm')) / 12) AS kravhaver_alder
     from sammenstilling t1
     left join inntekt t2
     on t1.pk_bb_saerbidrag_fagsak = t2.fk_bb_saerbidrag_fagsak
-    left join  {{ ref('dim_person') }} t3
+    left join  {{ ref('dim_person_felter') }} t3
     on t1.fk_person1_skyldner = t3.fk_person1
         and t3.gyldig_fra_dato <= t1.vedtakstidspunkt
         and t3.gyldig_til_dato >= t1.vedtakstidspunkt
-    left join  {{ ref('dim_person') }} t4
+    left join  {{ ref('dim_person_felter') }} t4
     on t1.fk_person1_mottaker = t4.fk_person1
         and t4.gyldig_fra_dato <= t1.vedtakstidspunkt
         and t4.gyldig_til_dato >= t1.vedtakstidspunkt
-    left join  {{ ref('dim_person') }} t5
+    left join  {{ ref('dim_person_felter') }} t5
     on t1.fk_person1_kravhaver = t5.fk_person1
         and t5.gyldig_fra_dato <= t1.vedtakstidspunkt
         and t5.gyldig_til_dato >= t1.vedtakstidspunkt
+-- alder
+    left join  {{ ref('dim_person_fodt') }} t6
+    on t1.fk_person1_skyldner = t6.fk_person1
+    left join  {{ ref('dim_person_fodt') }} t7
+    on t1.fk_person1_mottaker = t6.fk_person1
+    left join  {{ ref('dim_person_fodt') }} t8
+    on t1.fk_person1_kravhaver = t6.fk_person1
+),
+
+final as (
+    select t1.*
+    ,t2.alder_gruppe5_besk as skyldner_alder_gruppe5
+    ,t3.alder_gruppe5_besk as mottaker_alder_gruppe5
+    ,t4.alder_gruppe5_besk as kravhvaer_alder_gruppe5
+    from prefinal t1
+    left join  {{ ref('dim_alder') }} t2
+    on t1.skyldner_alder = t2.alder
+        left join  {{ ref('dim_alder') }} t3
+    on t1.mottaker_alder = t3.alder
+    left join  {{ ref('dim_alder') }} t4
+    on t1.kravhaver_alder = t4.alder
 )
 
 select final.*

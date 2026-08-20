@@ -1,3 +1,4 @@
 models:
-
-  - name: dim_person
+  - name: dim_alder
+  - name: dim_person_felter
+  - name: dim_person_fodt
