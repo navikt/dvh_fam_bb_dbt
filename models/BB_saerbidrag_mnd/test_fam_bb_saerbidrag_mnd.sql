@@ -39,7 +39,7 @@ inntekt as (
         COUNT(DISTINCT inntekt_kategori) AS antall_typer  
         FOR INNTEKT_FOR IN ( 
             'm' AS inntekt_mottaker,
-            'p' AS inntekt_pliktig
+            'p' AS inntekt_skyldner
         ) 
     ) piv
 ),
@@ -145,8 +145,8 @@ pre_final as (
     select t1.*
     ,t2.inntekt_mottaker_totalt
     ,t2.inntekt_mottaker_antall_typer
-    ,t2.inntekt_pliktig_totalt
-    ,t2.inntekt_pliktig_antall_typer
+    ,t2.inntekt_skyldner_totalt
+    ,t2.inntekt_skyldner_antall_typer
     ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t3', prefix='SKYLDNER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
     ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t6.fodt_aar_maaned, 'yyyymm')) / 12) AS skyldner_alder    
     ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t4', prefix='MOTTAKER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}

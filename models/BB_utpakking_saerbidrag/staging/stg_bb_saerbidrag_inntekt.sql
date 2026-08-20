@@ -63,7 +63,7 @@ final as (
         ,historisk_vedtak
         ,inntekt_kategori
         ,inntekt_type
-        ,'p' as inntekt_for
+        ,'p' as inntekt_for -- p for pliktig/skyldner
         ,inntekt_belop
     from bp
  
@@ -78,7 +78,7 @@ final as (
         ,historisk_vedtak
         ,inntekt_kategori
         ,inntekt_type
-        ,'m' as inntekt_for
+        ,'m' as inntekt_for -- m for mottaker
         ,inntekt_belop
     from bm
 )
