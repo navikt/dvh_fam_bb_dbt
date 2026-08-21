@@ -25,7 +25,11 @@ sources:
   - name: kode_verk
     schema: dt_kodeverk
     tables:
-     - name: dim_tid
+      - name: dim_alder
+        descrition: 'Dimensjonsverdier for alder.'
+      - name: dim_tid
+      - name: dim_geografi
+      - name: dim_kjonn
 
   - name: fam_bb
     schema: dvh_fam_bb
@@ -50,25 +54,3 @@ sources:
 
 
 
-models:
-  - name: fam_bb_saerbidrag_fagsak
-    columns:
-      - name: pk_bb_saerbidrag_fagsak
-        tests:
-          - not_null
-          - unique
-
-  - name: fam_bb_saerbidrag_inntekt
-    columns:
-      - name: pk_bb_inntekt_saerbidrag  
-        tests:
-          - not_null
-          - unique    
-      - name: fk_bb_saerbidrag_fagsak
-        tests:
-          - not_null
-
-          # FOREIGN KEY
-          - relationships:
-              to: ref('fam_bb_saerbidrag_fagsak')
-              field: pk_bb_saerbidrag_fagsak 

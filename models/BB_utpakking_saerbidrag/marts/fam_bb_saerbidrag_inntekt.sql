@@ -11,17 +11,19 @@ with sb_inn as (
 
 
 final as (
-select pk_bb_inntekt_saerbidrag
-,fk_bb_saerbidrag_fagsak
-,kafka_offset
-,vedtaks_id
-,saksnr
-,type_inntekt
-,belop
-,inntekt_for
-,historisk_flagg
-,localtimestamp as lastet_dato 
-from sb_inn
+    select pk_bb_inntekt_saerbidrag
+        ,fk_bb_saerbidrag_fagsak
+        ,kafka_offset
+        ,saksnr
+        ,vedtaks_id
+        ,vedtakstidspunkt
+        ,historisk_flagg
+        ,inntekt_kategori
+        ,inntekt_type
+        ,inntekt_for
+        ,inntekt_belop
+        ,localtimestamp as lastet_dato 
+    from sb_inn
 )
 
 select * from final

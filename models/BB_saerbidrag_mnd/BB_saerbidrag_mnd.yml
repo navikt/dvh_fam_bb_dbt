@@ -1,0 +1,202 @@
+models:
+
+  - name: test_fam_bb_saerbidrag_inntekt_mnd
+    description: Støttetabell for inntekter.
+    columns:
+      - name: key_fak_bb_saerbidrag
+        data_type: raw
+      - name: vedtaks_id
+        data_type: varchar2
+        description: Vedtakets ID.
+      - name: saksnr
+        data_type: varchar2
+        description: Saksnummeret vedtaket er en del av.
+      - name: vedtakstidspunkt
+        data_type: timestamp(0)
+        description: Vedtakets tidspunkt.
+      - name: inntekt_kategori
+        data_type: varchar2
+      - name: inntekt_type
+        data_type: varchar2
+      - name: inntekt_mottaker
+        data_type: number
+      - name: inntekt_skyldner
+        data_type: number
+      - name: gyldig_flagg
+        data_type: char
+      - name: mart_lastet_dato
+        data_type: timestamp(6)
+        description: Data lastet inn i mart-tabellen i datavarehuset.
+      - name: lastet_dato
+        data_type: timestamp(6)
+        description: Data lastet inn i tabellen i datavarehuset.
+      - name: key_fak_bb_saerbidrag
+        data_type: raw
+      - name: inntekt_skyldner
+        data_type: number
+
+  - name: test_fam_bb_saerbidrag_mnd
+    description: Månedsrapportering for særbidrag.
+    columns:
+      - name: key_fak_bb_saerbidrag
+        data_type: raw
+        data_tests:
+          - not_null
+          - unique
+      - name: fk_dim_tid
+        data_type: varchar2
+      - name: aar_maaned
+        data_type: varchar2
+      - name: referanse
+        data_type: varchar2
+      - name: aktuell_flagg
+        data_type: number
+      - name: vedtaks_id
+        data_type: varchar2
+        description: Vedtakets ID.
+      - name: vedtakstidspunkt
+        data_type: timestamp(0)
+        description: Vedtakets tidspunkt.
+      - name: behandlings_type
+        data_type: varchar2
+      - name: kategori
+        data_type: varchar2
+      - name: saksnr
+        data_type: varchar2
+        description: Saksnummeret vedtaket er en del av.
+      - name: fk_person1_skyldner
+        data_type: number
+        description: Syntetisk identifikator for skyldner.
+      - name: fk_person1_kravhaver
+        data_type: number
+        description: Syntetisk identifikator for kravhaver.
+      - name: fk_person1_mottaker
+        data_type: number
+        description: Syntetisk identifikator for mottaker.
+      - name: belop
+        data_type: number
+      - name: valuta_kode
+        data_type: varchar2
+        description: Valutakoden tilknyttet beløpet.
+      - name: resultat
+        data_type: varchar2
+      - name: historisk_flagg
+        data_type: number
+      - name: krav_belop
+        data_type: number
+      - name: godkjent_belop
+        data_type: number
+      - name: betalt_belop
+        data_type: number
+      - name: mart_lastet_dato
+        data_type: timestamp(6)
+        description: Data lastet inn i mart-tabellen i datavarehuset.
+      - name: inntekt_mottaker_totalt
+        data_type: number
+      - name: inntekt_mottaker_antall_typer
+        data_type: number
+      - name: inntekt_skyldner_totalt
+        data_type: number
+      - name: inntekt_skyldner_antall_typer
+        data_type: number
+      - name: skyldner_fk_dim_person
+        data_type: number
+      - name: skyldner_statsborgerskap
+        data_type: varchar2
+      - name: skyldner_bosted_land
+        data_type: varchar2
+      - name: skyldner_fylke_nr
+        data_type: varchar2
+      - name: skyldner_fylke_navn
+        data_type: nvarchar2
+      - name: skyldner_fylke_gruppe_nr
+        data_type: varchar2
+      - name: skyldner_fylke_gruppe_besk
+        data_type: nvarchar2
+      - name: skyldner_kommune_nr
+        data_type: varchar2
+      - name: skyldner_kommune_navn
+        data_type: nvarchar2
+      - name: skyldner_kommune_gruppe_nr
+        data_type: varchar2
+      - name: skyldner_kommune_gruppe_besk
+        data_type: nvarchar2
+      - name: skyldner_bydel_nr
+        data_type: varchar2
+      - name: skyldner_bydel_navn
+        data_type: nvarchar2
+      - name: skyldner_kjonn_kode
+        data_type: varchar2
+      - name: skyldner_kjonn_flertall_besk
+        data_type: varchar2
+      - name: mottaker_fk_dim_person
+        data_type: number
+      - name: mottaker_statsborgerskap
+        data_type: varchar2
+      - name: mottaker_bosted_land
+        data_type: varchar2
+      - name: mottaker_fylke_nr
+        data_type: varchar2
+      - name: mottaker_fylke_navn
+        data_type: nvarchar2
+      - name: mottaker_fylke_gruppe_nr
+        data_type: varchar2
+      - name: mottaker_fylke_gruppe_besk
+        data_type: nvarchar2
+      - name: mottaker_kommune_nr
+        data_type: varchar2
+      - name: mottaker_kommune_navn
+        data_type: nvarchar2
+      - name: mottaker_kommune_gruppe_nr
+        data_type: varchar2
+      - name: mottaker_kommune_gruppe_besk
+        data_type: nvarchar2
+      - name: mottaker_bydel_nr
+        data_type: varchar2
+      - name: mottaker_bydel_navn
+        data_type: nvarchar2
+      - name: mottaker_kjonn_kode
+        data_type: varchar2
+      - name: mottaker_kjonn_flertall_besk
+        data_type: varchar2
+      - name: kravhaver_fk_dim_person
+        data_type: number
+      - name: kravhaver_statsborgerskap
+        data_type: varchar2
+      - name: kravhaver_bosted_land
+        data_type: varchar2
+      - name: kravhaver_fylke_nr
+        data_type: varchar2
+      - name: kravhaver_fylke_navn
+        data_type: nvarchar2
+      - name: kravhaver_fylke_gruppe_nr
+        data_type: varchar2
+      - name: kravhaver_fylke_gruppe_besk
+        data_type: nvarchar2
+      - name: kravhaver_kommune_nr
+        data_type: varchar2
+      - name: kravhaver_kommune_navn
+        data_type: nvarchar2
+      - name: kravhaver_kommune_gruppe_nr
+        data_type: varchar2
+      - name: kravhaver_kommune_gruppe_besk
+        data_type: nvarchar2
+      - name: kravhaver_bydel_nr
+        data_type: varchar2
+      - name: kravhaver_bydel_navn
+        data_type: nvarchar2
+      - name: kravhaver_kjonn_kode
+        data_type: varchar2
+      - name: kravhaver_kjonn_flertall_besk
+        data_type: varchar2
+      - name: gyldig_flagg
+        data_type: char
+      - name: lastet_dato
+        data_type: timestamp(6)
+        description: Data lastet inn i tabellen i datavarehuset.
+      - name: kravhaver_alder
+        data_type: number
+
+  - name: test_view_fak_bb_inntekt
+
+  - name: test_view_fak_bb_saerbidrag

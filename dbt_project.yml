@@ -35,6 +35,15 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 flags:
   send_anonymous_usage_stats: False
+  #upload_artifacts: False 
+
+
+models:
+  dvh_fam_bb:
+    +persist_docs:
+      relation: true
+      columns: true
+
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
