@@ -29,7 +29,9 @@ with fag as (
     and t1.fk_person1_mottaker <> -5
 ),
 
-
+/* 
+Finn total inntekt for personer, og tell antall kategorier inntektene kommer fra
+*/
 inntekt as (
     SELECT * 
     FROM ( 
@@ -50,6 +52,31 @@ inntekt as (
     ) piv
 ),
 
+/* 
+1 vedtak kan ha flere omgjøringsvedtak pekende på seg. Siste omgjøringsvedtak
+blir gjeldene.
+*/
+siste_omgjoring as ( select t1.OMGJOR_VEDTAKS_ID
+            ,t1.fk_person1_kravhaver
+            ,t1.saksnr
+            ,TO_CHAR(t1.vedtakstidspunkt, 'yyyymm') as aarmnd_omgjort
+        FROM fag t1
+       
+        INNER JOIN (
+            SELECT OMGJOR_VEDTAKS_ID
+                ,fk_person1_kravhaver
+                ,saksnr
+                ,MAX(vedtakstidspunkt) AS max_date 
+            FROM fag  
+            where OMGJOR_VEDTAKS_ID is not null
+            GROUP BY OMGJOR_VEDTAKS_ID
+                ,fk_person1_kravhaver
+                ,saksnr) t2
+        on  t1.OMGJOR_VEDTAKS_ID = t2.OMGJOR_VEDTAKS_ID
+        and  t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
+        and t1.saksnr = t2.saksnr
+        and t1.vedtakstidspunkt = t2.max_date
+),
 
 omgjoring as (
     select t1.vedtaks_id
@@ -66,28 +93,7 @@ omgjoring as (
             ,case when belop is null then 0 else belop end as belop
         FROM fag
     ) t1
-    inner join (
-             select k1.OMGJOR_VEDTAKS_ID
-            ,k1.fk_person1_kravhaver
-            ,k1.saksnr
-            ,TO_CHAR(k1.vedtakstidspunkt, 'yyyymm') as aarmnd_omgjort
-        FROM test k1
-       
-        INNER JOIN (
-    SELECT OMGJOR_VEDTAKS_ID
-    ,fk_person1_kravhaver
-            ,saksnr
-            ,MAX(vedtakstidspunkt) AS max_date 
-    FROM test  
-    where OMGJOR_VEDTAKS_ID is not null
-    GROUP BY OMGJOR_VEDTAKS_ID
-    ,fk_person1_kravhaver
-            ,saksnr) k2
-        on  k1.OMGJOR_VEDTAKS_ID = k2.OMGJOR_VEDTAKS_ID
-        and  k1.fk_person1_kravhaver = k2.fk_person1_kravhaver
-        and k1.saksnr = k2.saksnr
-        and k1.vedtakstidspunkt = k2.max_date
-) t2 
+    inner join siste_omgjoring t2 
     on t1.vedtaks_id = t2.OMGJOR_VEDTAKS_ID
     and  t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
     and t1.saksnr = t2.saksnr
