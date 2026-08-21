@@ -225,9 +225,9 @@ pre_final as (
 
 final as (
     select t1.*
-    ,t2.alder_gruppe5_besk as skyldner_alder_gruppe5
-    ,t3.alder_gruppe5_besk as mottaker_alder_gruppe5
-    ,t4.alder_gruppe5_besk as kravhvaer_alder_gruppe5
+    ,{{ dbt_utils.star(from=ref('dim_alder'), relation_alias='t2', prefix='SKYLDNER_', except=["alder"]) }}
+    ,{{ dbt_utils.star(from=ref('dim_alder'), relation_alias='t3', prefix='MOTTAKER_', except=["alder"]) }}
+    ,{{ dbt_utils.star(from=ref('dim_alder'), relation_alias='t4', prefix='KRAVHAVER_', except=["alder"]) }}    
     from pre_final t1
     left join  {{ ref('dim_alder') }} t2
     on t1.skyldner_alder = t2.alder
