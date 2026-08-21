@@ -40,6 +40,9 @@ models:
     columns:
       - name: key_fak_bb_saerbidrag
         data_type: raw
+        data_tests:
+          - not_null
+          - unique
       - name: fk_dim_tid
         data_type: varchar2
       - name: aar_maaned
