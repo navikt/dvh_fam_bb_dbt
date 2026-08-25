@@ -14,8 +14,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('fam_bb_saerbidrag_fagsak')
-              field: pk_bb_saerbidrag_fagsak
+              arguments:
+                to: ref('fam_bb_saerbidrag_fagsak')
+                field: pk_bb_saerbidrag_fagsak
         data_type: raw
       - name: kafka_offset
         description: "Kafka-kø sekvensnummer."
@@ -45,7 +46,7 @@ models:
         description: "Inntekt i beløp."
         data_type: number
       - name: lastet_dato
-        description: "Data lastet inn i tabellen i datavarehuset."
+        description:  '{{ doc("lastet_dato") }}'
         data_type: timestamp(6)
 
   - name: fam_bb_saerbidrag_fagsak

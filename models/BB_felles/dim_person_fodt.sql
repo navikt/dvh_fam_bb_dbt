@@ -1,3 +1,5 @@
+{{ config(materialized='ephemeral') }}
+
 select t1.fk_person1
 ,t1.fodt_dato
 ,to_char(t1.fodt_dato, 'yyyymm') as fodt_aar_maaned

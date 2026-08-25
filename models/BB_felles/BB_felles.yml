@@ -1,4 +1,61 @@
 models:
   - name: dim_alder
+    columns:
+      - name: alder
+        description: 'Test.'
+      - name: ti_aar_gruppe_besk
+        description: 'Test.'    
+      - name: alder_gruppe5_besk
+        description: 'Test.'             
+      - name: alder_gruppe7_besk
+        description: 'Test.' 
+
   - name: dim_person_felter
+    columns:
+      - name: fk_person1
+        description: 'Test.' 
+      - name: fk_dim_person
+        description: 'Test.' 
+      - name: gyldig_fra_dato
+        description: 'Test.' 
+      - name: gyldig_til_dato
+        description: 'Test.' 
+      - name: statsborgerskap
+        description: 'Test.' 
+      - name: bosted_land
+        description: 'Test.' 
+      - name: fylke_nr
+        description: 'Test.'   
+      - name: fylke_navn
+        description: 'Test.' 
+      - name: fylke_gruppe_nr
+        description: 'Test.' 
+      - name: fylke_gruppe_besk
+        description: 'Test.' 
+      - name: kommune_nr
+        description: 'Test.' 
+      - name: kommune_navn
+        description: 'Test.' 
+      - name: kommune_gruppe_nr
+        description: 'Test.' 
+      - name: kommune_gruppe_besk
+        description: 'Test.' 
+      - name: bydel_nr
+        description: 'Test.' 
+      - name: bydel_navn
+        description: 'Test.' 
+      - name: kjonn_kode
+        description: 'Test.' 
+      - name: kjonn_flertall_besk
+        description: 'Test.' 
+
+
+
   - name: dim_person_fodt
+    columns:
+      - name: fk_person1
+        description: 'Test.' 
+      - name: fodt_dato
+        description: 'Test.' 
+      - name: fodt_aar_maaned
+        description: 'Test.' 

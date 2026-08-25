@@ -1,3 +1,5 @@
+{{ config(materialized='ephemeral') }}
+
 select alder
 ,ti_aar_gruppe_besk
 ,alder_gruppe5_besk

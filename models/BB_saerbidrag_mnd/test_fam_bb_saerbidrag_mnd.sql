@@ -193,11 +193,11 @@ pre_final as (
     ,t2.inntekt_mottaker_antall_typer
     ,t2.inntekt_skyldner_totalt
     ,t2.inntekt_skyldner_antall_typer
-    ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t3', prefix='SKYLDNER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,{{ ephemeral_star(model_name='dim_person_felter', relation_alias='t3', prefix='SKYLDNER_', except=["fk_person1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
     ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t6.fodt_aar_maaned, 'yyyymm')) / 12) AS skyldner_alder    
-    ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t4', prefix='MOTTAKER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,{{ ephemeral_star(model_name='dim_person_felter', relation_alias='t4', prefix='MOTTAKER_', except=["fk_person1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
     ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t7.fodt_aar_maaned, 'yyyymm')) / 12) AS mottaker_alder    
-    ,{{ dbt_utils.star(from=ref('dim_person_felter'), relation_alias='t5', prefix='KRAVHAVER_', except=["FK_PERSON1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
+    ,{{ ephemeral_star(model_name='dim_person_felter', relation_alias='t5', prefix='KRAVHAVER_', except=["fk_person1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
     ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t8.fodt_aar_maaned, 'yyyymm')) / 12) AS kravhaver_alder
     from sammenstilling t1
     left join inntekt t2
@@ -218,16 +218,16 @@ pre_final as (
     left join  {{ ref('dim_person_fodt') }} t6
     on t1.fk_person1_skyldner = t6.fk_person1
     left join  {{ ref('dim_person_fodt') }} t7
-    on t1.fk_person1_mottaker = t6.fk_person1
+    on t1.fk_person1_mottaker = t7.fk_person1
     left join  {{ ref('dim_person_fodt') }} t8
-    on t1.fk_person1_kravhaver = t6.fk_person1
+    on t1.fk_person1_kravhaver = t8.fk_person1
 ),
 
 final as (
     select t1.*
-    ,{{ dbt_utils.star(from=ref('dim_alder'), relation_alias='t2', prefix='SKYLDNER_', except=["alder"]) }}
-    ,{{ dbt_utils.star(from=ref('dim_alder'), relation_alias='t3', prefix='MOTTAKER_', except=["alder"]) }}
-    ,{{ dbt_utils.star(from=ref('dim_alder'), relation_alias='t4', prefix='KRAVHAVER_', except=["alder"]) }}    
+    ,{{ ephemeral_star(model_name='dim_alder', relation_alias='t2', prefix='SKYLDNER_', except=["alder"]) }}
+    ,{{ ephemeral_star(model_name='dim_alder', relation_alias='t3', prefix='MOTTAKER_', except=["alder"]) }}
+    ,{{ ephemeral_star(model_name='dim_alder', relation_alias='t4', prefix='KRAVHAVER_', except=["alder"]) }}    
     from pre_final t1
     left join  {{ ref('dim_alder') }} t2
     on t1.skyldner_alder = t2.alder
