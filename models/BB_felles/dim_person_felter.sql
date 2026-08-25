@@ -1,3 +1,5 @@
+{{ config(materialized='ephemeral') }}
+
 select t1.fk_person1
     ,t1.pk_dim_person as fk_dim_person
     ,t1.gyldig_fra_dato
