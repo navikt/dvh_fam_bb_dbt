@@ -42,6 +42,7 @@ select
     inntekt_type,
     inntekt_mottaker,
     inntekt_skyldner,
+    inntekt_kravhaver,
     '{{ var("gyldig_flagg") }}'  as gyldig_flagg,
     mart_lastet_dato,
     localtimestamp as lastet_dato  
