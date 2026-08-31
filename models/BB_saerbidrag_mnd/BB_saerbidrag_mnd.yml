@@ -7,13 +7,13 @@ models:
         data_type: raw
       - name: vedtaks_id
         data_type: varchar2
-        description: Vedtakets ID.
+        description: '{{ doc("vedtaks_id") }}'
       - name: saksnr
         data_type: varchar2
-        description: Saksnummeret vedtaket er en del av.
+        description: '{{ doc("saksnr") }}'
       - name: vedtakstidspunkt
         data_type: timestamp(0)
-        description: Vedtakets tidspunkt.
+        description: '{{ doc("vedtakstidspunkt") }}'
       - name: inntekt_kategori
         data_type: varchar2
       - name: inntekt_type
@@ -26,10 +26,10 @@ models:
         data_type: char
       - name: mart_lastet_dato
         data_type: timestamp(6)
-        description: Data lastet inn i mart-tabellen i datavarehuset.
+        description: '{{ doc("mart_lastet_dato") }}'
       - name: lastet_dato
         data_type: timestamp(6)
-        description: Data lastet inn i tabellen i datavarehuset.
+        description: '{{ doc("lastet_dato") }}'
       - name: key_fak_bb_saerbidrag
         data_type: raw
       - name: inntekt_skyldner
@@ -53,17 +53,17 @@ models:
         data_type: number
       - name: vedtaks_id
         data_type: varchar2
-        description: Vedtakets ID.
+        description: '{{ doc("vedtaks_id") }}'
       - name: vedtakstidspunkt
         data_type: timestamp(0)
-        description: Vedtakets tidspunkt.
+        description: '{{ doc("vedtakstidspunkt") }}'
       - name: behandlings_type
         data_type: varchar2
       - name: kategori
         data_type: varchar2
       - name: saksnr
         data_type: varchar2
-        description: Saksnummeret vedtaket er en del av.
+        description: '{{ doc("saksnr") }}'
       - name: fk_person1_skyldner
         data_type: number
         description: Syntetisk identifikator for skyldner.
@@ -77,11 +77,12 @@ models:
         data_type: number
       - name: valuta_kode
         data_type: varchar2
-        description: Valutakoden tilknyttet beløpet.
+        description: '{{ doc("valuta_kode") }}'
       - name: resultat
         data_type: varchar2
       - name: historisk_flagg
         data_type: number
+        description: '{{ doc("historisk_flagg") }}'
       - name: krav_belop
         data_type: number
       - name: godkjent_belop
@@ -90,7 +91,7 @@ models:
         data_type: number
       - name: mart_lastet_dato
         data_type: timestamp(6)
-        description: Data lastet inn i mart-tabellen i datavarehuset.
+        description: '{{ doc("mart_lastet_dato") }}'
       - name: inntekt_mottaker_totalt
         data_type: number
       - name: inntekt_mottaker_antall_typer
@@ -193,7 +194,7 @@ models:
         data_type: char
       - name: lastet_dato
         data_type: timestamp(6)
-        description: Data lastet inn i tabellen i datavarehuset.
+        description: '{{ doc("lastet_dato") }}'
       - name: kravhaver_alder
         data_type: number
 

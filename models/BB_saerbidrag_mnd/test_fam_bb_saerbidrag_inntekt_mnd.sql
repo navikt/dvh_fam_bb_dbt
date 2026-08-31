@@ -27,7 +27,8 @@ PIVOT (
     SUM(inntekt_belop)  
     FOR INNTEKT_FOR IN ( 
         'm' AS inntekt_mottaker,
-        'p' AS inntekt_skyldner
+        'p' AS inntekt_skyldner,
+        'k' as inntekt_kravhaver
     ) 
 ) piv
 )
