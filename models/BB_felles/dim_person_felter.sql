@@ -6,7 +6,7 @@ select t1.fk_person1
     ,t1.gyldig_til_dato
     ,t1.statsborgerskap
     ,t1.bosted_land
-    ,t2.pk_dim_geografi
+    ,t2.pk_dim_geografi as fk_dim_geografi
     ,t2.fylke_nr
     ,t2.fylke_navn
     ,t2.fylke_nr_navn
@@ -20,7 +20,7 @@ select t1.fk_person1
     ,t2.bydel_nr
     ,t2.bydel_navn
     ,t2.bydel_nr_navn
-    ,t3.pk_dim_kjonn
+    ,t3.pk_dim_kjonn  as fk_dim_kjonn
     ,t3.kjonn_kode
     ,t3.kjonn_flertall_besk
 from {{ source ('person', 'dim_person') }} t1

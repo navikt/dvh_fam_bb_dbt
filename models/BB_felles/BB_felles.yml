@@ -1,6 +1,8 @@
 models:
   - name: dim_alder
     columns:
+      - name: fk_dim_alder
+        description: 'Test.' 
       - name: alder
         description: 'Test.'
       - name: ti_aar_gruppe_besk
@@ -8,6 +10,65 @@ models:
       - name: alder_gruppe5_besk
         description: 'Test.'             
       - name: alder_gruppe7_besk
+        description: 'Test.' 
+
+  - name: dim_bredt_aggregat_mnd
+    columns:
+      - name: fk_dim_tid
+        description: 'Test.' 
+      - name: aar
+        description: 'Test.' 
+      - name: maaned
+        description: 'Test.' 
+      - name: aar_maaned
+        description: 'Test.' 
+      - name: aar_maaned_besk_kort
+        description: 'Test.' 
+      - name: aar_maaned_besk
+        description: 'Test.' 
+      - name: aar_kvartal_besk_kort
+        description: 'Test.' 
+      - name: aar_kvartal_besk
+        description: 'Test.' 
+      - name: aar_tertial_besk_kort
+        description: 'Test.' 
+      - name: aar_tertial_besk
+        description: 'Test.' 
+      - name: aar_halvaar_besk_kort
+        description: 'Test.' 
+      - name: aar_halvaar_besk
+        description: 'Test.' 
+      - name: fk_dim_geografi
+        description: 'Test.'       
+      - name: fylke_nr
+        description: 'Test.'   
+      - name: fylke_navn
+        description: 'Test.' 
+      - name: fylke_nr_navn
+        description: 'Test.' 
+      - name: fylke_gruppe_nr
+        description: 'Test.' 
+      - name: fylke_gruppe_besk
+        description: 'Test.' 
+      - name: kommune_nr
+        description: 'Test.' 
+      - name: kommune_navn
+        description: 'Test.' 
+      - name: kommune_nr_navn
+        description: 'Test.' 
+      - name: kommune_gruppe_nr
+        description: 'Test.' 
+      - name: kommune_gruppe_besk
+        description: 'Test.' 
+      - name: bydel_nr
+        description: 'Test.' 
+      - name: bydel_navn
+        description: 'Test.' 
+      - name: fk_dim_kjonn
+        description: 'Test.' 
+      - name: kjonn_kode
+        description: 'Test.' 
+      - name: kjonn_flertall_besk
         description: 'Test.' 
 
   - name: dim_person_felter
@@ -24,9 +85,13 @@ models:
         description: 'Test.' 
       - name: bosted_land
         description: 'Test.' 
+      - name: fk_dim_geografi
+        description: 'Test.'       
       - name: fylke_nr
         description: 'Test.'   
       - name: fylke_navn
+        description: 'Test.' 
+      - name: fylke_nr_navn
         description: 'Test.' 
       - name: fylke_gruppe_nr
         description: 'Test.' 
@@ -36,6 +101,8 @@ models:
         description: 'Test.' 
       - name: kommune_navn
         description: 'Test.' 
+      - name: kommune_nr_navn
+        description: 'Test.' 
       - name: kommune_gruppe_nr
         description: 'Test.' 
       - name: kommune_gruppe_besk
@@ -43,6 +110,8 @@ models:
       - name: bydel_nr
         description: 'Test.' 
       - name: bydel_navn
+        description: 'Test.' 
+      - name: fk_dim_kjonn
         description: 'Test.' 
       - name: kjonn_kode
         description: 'Test.' 
