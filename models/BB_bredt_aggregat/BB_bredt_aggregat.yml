@@ -1,0 +1,5 @@
+models:
+  - name: obt_barnebidrag
+    columns:
+      - name: lastet_dato
+        description:  '{{ doc("lastet_dato") }}'
