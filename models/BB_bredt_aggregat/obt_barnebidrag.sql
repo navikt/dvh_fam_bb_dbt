@@ -12,6 +12,7 @@ with saer as (
     ,mottaker_fk_dim_kjonn
     ,count(distinct fk_person1_mottaker) as saerbidrag_antall_mottakere
     from test_fam_bb_saerbidrag_mnd
+    where aktuell_flagg = 1
     group by fk_dim_tid
     ,mottaker_fk_dim_geografi
     ,mottaker_fk_dim_alder
