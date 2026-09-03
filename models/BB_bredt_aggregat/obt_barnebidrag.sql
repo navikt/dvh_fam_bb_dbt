@@ -1,6 +1,7 @@
 {{
     config(
-        materialized='table'
+        materialized='table',
+        post_hook="{{ sync_multi_source_comments([ ['kode_verk', 'dim_tid'], ['kode_verk', 'dim_geografi']]) }}"
     )
 }}
 
