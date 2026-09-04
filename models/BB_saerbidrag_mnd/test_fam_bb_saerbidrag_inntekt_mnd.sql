@@ -27,7 +27,8 @@ PIVOT (
     SUM(inntekt_belop)  
     FOR INNTEKT_FOR IN ( 
         'm' AS inntekt_mottaker,
-        'p' AS inntekt_skyldner
+        'p' AS inntekt_skyldner,
+        'k' as inntekt_kravhaver
     ) 
 ) piv
 )
@@ -41,6 +42,7 @@ select
     inntekt_type,
     inntekt_mottaker,
     inntekt_skyldner,
+    inntekt_kravhaver,
     '{{ var("gyldig_flagg") }}'  as gyldig_flagg,
     mart_lastet_dato,
     localtimestamp as lastet_dato  
