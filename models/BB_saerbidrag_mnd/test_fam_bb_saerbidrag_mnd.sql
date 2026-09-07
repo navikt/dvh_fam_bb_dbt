@@ -27,6 +27,7 @@ with fag as (
     and t1.fk_person1_skyldner <> -5
     and t1.fk_person1_kravhaver <> -5
     and t1.fk_person1_mottaker <> -5
+    and t1.referanse =  'behandling_49008_20260112085802_SÆRBIDRAG'
 ),
 
 /* 
@@ -47,7 +48,8 @@ inntekt as (
         COUNT(DISTINCT inntekt_kategori) AS antall_typer  
         FOR INNTEKT_FOR IN ( 
             'm' AS inntekt_mottaker,
-            'p' AS inntekt_skyldner
+            'p' AS inntekt_skyldner,
+            'k' as inntekt_kravhaver
         ) 
     ) piv
 ),
@@ -56,10 +58,12 @@ inntekt as (
 1 vedtak kan ha flere omgjøringsvedtak pekende på seg. Siste omgjøringsvedtak
 blir gjeldene.
 */
-siste_omgjoring as ( select t1.OMGJOR_VEDTAKS_ID
+siste_omgjoring as ( select t1.pk_bb_saerbidrag_fagsak
+            ,t1.OMGJOR_VEDTAKS_ID
             ,t1.fk_person1_kravhaver
             ,t1.saksnr
             ,TO_CHAR(t1.vedtakstidspunkt, 'yyyymm') as aarmnd_omgjort
+            ,1 as aktuell
         FROM fag t1
        
         INNER JOIN (
@@ -82,9 +86,9 @@ omgjoring as (
     select t1.vedtaks_id
         ,t1.fk_person1_kravhaver
         ,t1.saksnr
-        ,case when aarmnd_original = aarmnd_omgjort then 0 else 1 end as aktuell
-        ,aarmnd_omgjort as aarmnd_omgjort_belopsendring
-        ,case when aarmnd_original < aarmnd_omgjort then belop * (-1) else 0 end as belop_endring
+        ,case when t1.aarmnd_original = t2.aarmnd_omgjort then 0 else 1 end as aktuell
+        ,t2.aarmnd_omgjort as aarmnd_omgjort_belopsendring
+        ,case when t1.aarmnd_original < t2.aarmnd_omgjort then t1.belop * (-1) else 0 end as belop_endring
     from (
         select vedtaks_id
             ,fk_person1_kravhaver
@@ -101,36 +105,45 @@ omgjoring as (
 ),
 
 vedtak as (
-    SELECT RAWTOHEX(pk_bb_saerbidrag_fagsak) as key_fak_bb_saerbidrag -- settes til string slik at omgjoringsvedtak kan få unik key som aldri vil knyttes mot inntekt
-        ,concat(TO_CHAR(vedtakstidspunkt, 'yyyymm'),'003') as fk_dim_tid
-        ,TO_CHAR(vedtakstidspunkt, 'yyyymm') as aar_maaned
-        ,referanse
-        ,case when t2.aktuell is null and t1.omgjor_vedtaks_id is null then 1 
-        when t2.aktuell is null and t1.omgjor_vedtaks_id is not null then 0
-        else t2.aktuell end as aktuell_flagg
+    SELECT RAWTOHEX(t1.pk_bb_saerbidrag_fagsak) as key_fak_bb_saerbidrag -- settes til string slik at omgjoringsvedtak kan få unik key som aldri vil knyttes mot inntekt
+        ,concat(TO_CHAR(t1.vedtakstidspunkt, 'yyyymm'),'003') as fk_dim_tid
+        ,TO_CHAR(t1.vedtakstidspunkt, 'yyyymm') as aar_maaned
+        ,t1.referanse
+        -- FIKSE
+        -- når første tab sitt omgjøringsvedtak er blank og det ikke er noe aktuell rad for omgjorte vedtak, skal vedtaket telle.
+        -- når første tab sitt omgjøringsvedtak har verdi, men omgjorte vedtak har verdi 0, skal vedtaket ikke telle.
+        -- når omgjort vedtak har verdi 1, skal vedtaket telle
+        -- siste omgjorte vedtak er alltid gjeldende.
+        ,case when t1.omgjor_vedtaks_id is null and t2.aktuell is null then 1
+        when t1.omgjor_vedtaks_id is not null and t2.aktuell = 0 then 0
+        when t2.aktuell = 1 then 1
+        when t3.aktuell is not null then 1
+        else 0 end as aktuell_flagg
         ,t1.vedtaks_id
-        ,vedtakstidspunkt
-        ,behandlings_type
-        ,kategori
+        ,t1.vedtakstidspunkt
+        ,t1.behandlings_type
+        ,t1.kategori
         ,t1.saksnr
-        ,fk_person1_skyldner
+        ,t1.fk_person1_skyldner
         ,t1.fk_person1_kravhaver
-        ,fk_person1_mottaker
-        ,case when belop is null then 0 else belop end as belop
-        ,valuta_kode
-        ,resultat
+        ,t1.fk_person1_mottaker
+        ,case when t1.belop is null then 0 else t1.belop end as belop
+        ,t1.valuta_kode
+        ,t1.resultat
         --,innkreving_flagg
         --,omgjor_vedtak_id
-        ,historisk_flagg
-        ,krav_belop
-        ,godkjent_belop
-        ,betalt_belop
-        ,lastet_dato as mart_lastet_dato
+        ,t1.historisk_flagg
+        ,t1.krav_belop
+        ,t1.godkjent_belop
+        ,t1.betalt_belop
+        ,t1.lastet_dato as mart_lastet_dato
     from fag t1
     left join omgjoring t2
     on t1.vedtaks_id = t2.vedtaks_id
     and  t1.fk_person1_kravhaver = t2.fk_person1_kravhaver
     and t1.saksnr = t2.saksnr
+    left join siste_omgjoring t3
+    on t1.pk_bb_saerbidrag_fagsak = t3.pk_bb_saerbidrag_fagsak
 ),
 
 
@@ -189,10 +202,12 @@ select * from omgjorings_vedtak
 
 pre_final as (
     select t1.*
-    ,t2.inntekt_mottaker_totalt
-    ,t2.inntekt_mottaker_antall_typer
     ,t2.inntekt_skyldner_totalt
     ,t2.inntekt_skyldner_antall_typer
+    ,t2.inntekt_mottaker_totalt
+    ,t2.inntekt_mottaker_antall_typer
+    ,t2.inntekt_kravhaver_totalt
+    ,t2.inntekt_kravhaver_antall_typer
     ,{{ ephemeral_star(model_name='dim_person_felter', relation_alias='t3', prefix='SKYLDNER_', except=["fk_person1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
     ,trunc(months_between(to_date(aar_maaned, 'yyyymm'), to_date(t6.fodt_aar_maaned, 'yyyymm')) / 12) AS skyldner_alder    
     ,{{ ephemeral_star(model_name='dim_person_felter', relation_alias='t4', prefix='MOTTAKER_', except=["fk_person1","gyldig_fra_dato", "gyldig_til_dato" ]) }}
