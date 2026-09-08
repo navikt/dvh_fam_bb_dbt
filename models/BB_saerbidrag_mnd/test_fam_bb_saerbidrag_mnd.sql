@@ -4,6 +4,12 @@
     )
 }}
 
+/* 
+Fra særbidrag fagsak filtreres rader som inneholder skjermede personer. Innkrevingsflagg skal være 1.
+Beløp skal ikke være NULL eller omgjøringsvedtak skal ikke være NULL.
+Hvis et omgjøringsvedtak peker på et vedtak som har beløp NULL, skal ikke omgjøringsvedtaket tas med.
+*/
+
 with fag as (
     select t1.* from {{ref ('fam_bb_saerbidrag_fagsak')}} t1
     left join (select omgjor.vedtaks_id
@@ -56,7 +62,8 @@ inntekt as (
 
 /* 
 1 vedtak kan ha flere omgjøringsvedtak pekende på seg. Siste omgjøringsvedtak
-blir gjeldene.
+blir gjeldene. 
+Aktuellflagg er kun benyttet for pk, mens de resterende kolonnene benyttes til å sjekke hvilke vedtak som får minuslinjer.
 */
 siste_omgjoring as ( select t1.pk_bb_saerbidrag_fagsak
             ,t1.OMGJOR_VEDTAKS_ID
@@ -82,6 +89,14 @@ siste_omgjoring as ( select t1.pk_bb_saerbidrag_fagsak
         and t1.vedtakstidspunkt = t2.max_date
 ),
 
+/* 
+I omgjoring lages minuslinjene. 
+Hvis vedtak og omgjøringsvedtak er i samme måned skal vedtaket få aktuell lik 0. Da skal omgjøringsvedtaket være det gjeldende for måneden, 
+og denne kommer fra tabell siste_omgjoring med kolonnene pk og aktuell, som hentes inn i tabell vedtak.
+Hvis vedtaket er i tidligere måned enn omgjøringsvedtaket, blir vedtaket stående med aktuell lik 1 og det lages en rad med minusbeløp
+i omgjøringsvedtakets måned.
+*/
+
 omgjoring as (
     select t1.vedtaks_id
         ,t1.fk_person1_kravhaver
@@ -104,16 +119,21 @@ omgjoring as (
 
 ),
 
+
+/* 
+Alle vedtak.
+Aktuellflagg settes basert på 
+        når første tab sitt omgjøringsvedtak er blank og det ikke er noe aktuell rad for omgjorte vedtak, skal vedtaket telle.
+        når første tab sitt omgjøringsvedtak har verdi, men omgjorte vedtak har verdi 0, skal vedtaket ikke telle.
+        når omgjort vedtak har verdi 1, skal vedtaket telle
+        siste omgjorte vedtak er alltid gjeldende (pk-kolonnen benyttes i join).
+*/
+
 vedtak as (
     SELECT RAWTOHEX(t1.pk_bb_saerbidrag_fagsak) as key_fak_bb_saerbidrag -- settes til string slik at omgjoringsvedtak kan få unik key som aldri vil knyttes mot inntekt
         ,concat(TO_CHAR(t1.vedtakstidspunkt, 'yyyymm'),'003') as fk_dim_tid
         ,TO_CHAR(t1.vedtakstidspunkt, 'yyyymm') as aar_maaned
         ,t1.referanse
-        -- FIKSE
-        -- når første tab sitt omgjøringsvedtak er blank og det ikke er noe aktuell rad for omgjorte vedtak, skal vedtaket telle.
-        -- når første tab sitt omgjøringsvedtak har verdi, men omgjorte vedtak har verdi 0, skal vedtaket ikke telle.
-        -- når omgjort vedtak har verdi 1, skal vedtaket telle
-        -- siste omgjorte vedtak er alltid gjeldende.
         ,case when t1.omgjor_vedtaks_id is null and t2.aktuell is null then 1
         when t1.omgjor_vedtaks_id is not null and t2.aktuell = 0 then 0
         when t2.aktuell = 1 then 1
@@ -130,8 +150,6 @@ vedtak as (
         ,case when t1.belop is null then 0 else t1.belop end as belop
         ,t1.valuta_kode
         ,t1.resultat
-        --,innkreving_flagg
-        --,omgjor_vedtak_id
         ,t1.historisk_flagg
         ,t1.krav_belop
         ,t1.godkjent_belop
@@ -146,6 +164,10 @@ vedtak as (
     on t1.pk_bb_saerbidrag_fagsak = t3.pk_bb_saerbidrag_fagsak
 ),
 
+
+/* 
+Alle minus-linjer, som korrigerer beløpene omgjorte vedtak, i aktuelle måneder. 
+*/
 
 omgjorings_vedtak as (
     select 
@@ -165,8 +187,6 @@ omgjorings_vedtak as (
         ,t2.belop
         ,t1.valuta_kode   -- må håndteres tidligere
         ,t1.resultat
-        --,NULL as innkreving_flagg
-        -- ,NULL as omgjor_vedtak_id
         ,NULL as historisk_flagg
         ,NULL as krav_belop
         ,NULL as godkjent_belop
@@ -192,6 +212,10 @@ omgjorings_vedtak as (
 ),
 
 
+/* 
+Sammenstiller vedtak og minus-linjer.
+*/
+
 sammenstilling as (
 SELECT * from vedtak
 
@@ -199,6 +223,10 @@ UNION ALL
 
 select * from omgjorings_vedtak
 ),
+
+/* 
+Kobler inn inntekt-kolonner, og dimensjonskolonner for skyldner, kravhaver og mottaker.
+*/
 
 pre_final as (
     select t1.*
@@ -238,6 +266,12 @@ pre_final as (
     on t1.fk_person1_kravhaver = t8.fk_person1
 ),
 
+
+/* 
+Beregner alder for skyldner, kravhaver og mottaker.
+Fødselsdato (yyyymm) mot vedtakstidspunktet (yyyymm). Alder beregnes som antall måneder mellom disse, hvor det så deles på 12, og runder ned til nærmeste år. 
+*/
+
 final as (
     select t1.*
     ,{{ ephemeral_star(model_name='dim_alder', relation_alias='t2', prefix='SKYLDNER_', except=["alder"]) }}
@@ -251,6 +285,10 @@ final as (
     left join  {{ ref('dim_alder') }} t4
     on t1.kravhaver_alder = t4.alder
 )
+
+/* 
+Slutt-tabellen tar med alle kolonner, gyldig_flagg og lastet_dato.
+*/
 
 select final.*
 ,'{{ var("gyldig_flagg") }}'  as gyldig_flagg
