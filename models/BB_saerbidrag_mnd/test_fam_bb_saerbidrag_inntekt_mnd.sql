@@ -4,10 +4,18 @@
     )
 }}
 
+/* 
+Henter alle inntekter.
+*/
+
 with inn as (
     select * from {{ref ('fam_bb_saerbidrag_inntekt')}}
 ),
  
+/* 
+Pivoterer ut inntekt for personene i hver sin kolonne, og summerer på inntekttype.
+*/
+
 final as (
  SELECT * 
 FROM ( 
@@ -32,6 +40,10 @@ PIVOT (
     ) 
 ) piv
 )
+
+/* 
+Slutt-tabellen med utvalgte kolonner, gyldig_flagg og lastet_dato.
+*/
 
 select     
     RAWTOHEX(FK_BB_SAERBIDRAG_FAGSAK)  as key_fak_bb_saerbidrag,

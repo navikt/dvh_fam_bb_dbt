@@ -2,4 +2,7 @@ packages:
   - name: dbt_utils
     package: dbt-labs/dbt_utils
     version: 1.4.1
-sha1_hash: 8b27037b26f3f630c6661194d2470e720c49f6ee
+  - git: https://github.com/navikt/dbt-dvh-macros.git
+    name: dbt_dvh_macros
+    revision: 928327c803bf693b20028238d8db37e27df61f87
+sha1_hash: 77d534ab3170508b17afad650d640fc191daadd4
