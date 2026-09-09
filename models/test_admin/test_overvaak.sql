@@ -36,8 +36,8 @@ fagsak_saer as (
         'SÆRBIDRAG' as stonadstype,
         trunc(lastet_dato) as lastet_dato, 
         count(distinct fk_bb_meta_data) as antfagsak, 
-        min(vedtaks_tid) as tidspunkt_vedtak_min, 
-        max(vedtaks_tid) as tidspunkt_vedtak_max,
+        min(vedtakstidspunkt) as tidspunkt_vedtak_min, 
+        max(vedtakstidspunkt) as tidspunkt_vedtak_max,
         min(kafka_offset) as kafka_offset_min, 
         max(kafka_offset) as kafka_offset_max,
         count(distinct fk_bb_meta_data) - max(kafka_offset) + min(kafka_offset) - 1 as diff

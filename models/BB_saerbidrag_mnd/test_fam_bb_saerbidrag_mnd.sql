@@ -33,7 +33,6 @@ with fag as (
     and t1.fk_person1_skyldner <> -5
     and t1.fk_person1_kravhaver <> -5
     and t1.fk_person1_mottaker <> -5
-    and t1.referanse =  'behandling_49008_20260112085802_SÆRBIDRAG'
 ),
 
 /* 
